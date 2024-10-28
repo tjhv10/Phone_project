@@ -14,6 +14,7 @@ def tap_users(d, users_template_path="icons/tiktok_icons/users.png"):
     if best_coordinates:
         d.click(int(best_coordinates[0]), int(best_coordinates[1]))
     else:
+        d.click(196,213)
         print(f"{threading.current_thread().name}:{d.wlan_ip} Users button not found on the screen.")
    
 
@@ -38,7 +39,7 @@ def search(d, text):
     tap_users(d)  # Click to go to users
     time.sleep(5)
 
-    d.click(700, 300)  # Click to go into the first result
+    d.click(350, 335)  # Click to go into the first result
     time.sleep(4)
     
         
@@ -53,6 +54,7 @@ def tap_like_button(d, like_button_template_path="icons/tiktok_icons/like.png"):
         print(f"{threading.current_thread().name}:{d.wlan_ip} Like button found at {best_coordinates}, tapping...")
         d.click(int(best_coordinates[0]), int(best_coordinates[1]))
         print(f"{threading.current_thread().name}:{d.wlan_ip} Tapped best match at {best_coordinates}.")
+        update_results_file("Likes")
         time.sleep(1)
     else:
         print(f"{threading.current_thread().name}:{d.wlan_ip} Like button not found on the screen.")
@@ -82,6 +84,8 @@ def comment_text(d, text,send_button_template_path="icons/tiktok_icons/send.png"
         d.click(int(best_coordinates[0]), int(best_coordinates[1]))
         print(f"{threading.current_thread().name}:{d.wlan_ip} Tapped best match at {best_coordinates}.")
         time.sleep(1)
+        update_results_file("Comments")
+        time.sleep(1)
     else:
         print(f"{threading.current_thread().name}:{d.wlan_ip} Send button not found on the screen.")
       # Click the submit button for the comment
@@ -98,7 +102,7 @@ def scroll_random_number(d):
     
     if d(scrollable=True).exists:
         print(f"{threading.current_thread().name}:{d.wlan_ip} Found a scrollable view! Swiping down...")
-        num_swipes = random.randint(1, 8)
+        num_swipes = random.randint(1, 2)
         print(f"{threading.current_thread().name}:{d.wlan_ip} Number of swipes: {num_swipes}")
 
         for i in range(num_swipes):
@@ -122,7 +126,7 @@ def scroll_like_and_comment(d):
     screen_width = d.info['displayWidth']
     screen_height = d.info['displayHeight']
 
-    for i in range(30):
+    for i in range(2):
         if d(scrollable=True).exists:
             x_start = screen_width * (500 / 720)
             y_start = screen_height * (1200 / 1560)
@@ -157,13 +161,39 @@ def scroll_like_and_comment(d):
     d.press("back")
 
 
-def like_the_page(d, page):
+def like_a_page(d, page):
     search(d, page)
     time.sleep(2)
-    d.click(120, 1300) # Get in the first page
+    d.click(120, 1450) # Get in the first page
     time.sleep(3)
     scroll_like_and_comment(d)
 
+
+def report(d, link):
+    # Open TikTok app
+    d.app_start("com.zhiliaoapp.musically")
+    print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened TikTok!")
+    # time.sleep(15)
+
+    if "com.zhiliaoapp.musically" in d.app_list_running():
+        print(f"{threading.current_thread().name}:{d.wlan_ip} TikTok is running!")
+        d.shell(f"am start -a android.intent.action.VIEW -d {link}")
+        print(f"{threading.current_thread().name}:{d.wlan_ip} Opened link: {link}")
+        time.sleep(7)
+
+        # Click on the share button
+        d.click(660, 1240)
+        time.sleep(3)
+
+        # Click on the report button
+        d.click(90, 1400)
+        time.sleep(5)
+        
+        # Show the report tree
+        handle_user_selection(report_tiktok_clicks)
+        time.sleep(4)
+        update_results_file("Reports")
+        d.app_stop("com.zhiliaoapp.musically")
 
 def main(d):
     """
@@ -174,12 +204,12 @@ def main(d):
     time.sleep(15)
     if "com.zhiliaoapp.musically" in d.app_list_running():
         print(f"{threading.current_thread().name}:{d.wlan_ip} TikTok is running!")
-        for _ in range(8):
+        for _ in range(10):
             scroll_random_number(d)
             # time.sleep(1)
             # tap_like_button(d)
             time.sleep(4)
-            like_the_page(d,random.choice(tiktok_accounts))
+            like_a_page(d,random.choice(tiktok_accounts))
             scroll_random_number(d)
             time.sleep(10)
         d.app_stop("com.zhiliaoapp.musically")
@@ -187,5 +217,5 @@ def main(d):
     else:
         print(f"{threading.current_thread().name}:{d.wlan_ip} TikTok is not running!")
     print(f"{threading.current_thread().name}:{d.wlan_ip} done")
-# d = u2.connect("10.0.0.28")
-# take_screenshot(d,threading.current_thread().name,"tik")
+# d = u2.connect("10.100.102.177")
+# report(d,"https://vm.tiktok.com/ZMhu2oBxP/")

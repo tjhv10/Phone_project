@@ -5,6 +5,7 @@ import random
 from common_area import *
 import easyocr
 from fuzzywuzzy import fuzz  # You may need to install this library: pip install fuzzywuzzy
+import uiautomator2 as u2
 
 
 def tap_like_button(d, like_button_template_path="icons/twitter_icons/like.png"):
@@ -18,6 +19,7 @@ def tap_like_button(d, like_button_template_path="icons/twitter_icons/like.png")
         print(f"{threading.current_thread().name}:{d.wlan_ip} Like button found at {best_cordinates}, tapping...")
         d.click(int(best_cordinates[0]), int(best_cordinates[1]))
         print(f"{threading.current_thread().name}:{d.wlan_ip} Tapped best match at {best_cordinates}.")
+        update_results_file("Likes")
     else:
         print(f"{threading.current_thread().name}:{d.wlan_ip} Like button not found on the screen.")
     
@@ -32,6 +34,8 @@ def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png
         d.click(int(best_match[0]), int(best_match[1]))  # Unpack directly
         time.sleep(2)
         tap_keyboard(d,text) 
+        time.sleep(1)
+        update_results_file("Comments")
         time.sleep(1)
         d.click(600, 125)  # Click the post button
     else:
@@ -150,6 +154,7 @@ def follow_page(d, follow_template_path="icons/twitter_icons/follow.png"):
         if  num <= 3:
             d.click(int(best_match[0]), int(best_match[1]))
             print(f"{threading.current_thread().name}:{d.wlan_ip} Followed account!")
+            update_results_file("Follows")
             time.sleep(1)
         else:
             print(f"{threading.current_thread().name}:{d.wlan_ip} didn't followed account!")
@@ -214,6 +219,30 @@ def search_name(d, name, tolerance=20):
     return None
 
 
+def report(d, link):
+    # Open Twitter app
+    d.app_start("com.twitter.android")
+    print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Twitter!")
+    time.sleep(15)
+
+    if "com.twitter.android" in d.app_list_running():
+        print(f"{threading.current_thread().name}:{d.wlan_ip} Twitter is running!")
+
+        # Open the tweet in the Twitter app
+        d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
+        print(f"{threading.current_thread().name}:{d.wlan_ip} Opened tweet: {link}")
+        time.sleep(3)
+        # Click on the share button
+        d.click(685, 210)
+        time.sleep(3)
+
+        # # Click on the report button
+        d.click(370, 1380)
+        time.sleep(8)
+        handle_user_selection(report_twitter_clicks)
+        time.sleep(4)
+        update_results_file("Reports")
+        d.app_stop("com.twitter.android")
 
 
 
@@ -229,10 +258,10 @@ def main(d):
     for _ in range(random.randint(4,10)):
         scroll_random_number(d)
         time.sleep(4)
-        tap_like_button(d)
+        # tap_like_button(d)
         time.sleep(2)
     time.sleep(2)
-    for _ in range(8):
+    for _ in range(1):
         search_and_go_to_page(d, random.choice(twitter_handles))
         time.sleep(2)
         follow_page(d)
@@ -244,8 +273,10 @@ def main(d):
         for _ in range(random.randint(1,12)):
             scroll_random_number(d)
             time.sleep(2)
-            tap_like_button(d)
+            # tap_like_button(d)
             time.sleep(2)
         time.sleep(5)
     d.app_stop("com.twitter.android")
     time.sleep(4)
+# d = u2.connect("10.100.102.178")
+# report(d,"https://x.com/marwanbishara/status/1805202165054493148?t=zbQJshyDikFcHUFcMKC1yg&s=19")

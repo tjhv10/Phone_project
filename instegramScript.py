@@ -1,46 +1,8 @@
-import os
-import numpy as np
 import uiautomator2 as u2
 import time
-import cv2
-import random
 from common_area import *
-
-def search_and_go_to_account(d, text):
-    """
-    Searches for a specific user on TikTok by simulating clicks and typing.
-
-    Parameters:
-    d (uiautomator2.Device): The connected device object from uiautomator2.
-    text (str): The text to search for.
-    """
-    screen_width = d.info['displayWidth']
-    screen_height = d.info['displayHeight']
-    
-    # Calculate the coordinates as percentages of the screen resolution
-    x = screen_width * (434 / 1440)  # Approximate X coordinate for the search bar
-    y = screen_height * (2900 / 3168)  # Approximate Y coordinate for the search bar
-    d.click(x, y)  # Click on the search bar
-    time.sleep(2)
-    # Calculate the coordinates as percentages of the screen resolution
-    x = screen_width / 2  # Approximate X coordinate for the search bar
-    y = screen_height * (300 / 3168)  # Approximate Y coordinate for the search bar
-    d.click(x, y)  # Click on the search bar
-    
-    # Type each character of the search term with a random delay
-    for char in text:
-        d.send_keys(char, clear=False)
-        time.sleep(random.uniform(0.1, 0.3))  # Random delay to mimic human typing
-    time.sleep(2)
-    d.press(66)  # Press the search button
-    time.sleep(3)
-    d.click(450 / 1440, 500 / 3168) # Press the accounts button
-    time.sleep(3)
-    # Click to go into the first result
-    d.click(700 / 1440, 600 / 3168)  # Coordinates for the first user result
-    time.sleep(2)
-    d.click(120,1200)
-
+from fuzzywuzzy import fuzz
+import easyocr
 
 def scroll_once(d):
     """
@@ -71,7 +33,7 @@ def scroll_random_number(d):
         print("Found a scrollable view! Swiping down...")
 
         # Randomly choose how many times to swipe (between 1 and 3)
-        num_swipes = random.randint(1,3)
+        num_swipes = random.randint(3,8)
         print(f"Number of swipes: {num_swipes}")
 
         # Perform the swipe action for the chosen number of times
@@ -82,93 +44,96 @@ def scroll_random_number(d):
             print(f"Waiting {random_time} seconds...")
             time.sleep(random_time)  # Pause between swipes
             print(f"Swiped down {i + 1} time(s).")
-        
-        # Swipe up to return to the previous content
-        d.swipe(500, rnd_swipe - 900, 500, rnd_swipe, duration = 0.05)
     else:
         print("No scrollable view found!")
 
+def search_name(d, name, tolerance=20):
+    screen_shot = take_screenshot(d, threading.current_thread().name, "inst")
+    print(f"Searching for name: {name}")
+    
+    # Initialize the OCR reader
+    reader = easyocr.Reader(['en'])  # You can add more languages if needed
 
-def take_screenshot(d, filename='screenshot_inst.png'):
+    # Perform OCR
+    result = reader.readtext(screen_shot, detail=1)  # detail=1 provides bounding box and text
+
+    best_match = None
+    best_similarity = 0  # Initialize with the lowest possible score (0%)
+
+    # Ensure both name and detected text retain special characters like '@'
+    processed_name = name.strip()  # Keep special characters, but strip unnecessary spaces
+
+    # Iterate over detected texts
+    for detection in result:
+        bbox, text, _ = detection
+        top_left, _, bottom_right, _ = bbox
+        # Skip any detected text that is above y=200
+        if top_left[1] < 180:
+            continue  # Ignore this text since it's above the desired y position
+        # Compare using fuzzy matching
+        similarity_score = fuzz.ratio(processed_name, text)
+        # Check if the similarity score is the highest and within tolerance
+        if similarity_score > best_similarity and similarity_score >= (100 - tolerance):
+            best_similarity = similarity_score
+            best_match = bbox
+
+    if best_match:
+        # Bounding box gives four points (top-left, top-right, bottom-right, bottom-left)
+        top_left, _, bottom_right, _ = best_match
+
+        # Calculate the center position of the bounding box
+        center_x = (top_left[0] + bottom_right[0]) // 2
+        center_y = (top_left[1] + bottom_right[1]) // 2
+        return (center_x, center_y)
+
+    print("No sufficiently similar text was found.")
+    return None
+
+def search_and_go_to_account(d, name):
     """
-    Takes a screenshot of the current screen and saves it to the 'Screenshots' directory.
+    Searches for a specific user on TikTok by simulating clicks and typing.
 
     Parameters:
     d (uiautomator2.Device): The connected device object from uiautomator2.
-    filename (str): The name of the screenshot file (default: 'screenshot.png').
-
-    Returns:
-    str: The path of the saved screenshot.
+    text (str): The text to search for.
     """
-    screenshot_dir = 'Screenshots'
+    screen_width = d.info['displayWidth']
+    screen_height = d.info['displayHeight']
     
-    # Create the 'Screenshots' directory if it doesn't exist
-    if not os.path.exists(screenshot_dir):
-        os.makedirs(screenshot_dir)
-    
-    # Create the full path for the screenshot file
-    screenshot_path = os.path.join(screenshot_dir, filename)
-    
-    # Take the screenshot and save it to the specified path
-    d.screenshot(screenshot_path)
-    print(f"Screenshot saved to: {screenshot_path}")
-    
-    return screenshot_path  # Return the path of the screenshot
+    # Calculate the coordinates as percentages of the screen resolution
+    d.click(215, 1515)  # Click on the search button
+    time.sleep(1)
+    d.click(215, 1515)  # Click on the search button
+    time.sleep(3)
+    # Calculate the coordinates as percentages of the screen resolution
+    x = screen_width / 2  # Approximate X coordinate for the search bar
+    y = screen_height * (300 / 3168)  # Approximate Y coordinate for the search bar
+    d.click(x, y)  # Click on the search bar
+      # Click on the search bar
+    time.sleep(3)
+    # Type each character of the search term with a random delay
+    tap_keyboard(d,name)
+    time.sleep(1)
+    d.press(66)  # Press the search button
+    time.sleep(5)
+    d.click(245, 225) # Press the accounts button
+    time.sleep(5)
+    try:
+        x,y = search_name(d,name) 
+        print("Found account!")
+    except:
+        search_and_go_to_account(d,random.choice(instagram_accounts))
+    d.click(int(x),int(y))
+    time.sleep(5)
+    num = random.choice([1,2,3])
+    if num >=2:
+        follow_page(d)
+    time.sleep(4)
+    d.swipe(500, 1400, 500, 100, duration = 0.02)
+    time.sleep(4)
+    d.click(120,500)
 
-def find_best_and_second_best_match(image_path, like_button_template_path):
-    """
-    Finds the best and second best match of a like button icon in the screenshot using template matching (color images).
 
-    Parameters:
-    image_path (str): Path to the screenshot image.
-    like_button_template_path (str): Path to the like button template image.
-
-    Returns:
-    tuple or None: Coordinates (x, y) of the best and second-best matches and their values, or None if not found.
-    """
-    # Load the screenshot and like button template images
-    img = cv2.imread(image_path)
-    template = cv2.imread(like_button_template_path)
-
-    if img is None or template is None:
-        print("Error loading images.")
-        return None, None
-
-    # Get the dimensions of the like button template
-    h, w = template.shape[:2]
-
-    result = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
-    threshold = 0.9  # Minimum threshold for a match
-    loc = np.where(result >= threshold)  # Get locations where matches exceed the threshold
-
-    # Create a list to store matches with their values and coordinates
-    matches = []
-    for pt in zip(*loc[::-1]):  # Switch columns and rows
-        matches.append((pt, result[pt[1], pt[0]]))  # Append (coordinates, match value)
-
-    if not matches:
-        print("No matches found above the threshold.")
-        return None, None
-
-    # Sort matches by match value
-    matches.sort(key=lambda x: x[1], reverse=True)
-
-    # Get best match
-    best_match = matches[0]
-    best_coordinates = (best_match[0][0] + w // 2, best_match[0][1] + h // 2)
-    best_value = best_match[1]
-
-    # Check for the second-best match
-    second_best_coordinates = None
-    second_best_value = None
-    if len(matches) > 1:
-        second_best_match = matches[1]
-        second_best_coordinates = (second_best_match[0][0] + w // 2, second_best_match[0][1] + h // 2)
-        second_best_value = second_best_match[1]
-
-    print(f"Best match found with value: {best_value} at {best_coordinates}")
-
-    return (best_coordinates, best_value), (second_best_coordinates, second_best_value) if second_best_coordinates else None
 
 def tap_like_button(d, like_button_template_path="icons\instagram_icons\like.png"):
     """
@@ -178,31 +143,14 @@ def tap_like_button(d, like_button_template_path="icons\instagram_icons\like.png
     d (uiautomator2.Device): The connected device object from uiautomator2.
     like_button_template_path (str): Path to the like button template image.
     """
-    screenshot_path = take_screenshot(d)
-    best_match, second_best_match = find_best_and_second_best_match(screenshot_path, like_button_template_path)
-    if best_match == None:
-        print("No like button found.")
-        return
-    best_coordinates, best_value = best_match
-    if second_best_match:
-        second_coordinates, second_value = second_best_match
-    if best_coordinates[0]>170 and second_coordinates[0]>170:
-        print("No like button that is unliked") 
-        return
-    # If the like button was found, tap on it
-    if best_match:
-        print(f"Like button found at {best_coordinates} with match value: {best_value}, tapping...")
-        # Check if the second-best match is close enough to the best match
-        if second_best_match:
-            similarity_tolerance = 0.05  # 5% tolerance for similarity
-            if best_value - second_value <= (similarity_tolerance * best_value) and best_coordinates[1]<second_coordinates[1]:
-                print(f"Second-best match found at {second_coordinates} with match value: {second_value}, tapping...")
+    screenshot_path = take_screenshot(d,threading.current_thread().name,'inst')
+    best_match = find_best_match(screenshot_path, like_button_template_path,d)
 
-                d.click(int(second_coordinates[0]), int(second_coordinates[1]))  # Tap the second-best match
-            else:
-                d.click(int(best_coordinates[0]), int(best_coordinates[1]))  # Tap the best match
-        else:
-            d.click(int(best_coordinates[0]), int(best_coordinates[1]))  # Tap the best match
+    # If the like button was found, tap on it
+    if best_match and best_match[0] < 170:
+        print(f"Like button found at {best_match} with match value: {best_match}, tapping...")
+        d.click(int(best_match[0]), int(best_match[1]))  # Tap the best match
+        update_results_file("Likes")
     else:
         print("Like button not found on the screen.")
 
@@ -216,61 +164,124 @@ def comment_text(d,text, comment_template_path="icons\instagram_icons\comment.pn
     comment_template_path (str): Path to the comment icon template image.
     """
     # Take a screenshot of the current screen
-    screenshot_path = take_screenshot(d)
+    screenshot_path = take_screenshot(d,threading.current_thread().name,"inst")
     
     # Find the best match for the comment icon in the screenshot
-    coordinates, _ = find_best_and_second_best_match(screenshot_path, comment_template_path)
-
+    coordinates = find_best_match(screenshot_path, comment_template_path,d)
+    time.sleep(2)
     # If the comment icon was found, tap on it
-    if coordinates[0]:
-        d.click(int(coordinates[0][0]), int(coordinates[0][1]))  # Tap the comment button
+    if coordinates:
+        d.click(int(coordinates[0]), int(coordinates[1]))  # Tap the comment button
     else:
         print("Comment not found on the screen.")
     time.sleep(2)
-    for char in text:
-        d.send_keys(char, clear=False)
-        time.sleep(random.uniform(0.1, 0.3))  # Random delay between 0.1 and 0.3 seconds
-    time.sleep(0.5)
-    d.press(66)
-    time.sleep(0.5)
-    d.press("back")
-    d.press("back")
+    screenshot_path = take_screenshot(d,threading.current_thread().name,"inst")
+    
+    # Find the best match for the comment icon in the screenshot
+    num_coordinates = find_best_match(screenshot_path, "icons/instagram_icons/num.png",d)
+    if num_coordinates != None:
+        time.sleep(2)
+        tap_keyboard(d,text)
+        time.sleep(1)
+        d.press(66)
+        time.sleep(1)
+        update_results_file("Comments")
+        time.sleep(1)
+        d.press("back")
+        time.sleep(1)
+    if coordinates !=  None:
+        d.press("back")
+        time.sleep(2)
+    time.sleep(2)
 
-def scroll_and_like(d):
+def scroll_like_and_comment(d):
     """
     Scrolls the screen and tries to like a tweet after each scroll by tapping the like button.
 
     Parameters:
     d (uiautomator2.Device): The connected device object from uiautomator2.
     """
-    for i in range(100):  # Repeat the process 100 times (or however many times you'd like)
+    for _ in range(2):
         scroll_once(d)  # Scroll down once
         time.sleep(3)  # Wait 1 second between actions
-        tap_like_button(d)  # Try to tap the like button to like the post
+        num = random.choice([1,2,3,4,5]) 
+        if num<=4:
+            tap_like_button(d)
+            if num>2:
+                time.sleep(3)
+                comment_text(d,random.choice(israel_support_comments))  # Try to tap the like button to like the post
         time.sleep(1)  # Wait 2 seconds after tapping
+    d.press("back")
+    time.sleep(1)
+    d.press("back")
+    time.sleep(1)
+    d.press("back")
+    time.sleep(1)
+    d.press("back")
+    time.sleep(1)
 
+def report(d, link):
+    # Open Twitter app
+    d.app_start("com.instagram.android")
+    print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Instagram!")
+    # time.sleep(15)
 
-def main():
+    if "com.instagram.android" in d.app_list_running():
+        print(f"{threading.current_thread().name}:{d.wlan_ip} Instagram is running!")
+
+        # Open the tweet in the Twitter app
+        d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
+        print(f"{threading.current_thread().name}:{d.wlan_ip} Opened: {link}")
+        time.sleep(3)
+        # Click on the share button
+        d.click(685, 210)
+        time.sleep(3)
+        # # Click on the report button
+        d.click(370, 1500)
+        time.sleep(8)
+        handle_user_selection(d,report_instagram_clicks)
+        time.sleep(2)
+        update_results_file("Reports")
+        time.sleep(4)
+        d.app_stop("com.twitter.android")
+
+def follow_page(d, follow_template_path="icons/instagram_icons/follow.png"):
+    print(f"{threading.current_thread().name}:{d.wlan_ip} Starting follow_page function")
+    screenshot_path = take_screenshot(d,threading.current_thread().name,"inst")
+    best_match = find_best_match(screenshot_path, follow_template_path,d)
+    if not best_match:
+        best_match = find_best_match(screenshot_path, "icons/instagram_icons/follow_small.png",d)
+    if best_match:
+        d.click(int(best_match[0]), int(best_match[1]))
+        print(f"{threading.current_thread().name}:{d.wlan_ip} Followed account!")
+        time.sleep(2)
+        update_results_file("Follows")
+    else:
+        print(f"{threading.current_thread().name}:{d.wlan_ip} Follow icon not found on the screen.")
+    print(f"{threading.current_thread().name}:{d.wlan_ip} Finished follow_page function")
+
+def main(d):
     """
     The main function connects to the Android device and performs various Instagram actions.
     """
     # Connect to the Android device using its IP address (make sure your device is connected via ADB over Wi-Fi)
-    d = u2.connect("10.100.102.168")  # Replace with your device's IP address
-    time.sleep(1)
-
-    # Start the Instagram app
     d.app_start("com.instagram.android")
     print("Opened Instagram!")
-    time.sleep(7)  # Wait for Instagram to fully load
-    search_and_go_to_account(d,"israel")
-    time.sleep(3)
-    scroll_and_like(d)
+    for _ in range(1):
+        time.sleep(7)  # Wait for Instagram to fully load
+        scroll_random_number(d)
+        time.sleep(2)
+        tap_like_button(d)
+        time.sleep(7)
+        search_and_go_to_account(d,random.choice(instagram_accounts))
+        time.sleep(3)
+        scroll_like_and_comment(d)
+        time.sleep(3)
+        scroll_random_number(d)
+        tap_like_button(d)
+        scroll_random_number(d)
+    d.app_stop("com.instagram.android")
 
 
-# Uncomment this line to run the main function
-# main()
-
-# Example of performing a comment action:
-# d = u2.connect("10.100.102.168")  # Use the IP address of your device
-# time.sleep(1)
-# tap_like_button(d)
+# main(u2.connect("10.100.102.178"))
+# follow_page(u2.connect("10.100.102.178"))
