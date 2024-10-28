@@ -32,7 +32,7 @@ def like_comment_follow(device_id):
     else:
         print(f"Could not connect to device: {device_id}")
 
-def report(device_id):
+def report_twitter(device_id):
     """
     Function to run Twitter and TikTok scripts on a specific phone connected to a custom ADB server port.
     Parameters:
@@ -58,7 +58,7 @@ def main():
     # Use ThreadPoolExecutor to manage thread pool
     with ThreadPoolExecutor(max_threads) as executor:
         # Submit each device to the thread pool
-        futures = [executor.submit(report, dev) for dev in device_ips]
+        futures = [executor.submit(like_comment_follow, dev) for dev in device_ips]
         
         # Wait for all threads to complete
         for future in futures:

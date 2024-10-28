@@ -240,7 +240,6 @@ def report_post(d, link,action = 0):
         if action == 0: 
             handle_user_selection(d,report_twitter_clicks)
         else:
-            print(report_twitter_clicks[twitter_report_keys[action-1]])
             execute_action(d,twitter_report_keys[action-1],report_twitter_clicks)
         update_results_file("Posts reported")
         d.app_stop("com.twitter.android")
