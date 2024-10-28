@@ -1,5 +1,5 @@
 import uiautomator2 as u2
-import time
+from time import sleep
 from common_area import *
 from fuzzywuzzy import fuzz
 import easyocr
@@ -42,7 +42,7 @@ def scroll_random_number(d):
             d.swipe(500, rnd_swipe, 500, rnd_swipe - 900, duration = 0.05)  # Swipe down
             random_time = random.randint(2, 15)  # Wait for a random number of seconds
             print(f"Waiting {random_time} seconds...")
-            time.sleep(random_time)  # Pause between swipes
+            sleep(random_time)  # Pause between swipes
             print(f"Swiped down {i + 1} time(s).")
     else:
         print("No scrollable view found!")
@@ -102,35 +102,35 @@ def search_and_go_to_account(d, name):
     
     # Calculate the coordinates as percentages of the screen resolution
     d.click(215, 1515)  # Click on the search button
-    time.sleep(1)
+    sleep(1)
     d.click(215, 1515)  # Click on the search button
-    time.sleep(3)
+    sleep(3)
     # Calculate the coordinates as percentages of the screen resolution
     x = screen_width / 2  # Approximate X coordinate for the search bar
     y = screen_height * (300 / 3168)  # Approximate Y coordinate for the search bar
     d.click(x, y)  # Click on the search bar
       # Click on the search bar
-    time.sleep(3)
+    sleep(3)
     # Type each character of the search term with a random delay
     tap_keyboard(d,name)
-    time.sleep(1)
+    sleep(1)
     d.press(66)  # Press the search button
-    time.sleep(5)
+    sleep(5)
     d.click(245, 225) # Press the accounts button
-    time.sleep(5)
+    sleep(5)
     try:
         x,y = search_name(d,name) 
         print("Found account!")
     except:
         search_and_go_to_account(d,random.choice(instagram_accounts))
     d.click(int(x),int(y))
-    time.sleep(5)
+    sleep(5)
     num = random.choice([1,2,3])
     if num >=2:
         follow_page(d)
-    time.sleep(4)
+    sleep(4)
     d.swipe(500, 1400, 500, 100, duration = 0.02)
-    time.sleep(4)
+    sleep(4)
     d.click(120,500)
 
 
@@ -168,31 +168,31 @@ def comment_text(d,text, comment_template_path="icons\instagram_icons\comment.pn
     
     # Find the best match for the comment icon in the screenshot
     coordinates = find_best_match(screenshot_path, comment_template_path,d)
-    time.sleep(2)
+    sleep(2)
     # If the comment icon was found, tap on it
     if coordinates:
         d.click(int(coordinates[0]), int(coordinates[1]))  # Tap the comment button
     else:
         print("Comment not found on the screen.")
-    time.sleep(2)
+    sleep(2)
     screenshot_path = take_screenshot(d,threading.current_thread().name,"inst")
     
     # Find the best match for the comment icon in the screenshot
     num_coordinates = find_best_match(screenshot_path, "icons/instagram_icons/num.png",d)
     if num_coordinates != None:
-        time.sleep(2)
+        sleep(2)
         tap_keyboard(d,text)
-        time.sleep(1)
+        sleep(1)
         d.press(66)
-        time.sleep(1)
+        sleep(1)
         update_results_file("Comments")
-        time.sleep(1)
+        sleep(1)
         d.press("back")
-        time.sleep(1)
+        sleep(1)
     if coordinates !=  None:
         d.press("back")
-        time.sleep(2)
-    time.sleep(2)
+        sleep(2)
+    sleep(2)
 
 def scroll_like_and_comment(d):
     """
@@ -203,28 +203,28 @@ def scroll_like_and_comment(d):
     """
     for _ in range(2):
         scroll_once(d)  # Scroll down once
-        time.sleep(3)  # Wait 1 second between actions
+        sleep(3)  # Wait 1 second between actions
         num = random.choice([1,2,3,4,5]) 
         if num<=4:
             tap_like_button(d)
             if num>2:
-                time.sleep(3)
+                sleep(3)
                 comment_text(d,random.choice(israel_support_comments))  # Try to tap the like button to like the post
-        time.sleep(1)  # Wait 2 seconds after tapping
+        sleep(1)  # Wait 2 seconds after tapping
     d.press("back")
-    time.sleep(1)
+    sleep(1)
     d.press("back")
-    time.sleep(1)
+    sleep(1)
     d.press("back")
-    time.sleep(1)
+    sleep(1)
     d.press("back")
-    time.sleep(1)
+    sleep(1)
 
-def report(d, link):
+def report_post(d, link,action = 0):
     # Open Twitter app
     d.app_start("com.instagram.android")
     print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Instagram!")
-    # time.sleep(15)
+    # sleep(15)
 
     if "com.instagram.android" in d.app_list_running():
         print(f"{threading.current_thread().name}:{d.wlan_ip} Instagram is running!")
@@ -232,17 +232,49 @@ def report(d, link):
         # Open the tweet in the Twitter app
         d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
         print(f"{threading.current_thread().name}:{d.wlan_ip} Opened: {link}")
-        time.sleep(3)
-        # Click on the share button
-        d.click(685, 210)
-        time.sleep(3)
+        sleep(3)
+        # Click on the 3 dots button
+        d.click(650, 130)
+        sleep(3)
         # # Click on the report button
-        d.click(370, 1500)
-        time.sleep(8)
-        handle_user_selection(d,report_instagram_clicks)
-        time.sleep(2)
-        update_results_file("Reports")
-        time.sleep(4)
+        d.click(370, 1018)
+        sleep(3)
+        # # Click on the report button
+        d.click(370, 712)
+        sleep(8)
+        if action == 0: 
+            handle_user_selection(d,report_instagram_post_clicks)
+        else:
+            print(report_instagram_post_clicks[report_instagram_keys[action-1]])
+            execute_action(d,report_instagram_keys[action-1],report_instagram_post_clicks)
+        sleep(2)
+        update_results_file("Posts reported")
+        sleep(4)
+        d.app_stop("com.twitter.android")
+
+def report_account(d, link):
+    # Open Twitter app
+    d.app_start("com.instagram.android")
+    print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Instagram!")
+    # sleep(15)
+
+    if "com.instagram.android" in d.app_list_running():
+        print(f"{threading.current_thread().name}:{d.wlan_ip} Instagram is running!")
+
+        # Open the tweet in the Twitter app
+        d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
+        print(f"{threading.current_thread().name}:{d.wlan_ip} Opened: {link}")
+        sleep(3)
+        # Click on the share button
+        d.click(660, 135)
+        sleep(3)
+        # # Click on the report button
+        d.click(300, 820)
+        sleep(8)
+        handle_user_selection(d,report_instagram_post_clicks)
+        sleep(2)
+        update_results_file("Accounts reported")
+        sleep(4)
         d.app_stop("com.twitter.android")
 
 def follow_page(d, follow_template_path="icons/instagram_icons/follow.png"):
@@ -254,11 +286,19 @@ def follow_page(d, follow_template_path="icons/instagram_icons/follow.png"):
     if best_match:
         d.click(int(best_match[0]), int(best_match[1]))
         print(f"{threading.current_thread().name}:{d.wlan_ip} Followed account!")
-        time.sleep(2)
+        sleep(2)
         update_results_file("Follows")
     else:
         print(f"{threading.current_thread().name}:{d.wlan_ip} Follow icon not found on the screen.")
     print(f"{threading.current_thread().name}:{d.wlan_ip} Finished follow_page function")
+
+def support_accounts(d,accounts):
+    accounts = random.shuffle(accounts)
+    for account in accounts:
+        search_and_go_to_account(d,account)
+        sleep(2)
+        scroll_like_and_comment(d,5)
+
 
 def main(d):
     """
@@ -268,20 +308,22 @@ def main(d):
     d.app_start("com.instagram.android")
     print("Opened Instagram!")
     for _ in range(1):
-        time.sleep(7)  # Wait for Instagram to fully load
+        sleep(7)  # Wait for Instagram to fully load
         scroll_random_number(d)
-        time.sleep(2)
+        sleep(2)
         tap_like_button(d)
-        time.sleep(7)
+        sleep(7)
         search_and_go_to_account(d,random.choice(instagram_accounts))
-        time.sleep(3)
+        sleep(3)
         scroll_like_and_comment(d)
-        time.sleep(3)
+        sleep(3)
         scroll_random_number(d)
         tap_like_button(d)
         scroll_random_number(d)
+    support_accounts(d,instagram_handles_special)
+    sleep(3)
     d.app_stop("com.instagram.android")
 
 
 # main(u2.connect("10.100.102.178"))
-# follow_page(u2.connect("10.100.102.178"))
+# report_account(u2.connect("10.0.0.15"),"")

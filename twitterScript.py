@@ -1,11 +1,12 @@
 import threading
 import numpy as np
-import time
+from time import sleep
 import random
 from common_area import *
 import easyocr
 from fuzzywuzzy import fuzz  # You may need to install this library: pip install fuzzywuzzy
 import uiautomator2 as u2
+
 
 
 def tap_like_button(d, like_button_template_path="icons/twitter_icons/like.png"):
@@ -32,21 +33,21 @@ def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png
     best_match = find_best_match(screenshot_path, comment_template_path,d)
     if best_match:
         d.click(int(best_match[0]), int(best_match[1]))  # Unpack directly
-        time.sleep(2)
+        sleep(2)
         tap_keyboard(d,text) 
-        time.sleep(1)
+        sleep(1)
         update_results_file("Comments")
-        time.sleep(1)
+        sleep(1)
         d.click(600, 125)  # Click the post button
     else:
         print(f"{threading.current_thread().name}:{d.wlan_ip} Comment icon not found on the screen.")
     print(f"{threading.current_thread().name}:{d.wlan_ip} Finished comment_text function")
 
 
-def scroll_like_and_comment(d):
+def scroll_like_and_comment(d,posts):
     print(f"{threading.current_thread().name}:{d.wlan_ip} Starting scroll_like_and_comment function")
     actions = ['like', 'comment', 'both', 'none']
-    for _ in range(20):
+    for _ in range(posts):
         if d(scrollable=True).exists:
             start_x = random.randint(400, 600)
             start_y = random.randint(900, 1200)
@@ -56,7 +57,7 @@ def scroll_like_and_comment(d):
             print(f"{threading.current_thread().name}:{d.wlan_ip} Scrolled from ({start_x}, {start_y}) to ({start_x}, {end_y}) in {swipe_duration:.2f} seconds.")
         else:
             print(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
-        time.sleep(random.uniform(2, 14))
+        sleep(random.uniform(2, 14))
         action = random.choice(actions)
         print(f"{threading.current_thread().name}:{d.wlan_ip} Action chosen: {action}")
         text = random.choice(israel_support_comments)
@@ -71,15 +72,15 @@ def scroll_like_and_comment(d):
         elif action == 'both':
             tap_like_button(d)
             print(f"{threading.current_thread().name}:{d.wlan_ip} Liked the post.")
-            time.sleep(2)
+            sleep(2)
             comment_text(d, text)
             print(f"{threading.current_thread().name}:{d.wlan_ip} Commented: {text}")
-        time.sleep(3)
-    time.sleep(2)
+        sleep(3)
+    sleep(2)
     d.press("back")
-    time.sleep(0.5)
+    sleep(0.5)
     d.press("back")
-    time.sleep(2)
+    sleep(2)
     print(f"{threading.current_thread().name}:{d.wlan_ip} Finished scroll_like_and_comment function")
 
 
@@ -109,7 +110,7 @@ def scroll_random_number(d):
             else:
                 print(f"{threading.current_thread().name}: No scrollable view found!")
                 d.click(40,1340)
-            time.sleep(random.randint(2, 10))
+            sleep(random.randint(2, 10))
     else:
         print(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
 
@@ -124,53 +125,50 @@ def search_and_go_to_page(d, page_name):
     """
     # Swipe up to return to the previous content
     d.swipe(500, 300, 500, 1000, duration = 0.05)
-    time.sleep(3)
+    sleep(3)
     # Perform the search
     d.click(180, 1500)
     print(f"{threading.current_thread().name}:{d.wlan_ip} Clicked on the search button.")
-    time.sleep(3)
+    sleep(3)
     # Click on the search input field
     d.click(360, 140)
-    time.sleep(3)
+    sleep(3)
      # Type each character of the search term with a random delay to simulate human typing
     tap_keyboard(d,page_name)
-    time.sleep(4)
+    sleep(4)
     print(f"{threading.current_thread().name}:{d.wlan_ip} Typed '{page_name}' in the search bar naturally.")
     try:
-        x,y = search_name(d,"@"+page_name)
+        x,y = search_sentence(d,"@"+page_name)
         d.click(int(x),int(y))
     except:
-        print("no")
+        print("Didnt find page!")
     
     print(f"{threading.current_thread().name}:{d.wlan_ip} Got into the page!")
-    time.sleep(5)
+    sleep(5)
 
 def follow_page(d, follow_template_path="icons/twitter_icons/follow.png"):
     print(f"{threading.current_thread().name}:{d.wlan_ip} Starting follow_page function")
     screenshot_path = take_screenshot(d,threading.current_thread().name,"twi")
     best_match = find_best_match(screenshot_path, follow_template_path,d)
     if best_match:
-        num = random.choice([1, 2, 3, 4])
-        if  num <= 3:
+        num = random.choice([1, 2])
+        if  num == 1:
             d.click(int(best_match[0]), int(best_match[1]))
             print(f"{threading.current_thread().name}:{d.wlan_ip} Followed account!")
             update_results_file("Follows")
-            time.sleep(1)
+            sleep(1)
         else:
             print(f"{threading.current_thread().name}:{d.wlan_ip} didn't followed account!")
-        time.sleep(2)
+        sleep(2)
     else:
         print(f"{threading.current_thread().name}:{d.wlan_ip} Follow icon not found on the screen.")
     print(f"{threading.current_thread().name}:{d.wlan_ip} Finished follow_page function")
 
 
-from fuzzywuzzy import fuzz  # You may need to install this library: pip install fuzzywuzzy
-import easyocr
-import threading
 
 
 
-def search_name(d, name, tolerance=20):
+def search_sentence(d, name, tolerance=20):
     screen_shot = take_screenshot(d, threading.current_thread().name, "twi")
     print(f"Searching for name: {name}")
     
@@ -219,31 +217,69 @@ def search_name(d, name, tolerance=20):
     return None
 
 
-def report(d, link):
+def report_post(d, link,action = 0):
     # Open Twitter app
     d.app_start("com.twitter.android")
     print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Twitter!")
-    time.sleep(15)
+    sleep(10)
+
+    if "com.twitter.android" in d.app_list_running():
+        print(f"{threading.current_thread().name}:{d.wlan_ip} Twitter is running!")
+        # Open the tweet in the Twitter app
+        d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
+        print(f"{threading.current_thread().name}:{d.wlan_ip} Opened tweet: {link}")
+        sleep(3)
+        # Click on the share button
+        d.click(685, 210)
+        sleep(3)
+        # Click on the report button
+        x,y = search_sentence(d,"Report post")
+        sleep(3)
+        d.click(int(x), int(y))
+        sleep(15)
+        if action == 0: 
+            handle_user_selection(d,report_twitter_clicks)
+        else:
+            print(report_twitter_clicks[twitter_report_keys[action-1]])
+            execute_action(d,twitter_report_keys[action-1],report_twitter_clicks)
+        update_results_file("Posts reported")
+        d.app_stop("com.twitter.android")
+
+
+def report_account(d, link):
+    # Open Twitter app
+    d.app_start("com.twitter.android")
+    print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Twitter!")
+    sleep(15)
 
     if "com.twitter.android" in d.app_list_running():
         print(f"{threading.current_thread().name}:{d.wlan_ip} Twitter is running!")
 
         # Open the tweet in the Twitter app
         d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Opened tweet: {link}")
-        time.sleep(3)
+        print(f"{threading.current_thread().name}:{d.wlan_ip} Opened account: {link}")
+        sleep(3)
         # Click on the share button
-        d.click(685, 210)
-        time.sleep(3)
-
-        # # Click on the report button
-        d.click(370, 1380)
-        time.sleep(8)
-        handle_user_selection(report_twitter_clicks)
-        time.sleep(4)
-        update_results_file("Reports")
+        d.click(667, 120)
+        sleep(3)
+        # Click on the report button
+        x,y = search_sentence(d,"Report")
+        sleep(3)
+        d.click(int(x), int(y))
+        sleep(8)
+        handle_user_selection(d,report_twitter_clicks)
+        sleep(4)
+        update_results_file("Accounts reported")
         d.app_stop("com.twitter.android")
 
+
+
+def support_accounts(d,accounts):
+    accounts = random.shuffle(accounts)
+    for account in accounts:
+        search_and_go_to_page(d,account)
+        sleep(2)
+        scroll_like_and_comment(d,5)
 
 
 def main(d):
@@ -253,30 +289,33 @@ def main(d):
     # Start the Twitter app
     d.app_start("com.twitter.android")
     print(f"{threading.current_thread().name}:{d.wlan_ip} Opened Twitter!")
-    time.sleep(12)  # Wait for Twitter to fully load
+    sleep(12)  # Wait for Twitter to fully load
     d.click(75,1500) # Go to home
     for _ in range(random.randint(4,10)):
         scroll_random_number(d)
-        time.sleep(4)
+        sleep(4)
         # tap_like_button(d)
-        time.sleep(2)
-    time.sleep(2)
+        sleep(2)
+    sleep(2)
     for _ in range(1):
         search_and_go_to_page(d, random.choice(twitter_handles))
-        time.sleep(2)
+        sleep(2)
         follow_page(d)
-        time.sleep(2)
+        sleep(2)
         # Perform scrolling and liking of tweets
-        scroll_like_and_comment(d)
+        scroll_like_and_comment(d,20)
         d.click(75,1500) # Go to home
-        time.sleep(4)
+        sleep(4)
         for _ in range(random.randint(1,12)):
             scroll_random_number(d)
-            time.sleep(2)
+            sleep(2)
             # tap_like_button(d)
-            time.sleep(2)
-        time.sleep(5)
+            sleep(2)
+        sleep(5)
+    support_accounts(d,twitter_handles_specials)
+    sleep(3)
     d.app_stop("com.twitter.android")
-    time.sleep(4)
-# d = u2.connect("10.100.102.178")
-# report(d,"https://x.com/marwanbishara/status/1805202165054493148?t=zbQJshyDikFcHUFcMKC1yg&s=19")
+    sleep(4)
+d = u2.connect("10.0.0.38")
+# report_post(d,"https://x.com/marwanbishara/status/1805202165054493148?t=zbQJshyDikFcHUFcMKC1yg&s=19",4)
+# report_account(d,"https://x.com/marwanbishara?t=Ut7owo1yPl0b9VSvGGI4cQ&s=08")

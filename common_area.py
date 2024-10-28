@@ -162,7 +162,8 @@ twitter_handles = [
     "JeffreyGoldberg",
     "KhaledAbuToameh",
     "LahavHarkov",
-    "DannyNis"
+    "DannyNis",
+    
 ]
 
 tiktok_accounts = [
@@ -218,7 +219,25 @@ instagram_accounts = [
     "aipac", 
     "Birthrightisraelbeyond", 
     "ariseforisrael",
-    "houseoflev"
+    "houseoflev",
+]
+
+twitter_handles_specials = [
+    "ariseforisrael",
+]
+
+
+tiktok_handles_specials = [
+    "ariseforisrael",
+]
+
+
+instagram_handles_special = [
+    "theisraelstory",
+    "womenofmiddleeast",
+    "unapologetic_israeli",
+    "wildbranchmedia",
+    "ariseforisrael",
 ]
 
 
@@ -274,6 +293,47 @@ report_tiktok_clicks = {
     'Other': 'd.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1500):d.click(350,1500):d.click(350,1380)'
 }
 
+
+report_tiktok_keys = [
+    'Exploitation and abuse of people under 18',               # 1
+    'Physical violence and violent threats',                   # 2
+    'Sexual exploitation and abuse',                           # 3
+    'Human exploitation',                                      # 4
+    'Other criminal activities',                               # 5
+    'Dangerous activities and challenges',                     # 6
+    'Shocking and graphic content',                            # 7
+    'Hate speech and hateful behaviors',                       # 8
+    'Harassment and bullying',                                 # 9
+    'Harmful misinformation',                                  # 10
+    'Deepfakes, synthetic media, and manipulated media',       # 11
+    'Child sexual exploitation',                               # 12
+    'Illegal hate speech',                                     # 13
+    'Content relating to violent or organized crime',          # 14
+    'Harassment or threats',                                   # 15
+    'Defamation',                                              # 16
+    'Other'                                                    # 17
+]
+
+# TODO here:
+# report_tiktok_account = {
+#     'Physical violence and violent threats': 'd.click(350,390):d.click(350,460):d.click(350,1500):d.click(350,1380)',
+#     'Sexual exploitation and abuse': 'd.click(350,390):d.click(350,616):d.click(350,1500):d.click(350,1380)',
+#     'Human exploitation': 'd.click(350,390):d.click(350,710):d.click(350,1500):d.click(350,1380)', 
+#     'Other criminal activities': 'd.click(350,390):d.click(350,922):d.click(350,1500):d.click(350,1380)',
+#     'Dangerous activities and challenges': 'd.click(350,849):d.click(350,1500):d.click(350,1380)',
+#     'Shocking and graphic content': 'd.click(350,1058):d.click(350,1500):d.click(350,1380)',
+#     'Hate speech and hateful behaviors':'d.click(350,460):d.click(350,390):d.click(350,1500):d.click(350,1380)',
+#     'Harassment and bullying':'d.click(350,460):d.click(350,460):d.click(350,390):d.click(350,1500):d.click(350,1380)',
+#     'Harmful misinformation':'d.click(350,1149):d.click(350,460):d.click(350,1500):d.click(350,1380)',
+#     'Deepfakes, synthetic media, and manipulated media':'d.click(350,1149):d.click(350,590):d.click(350,1500):d.click(350,1380)',
+#     'Child sexual exploitation':'d.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1213):d.swipe(500, 300, 500, 1200, duration=0.05):d.click(350,390):d.click(350,1500):d.click(350,1380)', 
+#     'Illegal hate speech':'d.swipe(500, 1200, 500, 300:duration=0.05):d.click(350,1213):d.swipe(500, 300, 500, 1200, duration=0.05):d.click(350,560):d.click(350,1500):d.click(350,1380)', 
+#     'Content relating to violent or organized crime':'d.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1213):d.click(350,420):d.click(350,1500):d.click(350,1380)', 
+#     'Harrassment or threats':'d.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1213):d.click(350,870):d.click(350,1500):d.click(350,1380)', 
+#     'Defamation':'d.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1213):d.click(350,970):d.click(350,1500):d.click(350,1380)',
+#     'Other': 'd.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1500):d.click(350,1500):d.click(350,1380)'
+# }
+
 report_twitter_clicks = {
     "Slurs & Tropes":"d.click(370,670):d.click(370,1450):d.click(370,670):d.click(370,1450):d.click(370,1450)",
     "Hateful References":"d.click(370,670):d.click(370,1450):d.click(370,950):d.click(370,1450):d.click(370,1450)",
@@ -294,7 +354,32 @@ report_twitter_clicks = {
     "Violent & hateful entities":"d.swipe(500, 1200, 500, 300, duration=0.05):d.click(370,1450):d.click(370,1240):d.click(370,1450):d.click(370,1450)"
 }
 
-report_instagram_clicks = {
+
+twitter_report_keys = [
+    "Slurs & Tropes",                            # 1
+    "Hateful References",                        # 2
+    "Dehumanization",                            # 3
+    "Hateful Imagery",                           # 4
+    "Incitement",                                # 5
+    "Unwanted NSFW & Graphic Content",           # 6
+    "Targeted Harassment",                       # 7
+    "Insults",                                   # 8
+    "Violent Event Denial",                      # 9
+    "Inciting Harassment",                       # 10
+    "Violent Threats",                           # 11
+    "Glorification of Violence",                 # 12
+    "Incitement of Violence",                    # 13
+    "Wish of Harm",                              # 14
+    "Coded Incitement of Violence",              # 15
+    "Spam",                                      # 16
+    "Violent & hateful entities"                 # 17
+]
+
+twitter_posts_to_report = [
+    ("https://x.com/marwanbishara/status/1805202165054493148?t=zbQJshyDikFcHUFcMKC1yg&s=19",4)
+]
+
+report_instagram_post_clicks = {
     "bullying or harassment":"d.click(370,750):d.click(370,660):d.click(370,614):d.click(370,1481)",
     "Credible threat to safty":"d.click(370,930):d.click(370,571):d.click(370,1481)",
     "Seems like terrorism or organized crime":"d.click(370,930):d.click(370,658):d.click(370,1481)",
@@ -305,6 +390,29 @@ report_instagram_clicks = {
     "False information-Politics":"d.click(370,1286):d.click(370,613):d.click(370,1440)",
     "False information-Social issues":"d.click(370,1286):d.click(370,700):d.click(370,1440)",
     "False information-Digitally created or altered":"d.click(370,1286):d.click(370,800):d.click(370,1440)",
+}
+report_instagram_keys = [
+    "bullying or harassment",                             # 1
+    "Credible threat to safety",                          # 2
+    "Seems like terrorism or organized crime",            # 3
+    "Calling for violence",                               # 4
+    "Hate speech or symbols",                             # 5
+    "Showing violence, death or severe injury",           # 6
+    "False information-Health",                           # 7
+    "False information-Politics",                         # 8
+    "False information-Social issues",                    # 9
+    "False information-Digitally created or altered"     # 10
+]
+
+report_instagram_account_clicks = {
+    "bullying or harassment":"d.click(370,1334):d.click(370,790):d.click(370,1381)",
+    "Terrorism":"d.click(370,1242):d.click(370,915):d.click(370,1481)",
+    "Violent threat":"d.click(370,1242):d.click(370,450):d.click(370,1481)",
+    "Dangerous organizations or individuals":"d.click(370,1242):d.click(370,723):d.click(370,1481)",
+    "Credible threat to safty":"d.click(370,1242):d.click(370,1000):d.click(370,1481)",
+    "Calling for violence":"d.click(370,930):d.click(370,838):d.click(370,1481)",
+    "Hate speech or symbols":"d.click(370,1150):d.click(370,1381)",
+    "False information":"d.swipe(500, 1200, 500, 300, duration=0.05):d.click(370,1533):d.click(370,1440)",
 }
 
 def tap_keyboard(d, text, keyboard = keyboard_dic):
