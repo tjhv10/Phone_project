@@ -1,10 +1,9 @@
 import threading
-import numpy as np
 from time import sleep
 import random
 from common_area import *
 import easyocr
-from fuzzywuzzy import fuzz  # You may need to install this library: pip install fuzzywuzzy
+from fuzzywuzzy import fuzz
 import uiautomator2 as u2
 
 
@@ -43,6 +42,24 @@ def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png
         print(f"{threading.current_thread().name}:{d.wlan_ip} Comment icon not found on the screen.")
     print(f"{threading.current_thread().name}:{d.wlan_ip} Finished comment_text function")
 
+def tap_repost_button(d, repost_button_template_path="icons/twitter_icons/repost.png"):
+    print(f"{threading.current_thread().name}:{d.wlan_ip} Starting tap_repost_button function")
+    
+    screenshot_path = take_screenshot(d,threading.current_thread().name,"twi")
+    
+    best_cordinates = find_best_match(screenshot_path, repost_button_template_path,d)    
+    
+    if best_cordinates:
+        print(f"{threading.current_thread().name}:{d.wlan_ip} repost button found at {best_cordinates}, tapping...")
+        d.click(int(best_cordinates[0]), int(best_cordinates[1]))
+        print(f"{threading.current_thread().name}:{d.wlan_ip} Tapped best match at {best_cordinates}.")
+        sleep(2)
+        d.click(360,1370) # Tap repost button
+        update_results_file("Reposts")
+    else:
+        print(f"{threading.current_thread().name}:{d.wlan_ip} reposts button not found on the screen.")
+    
+    print(f"{threading.current_thread().name}:{d.wlan_ip} Finished tap_reposts_button function")
 
 def scroll_like_and_comment(d,posts):
     print(f"{threading.current_thread().name}:{d.wlan_ip} Starting scroll_like_and_comment function")
@@ -75,6 +92,10 @@ def scroll_like_and_comment(d,posts):
             sleep(2)
             comment_text(d, text)
             print(f"{threading.current_thread().name}:{d.wlan_ip} Commented: {text}")
+            sleep(2)
+            num = random.choice([1,2,3,4,5])
+            if num==1:
+                tap_repost_button(d)
         sleep(3)
     sleep(2)
     d.press("back")
@@ -274,7 +295,7 @@ def report_account(d, link):
 
 
 def support_accounts(d,accounts):
-    accounts = random.shuffle(accounts)
+    random.shuffle(accounts)
     for account in accounts:
         search_and_go_to_page(d,account)
         sleep(2)
@@ -315,6 +336,7 @@ def main(d):
     sleep(3)
     d.app_stop("com.twitter.android")
     sleep(4)
-# d = u2.connect("10.0.0.38")
+d = u2.connect("10.100.102.178")
+tap_repost_button(d)
 # report_post(d,"https://x.com/marwanbishara/status/1805202165054493148?t=zbQJshyDikFcHUFcMKC1yg&s=19",4)
 # report_account(d,"https://x.com/marwanbishara?t=Ut7owo1yPl0b9VSvGGI4cQ&s=08")

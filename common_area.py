@@ -223,12 +223,12 @@ instagram_accounts = [
 ]
 
 twitter_handles_specials = [
-    "ariseforisrael",
+    "ariseforisrael"
 ]
 
 
 tiktok_handles_specials = [
-    "ariseforisrael",
+    "ariseforisrael"
 ]
 
 
@@ -461,7 +461,7 @@ def find_best_match(image_path, users_template_path, d):
 
     h, w = template.shape[:2]
     result = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
-    threshold = 0.8
+    threshold = 0.85
     loc = np.where(result >= threshold)
 
     matches = []
