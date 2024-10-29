@@ -1,7 +1,6 @@
 import os
 import subprocess
-import time
-
+from time import sleep
 def get_connected_devices():
     try:
         result = subprocess.run(["adb", "devices"], capture_output=True, text=True)
@@ -59,10 +58,10 @@ def start_and_connect_all_servers():
         start_adb_server(port)
         
         # Wait briefly before connecting to the device
-        time.sleep(1)
+        sleep(1)
         
         # Connect the device with the current ADB server port
         connect_device(port, device_ips[i])
         
         # Wait briefly to avoid overwhelming the system
-        time.sleep(1)
+        sleep(1)

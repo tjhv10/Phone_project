@@ -1,6 +1,6 @@
 import random
 import threading
-import time
+from time import sleep
 import cv2
 import numpy as np
 
@@ -379,6 +379,13 @@ twitter_posts_to_report = [
     ("https://x.com/marwanbishara/status/1805202165054493148?t=zbQJshyDikFcHUFcMKC1yg&s=19",4)
 ]
 
+instagram_posts_to_report = [
+
+]
+
+tiktok_posts_to_report = [
+    
+]
 report_instagram_post_clicks = {
     "bullying or harassment":"d.click(370,750):d.click(370,660):d.click(370,614):d.click(370,1481)",
     "Credible threat to safty":"d.click(370,930):d.click(370,571):d.click(370,1481)",
@@ -425,13 +432,13 @@ def tap_keyboard(d, text, keyboard = keyboard_dic):
         if char in keyboard:
             x, y = keyboard[char]
             d.click(x, y)  # Simulate a tap on the screen at the corresponding coordinates
-            time.sleep(random.uniform(0.04, 0.07))  # Add a small delay between taps
+            sleep(random.uniform(0.04, 0.07))  # Add a small delay between taps
         else:
             print(f"{threading.current_thread().name}:{d.wlan_ip} Character '{char}' not found in keyboard dictionary!")
 
 
 def take_screenshot(d, thread = threading.current_thread().name, app = "inst"):
-    time.sleep(2)
+    sleep(2)
     filename = f"Screenshots/{thread}-screenshot_{app}.png"
     print(f"{thread}:{d.wlan_ip} Taking screenshot...")
     d.screenshot(filename)
@@ -442,7 +449,7 @@ def find_best_match(image_path, users_template_path, d):
     """
     Finds the best match of a user's button icon in the screenshot using template matching.
     """
-    time.sleep(0.5)
+    sleep(0.5)
     print(f"{threading.current_thread().name}:{d.wlan_ip} Starting find_best_match function")
     
     img = cv2.imread(image_path)
@@ -514,10 +521,10 @@ def execute_action(d,reason,report_dict):
         action = report_dict[reason]
         actions = action.split(':')
         print(f"Executing action for '{reason}': {actions}")
-        time.sleep(1)
+        sleep(1)
         for act in actions:
             exec(act)
-            time.sleep(3)  
+            sleep(3)  
     else:
         print("No action found for this reason.")
 

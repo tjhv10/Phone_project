@@ -5,8 +5,7 @@ import instegramScript as inst
 import uiautomator2 as u2
 from start_adb import *
 from concurrent.futures import ThreadPoolExecutor
-import common_area
-
+from common_area import *
 def like_comment_follow(device_id):
     """
     Function to run Twitter and TikTok scripts on a specific phone connected to a custom ADB server port.
@@ -44,11 +43,48 @@ def report_twitter(device_id):
     d = u2.connect(device_id)
     
     if d is not None:
-        for rep in common_area.twitter_posts_to_report:
+        for rep in twitter_posts_to_report:
             twi.report_post(d,rep[0],rep[1])
         
     else:
         print(f"Could not connect to device: {device_id}")
+
+
+def report_instagram(device_id):
+    """
+    Function to run Twitter and TikTok scripts on a specific phone connected to a custom ADB server port.
+    Parameters:
+    device_id (str): The IP of the phone.
+    """
+    print(f"Attempting to connect to device: {device_id}")
+    
+    # Connect to the device
+    d = u2.connect(device_id)
+    
+    if d is not None:
+        for rep in instagram_posts_to_report:
+            inst.report_post(d,rep[0],rep[1])
+    else:
+        print(f"Could not connect to device: {device_id}")
+
+
+def report_tiktok(device_id):
+    """
+    Function to run Twitter and TikTok scripts on a specific phone connected to a custom ADB server port.
+    Parameters:
+    device_id (str): The IP of the phone.
+    """
+    print(f"Attempting to connect to device: {device_id}")
+    
+    # Connect to the device
+    d = u2.connect(device_id)
+    
+    if d is not None:
+        for rep in tiktok_posts_to_report:
+            tik.report_post(d,rep[0],rep[1])
+    else:
+        print(f"Could not connect to device: {device_id}")
+
 
 def main():
     start_and_connect_all_servers()

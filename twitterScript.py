@@ -315,6 +315,6 @@ def main(d):
     sleep(3)
     d.app_stop("com.twitter.android")
     sleep(4)
-d = u2.connect("10.0.0.38")
+# d = u2.connect("10.0.0.38")
 # report_post(d,"https://x.com/marwanbishara/status/1805202165054493148?t=zbQJshyDikFcHUFcMKC1yg&s=19",4)
 # report_account(d,"https://x.com/marwanbishara?t=Ut7owo1yPl0b9VSvGGI4cQ&s=08")
