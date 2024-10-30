@@ -25,8 +25,8 @@ def like_comment_follow(device_id):
             print(f"Running TikTok script on device: {device_id}")
             tik.main(d)
             sleep(5)  # Delay between scripts
-            print(f"Running Instagram script on device: {device_id}")
-            inst.main(d)
+            # print(f"Running Instagram script on device: {device_id}")
+            # inst.main(d)
         
     else:
         print(f"Could not connect to device: {device_id}")
