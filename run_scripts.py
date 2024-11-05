@@ -6,6 +6,9 @@ import uiautomator2 as u2
 from start_adb import *
 from concurrent.futures import ThreadPoolExecutor
 from common_area import *
+import os
+import time
+
 def like_comment_follow(device_id):
     """
     Function to run Twitter and TikTok scripts on a specific phone connected to a custom ADB server port.
@@ -13,6 +16,9 @@ def like_comment_follow(device_id):
     device_id (str): The IP of the phone.
     """
     print(f"Attempting to connect to device: {device_id}")
+    
+    # Start timing
+    start_time = time.time()
     
     # Connect to the device
     d = u2.connect(device_id)
@@ -25,11 +31,22 @@ def like_comment_follow(device_id):
             print(f"Running TikTok script on device: {device_id}")
             tik.main(d)
             sleep(5)  # Delay between scripts
-            # print(f"Running Instagram script on device: {device_id}")
-            # inst.main(d)
+        
+        # Optional: Disconnect if you want to explicitly manage connections
+        # print(f"Disconnecting from device: {device_id}")
+
+        # os.system(f'adb disconnect {device_id}')
         
     else:
         print(f"Could not connect to device: {device_id}")
+
+    # End timing
+    end_time = time.time()
+    
+    # Calculate and print the elapsed time
+    elapsed_time = end_time - start_time
+    print(f"Total time taken to run the program: {elapsed_time:.2f} seconds")
+
 
 def report_twitter(device_id):
     """
@@ -89,7 +106,7 @@ def report_tiktok(device_id):
 def main():
     start_and_connect_all_servers()
     # Define the maximum number of concurrent threads to limit CPU usage
-    max_threads = 15  # Adjust this based on your system’s capabilities
+    max_threads = 13  # Adjust this based on your system’s capabilities
     
     # Use ThreadPoolExecutor to manage thread pool
     with ThreadPoolExecutor(max_threads) as executor:
@@ -102,9 +119,9 @@ def main():
 
 def main_for_1_phone():
     # Run the program on the specified device
-    like_comment_follow("10.0.0.25")
+    like_comment_follow("10.0.0.6")
 
 # Uncomment the function you want to run
-main()
-# main_for_1_phone()
+# main()
+main_for_1_phone()
 

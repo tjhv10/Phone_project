@@ -134,6 +134,28 @@ israel_support_comments = [
     "Always with Israel."
 ]
 
+
+anti_iran_comments =  [
+    "Free Iran from repression.", 
+    "Iran is supporting terror.",
+    "Qatar is supporting terror.",
+    "Iran will be free when the Iranian people stand up and have a revolution to end their current slavery.",
+    "Freedom and peace are universal rights. Iran might have forgot about them.",
+    "Iran and Qatar are supporting terror.",
+    "Iran stole Lebanon to make it a terror base for a war on Israel.",
+    "Free Iran From Radical Islamists.",
+    "Only a matter of time before Iranians are free from this evil Islamic Regime in Iran.",
+    "Remember when Arabia was the center of knowledge, and then Islam happened destroying it all?",
+    "It would be amazing to visit Iran someday once it is free.",
+    "Help free Iran from Islamic slavery.",
+    "Qatar are collaborating with Iranian oppressive regime.",
+    "All the pressure should be applied in Iran, Qatar and Hamas to end the war.",
+    "It’s time to help the people of Iran free themselves from Ali Khamenei’s dictatorship.",
+    "A free Iran will free the Middle East from terror.",
+    "A FreeIran means no money for terrorists, no funding of militias in Lebanon, Yemen, Syria, Iraq, which means no refugee crisis, no nuclear threat. Most important it means 85 million people will be freed from terrorists taking them hostage for 43 yrs.",
+]
+
+
 twitter_handles = [
     "YishaiFleisher",
     "DavidMFriedman",
@@ -247,6 +269,11 @@ instagram_handles_special = [
     "wildbranchmedia",
     "ariseforisrael",
 ]
+
+
+# TODO
+# anti_israel_tiktok
+# anti_israel_twitter
 
 
 keyboard_dic = {
@@ -570,59 +597,59 @@ def update_results_file(action_type):
 
 
 
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-import time
-import requests
+# from selenium import webdriver
+# from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.common.by import By
+# import time
+# import requests
 
-# Set up the WebDriver to connect to the existing Chrome instance with remote debugging
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_experimental_option("debuggerAddress", "localhost:9222")  # Connect to the remote debugging port
+# # Set up the WebDriver to connect to the existing Chrome instance with remote debugging
+# chrome_options = webdriver.ChromeOptions()
+# chrome_options.add_experimental_option("debuggerAddress", "localhost:9222")  # Connect to the remote debugging port
 
-# Set up the Chrome WebDriver path
-chrome_driver_path = 'C:/Users/goldf/OneDrive/Documents/chromedriver_win32/chromedriver.exe'
+# # Set up the Chrome WebDriver path
+# chrome_driver_path = 'C:/Users/goldf/OneDrive/Documents/chromedriver_win32/chromedriver.exe'
 
-# Initialize the WebDriver with the specified options to connect to the existing browser
-driver = webdriver.Chrome(options=chrome_options)
+# # Initialize the WebDriver with the specified options to connect to the existing browser
+# driver = webdriver.Chrome(options=chrome_options)
 
-# Open ChatGPT in the existing Chrome window (this will use the existing session)
-driver.get("https://chat.openai.com/")
+# # Open ChatGPT in the existing Chrome window (this will use the existing session)
+# driver.get("https://chat.openai.com/")
 
-# Wait for the page to load
-time.sleep(15)
+# # Wait for the page to load
+# time.sleep(15)
 
-# Send a prompt
-prompt_text = "Generate an image of a futuristic city skyline at sunset with flying cars."
-chat_input = driver.find_element(By.XPATH, '//*[@id="prompt-textarea"]/p')  # Find the text input box
-chat_input.send_keys(prompt_text)
-time.sleep(1)
-chat_input.send_keys(Keys.ENTER)
+# # Send a prompt
+# prompt_text = "Generate an image of a futuristic city skyline at sunset with flying cars."
+# chat_input = driver.find_element(By.XPATH, '//*[@id="prompt-textarea"]/p')  # Find the text input box
+# chat_input.send_keys(prompt_text)
+# time.sleep(1)
+# chat_input.send_keys(Keys.ENTER)
 
-# Wait for the image to be generated (adjust timing as needed)
-time.sleep(30)
+# # Wait for the image to be generated (adjust timing as needed)
+# time.sleep(30)
 
-# Locate the generated image and download it
-try:
-    image_element = driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/main/div[1]/div[1]/div/div/div/div/article[2]/div/div/div[2]/div/div[1]/div[1]/div/div/div/div[2]/img')
-    image_url = image_element.get_attribute("src")
+# # Locate the generated image and download it
+# try:
+#     image_element = driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/main/div[1]/div[1]/div/div/div/div/article[2]/div/div/div[2]/div/div[1]/div[1]/div/div/div/div[2]/img')
+#     image_url = image_element.get_attribute("src")
 
-    # Download the image using requests
-    image_response = requests.get(image_url)
+#     # Download the image using requests
+#     image_response = requests.get(image_url)
     
-    # Save the image
-    if image_response.status_code == 200:
-        with open("generated_image.png", 'wb') as f:
-            f.write(image_response.content)
-        print("Image downloaded successfully.")
-    else:
-        print("Failed to download the image.")
+#     # Save the image
+#     if image_response.status_code == 200:
+#         with open("generated_image.png", 'wb') as f:
+#             f.write(image_response.content)
+#         print("Image downloaded successfully.")
+#     else:
+#         print("Failed to download the image.")
 
-except Exception as e:
-    print(f"Error: {e}")
+# except Exception as e:
+#     print(f"Error: {e}")
 
-# Close the browser if necessary
-# driver.quit()
+# # Close the browser if necessary
+# # driver.quit()
 
 
     
