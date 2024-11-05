@@ -314,7 +314,7 @@ def main(d):
     for _ in range(random.randint(4,10)):
         scroll_random_number(d)
         sleep(4)
-        # tap_like_button(d)
+        # tap_like_button(d)   #don't use until fyp is pro israel
         sleep(2)
     sleep(2)
     for _ in range(1):
