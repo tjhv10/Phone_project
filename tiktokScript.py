@@ -114,6 +114,7 @@ def scroll_random_number(d):
             d.swipe(x_start, y_start, x_end, y_end, duration=0.05)
             random_time = random.randint(2, 15)
             sleep(random_time)
+            update_results_file("Scroll", i + 1)
             print(f"{threading.current_thread().name}:{d.wlan_ip} Swiped down {i + 1} time(s).")
     else:
         print(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
@@ -137,6 +138,7 @@ def scroll_like_and_comment(d):
             random_time = random.randint(2, 15)
             sleep(random_time)
             print(f"{threading.current_thread().name}:{d.wlan_ip} Swiped down {i + 1} time(s).")
+            update_results_file("Scroll", i + 1)
         else:
             print(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
         num = random.choice([1, 2, 3, 4, 5])

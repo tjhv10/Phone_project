@@ -72,6 +72,7 @@ def scroll_like_and_comment(d,posts):
             swipe_duration = random.uniform(0.04, 0.06)
             d.swipe(start_x, start_y, start_x, end_y, duration=swipe_duration)
             print(f"{threading.current_thread().name}:{d.wlan_ip} Scrolled from ({start_x}, {start_y}) to ({start_x}, {end_y}) in {swipe_duration:.2f} seconds.")
+            update_results_file("Scroll", 1)
         else:
             print(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
         sleep(random.uniform(2, 14))
@@ -118,6 +119,9 @@ def scroll_random_number(d):
         # Randomly choose how many times to swipe (between 1 and 6)
         num_swipes = random.randint(1, 6)
         print(f"{threading.current_thread().name}:{d.wlan_ip} Number of swipes: {num_swipes}")
+
+        update_results_file("Scroll", num_swipes)
+
 
         # Perform the swipe action for the chosen number of times
         for _ in range(num_swipes):
@@ -236,6 +240,16 @@ def search_sentence(d, name, tolerance=20):
 
     print("No sufficiently similar text was found.")
     return None
+
+
+def report_twitter_posts(d):
+    for post in twitter_posts_to_report:
+        report_post(d, post[0][0], post[0][1])
+
+
+def report_tiktok_posts(d):
+    for post in tiktok_posts_to_report:
+        report_post(d, post[0][0], post[0][1])
 
 
 def report_post(d, link,action = 0):

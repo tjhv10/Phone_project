@@ -371,46 +371,24 @@ report_tiktok_clicks = {
     'Other': 'd.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1500):d.click(350,1500):d.click(350,1380)'
 }
 
-
-report_tiktok_keys = [
-    'Exploitation and abuse of people under 18',               # 1
-    'Physical violence and violent threats',                   # 2
-    'Sexual exploitation and abuse',                           # 3
-    'Human exploitation',                                      # 4
-    'Other criminal activities',                               # 5
-    'Dangerous activities and challenges',                     # 6
-    'Shocking and graphic content',                            # 7
-    'Hate speech and hateful behaviors',                       # 8
-    'Harassment and bullying',                                 # 9
-    'Harmful misinformation',                                  # 10
-    'Deepfakes, synthetic media, and manipulated media',       # 11
-    'Child sexual exploitation',                               # 12
-    'Illegal hate speech',                                     # 13
-    'Content relating to violent or organized crime',          # 14
-    'Harassment or threats',                                   # 15
-    'Defamation',                                              # 16
-    'Other'                                                    # 17
-]
-
-# TODO here:
-# report_tiktok_account = {
-#     'Physical violence and violent threats': 'd.click(350,390):d.click(350,460):d.click(350,1500):d.click(350,1380)',
-#     'Sexual exploitation and abuse': 'd.click(350,390):d.click(350,616):d.click(350,1500):d.click(350,1380)',
-#     'Human exploitation': 'd.click(350,390):d.click(350,710):d.click(350,1500):d.click(350,1380)', 
-#     'Other criminal activities': 'd.click(350,390):d.click(350,922):d.click(350,1500):d.click(350,1380)',
-#     'Dangerous activities and challenges': 'd.click(350,849):d.click(350,1500):d.click(350,1380)',
-#     'Shocking and graphic content': 'd.click(350,1058):d.click(350,1500):d.click(350,1380)',
-#     'Hate speech and hateful behaviors':'d.click(350,460):d.click(350,390):d.click(350,1500):d.click(350,1380)',
-#     'Harassment and bullying':'d.click(350,460):d.click(350,460):d.click(350,390):d.click(350,1500):d.click(350,1380)',
-#     'Harmful misinformation':'d.click(350,1149):d.click(350,460):d.click(350,1500):d.click(350,1380)',
-#     'Deepfakes, synthetic media, and manipulated media':'d.click(350,1149):d.click(350,590):d.click(350,1500):d.click(350,1380)',
-#     'Child sexual exploitation':'d.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1213):d.swipe(500, 300, 500, 1200, duration=0.05):d.click(350,390):d.click(350,1500):d.click(350,1380)', 
-#     'Illegal hate speech':'d.swipe(500, 1200, 500, 300:duration=0.05):d.click(350,1213):d.swipe(500, 300, 500, 1200, duration=0.05):d.click(350,560):d.click(350,1500):d.click(350,1380)', 
-#     'Content relating to violent or organized crime':'d.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1213):d.click(350,420):d.click(350,1500):d.click(350,1380)', 
-#     'Harrassment or threats':'d.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1213):d.click(350,870):d.click(350,1500):d.click(350,1380)', 
-#     'Defamation':'d.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1213):d.click(350,970):d.click(350,1500):d.click(350,1380)',
-#     'Other': 'd.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1500):d.click(350,1500):d.click(350,1380)'
-# }
+report_tiktok_account = {
+    'Physical violence and violent threats': 'd.click(350,390):d.click(350,460):d.click(350,1500):d.click(350,1380)',
+    'Sexual exploitation and abuse': 'd.click(350,390):d.click(350,616):d.click(350,1500):d.click(350,1380)',
+    'Human exploitation': 'd.click(350,390):d.click(350,710):d.click(350,1500):d.click(350,1380)', 
+    'Other criminal activities': 'd.click(350,390):d.click(350,922):d.click(350,1500):d.click(350,1380)',
+    'Dangerous activities and challenges': 'd.click(350,849):d.click(350,1500):d.click(350,1380)',
+    'Shocking and graphic content': 'd.click(350,1058):d.click(350,1500):d.click(350,1380)',
+    'Hate speech and hateful behaviors':'d.click(350,460):d.click(350,390):d.click(350,1500):d.click(350,1380)',
+    'Harassment and bullying':'d.click(350,460):d.click(350,460):d.click(350,390):d.click(350,1500):d.click(350,1380)',
+    'Harmful misinformation':'d.click(350,1149):d.click(350,460):d.click(350,1500):d.click(350,1380)',
+    'Deepfakes, synthetic media, and manipulated media':'d.click(350,1149):d.click(350,590):d.click(350,1500):d.click(350,1380)',
+    'Child sexual exploitation':'d.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1213):d.swipe(500, 300, 500, 1200, duration=0.05):d.click(350,390):d.click(350,1500):d.click(350,1380)', 
+    'Illegal hate speech':'d.swipe(500, 1200, 500, 300:duration=0.05):d.click(350,1213):d.swipe(500, 300, 500, 1200, duration=0.05):d.click(350,560):d.click(350,1500):d.click(350,1380)', 
+    'Content relating to violent or organized crime':'d.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1213):d.click(350,420):d.click(350,1500):d.click(350,1380)', 
+    'Harrassment or threats':'d.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1213):d.click(350,870):d.click(350,1500):d.click(350,1380)', 
+    'Defamation':'d.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1213):d.click(350,970):d.click(350,1500):d.click(350,1380)',
+    'Other': 'd.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1500):d.click(350,1500):d.click(350,1380)'
+}
 
 report_twitter_clicks = {
     "Slurs & Tropes":"d.click(370,670):d.click(370,1450):d.click(370,670):d.click(370,1450):d.click(370,1450)",
@@ -454,43 +432,62 @@ twitter_report_keys = [
 ]
 
 twitter_posts_to_report = [
-    ("https://x.com/marwanbishara/status/1805202165054493148?t=zbQJshyDikFcHUFcMKC1yg&s=19",4)
-    ("https://x.com/Lucas_Gage_/status/1720998157369192710",5)
-    ("https://x.com/Mr_RimoniTMD/status/1854267057275306105",5)
-    ("https://x.com/nuzlyazhar/status/1854454771358519722",5)
-    ("https://x.com/fedoration/status/1852116998064607390",5)
-    ("https://x.com/nick_rose96/status/1850365270302634042",5)
-    ("https://x.com/OmarShargawi/status/1851868583057297697",5)
-    ("https://x.com/HackneySwp/status/1852772248324633040",15)
-    ("https://x.com/Yusufafsar/status/1852385840921456846",15)
-    ("https://x.com/Yusufafsar/status/1852385492639035798",15)
-    ("https://x.com/Du_con_Lajoie/status/1851356793328296326",15)
-    ("https://x.com/komugi_twit/status/1852406478277357956",15)
-    ("https://x.com/BeautyMrked/status/1853873503188984175",15)
-    ("",5)
+    ("https://x.com/marwanbishara/status/1805202165054493148?t=zbQJshyDikFcHUFcMKC1yg&s=19",4),
+    ("https://x.com/Lucas_Gage_/status/1720998157369192710",5),
+    ("https://x.com/Mr_RimoniTMD/status/1854267057275306105",5),
+    ("https://x.com/nuzlyazhar/status/1854454771358519722",5),
+    ("https://x.com/fedoration/status/1852116998064607390",5),
+    ("https://x.com/nick_rose96/status/1850365270302634042",5),
+    ("https://x.com/OmarShargawi/status/1851868583057297697",5),
+    ("https://x.com/HackneySwp/status/1852772248324633040",15),
+    ("https://x.com/Yusufafsar/status/1852385840921456846",15),
+    ("https://x.com/Yusufafsar/status/1852385492639035798",15),
+    ("https://x.com/Du_con_Lajoie/status/1851356793328296326",15),
+    ("https://x.com/komugi_twit/status/1852406478277357956",15),
+    ("https://x.com/BeautyMrked/status/1853873503188984175",15),
 ]
 
-tiktok_report = [
-    "https://vm.tiktok.com/ZGdNeymS6/",
-    "https://vm.tiktok.com/ZGdNeFh4w/",
-    "https://vm.tiktok.com/ZGdNe6WP9/",
-    "https://vm.tiktok.com/ZGdNeBx2t/",
-    "https://vm.tiktok.com/ZGdNefREq/",
-    "https://vm.tiktok.com/ZGdNeMagN/",
-    "https://www.tiktok.com/@nyxnyc/video/7351857780162284846?q=From%20the%20river%20to%20the%20sea&t=1730973145737",
-    "https://www.tiktok.com/@kindakhatib22/video/7287249443303329031?q=palestine&t=1730973507062",
-    "https://www.tiktok.com/@pascoliiii/video/7396072279362276641?q=From%20the%20river%20to%20&t=1730973687107",
-    "https://www.tiktok.com/@amna.naji/video/7088113841766206726?q=freepalestine&t=1730973776643",
-    "https://www.tiktok.com/@leyaaalyaa/video/7296362568703020290?q=freepalestine&t=1730973776643",
+
+report_tiktok_keys = [
+    'Exploitation and abuse of people under 18',               # 1
+    'Physical violence and violent threats',                   # 2
+    'Sexual exploitation and abuse',                           # 3
+    'Human exploitation',                                      # 4
+    'Other criminal activities',                               # 5
+    'Dangerous activities and challenges',                     # 6
+    'Shocking and graphic content',                            # 7
+    'Hate speech and hateful behaviors',                       # 8
+    'Harassment and bullying',                                 # 9
+    'Harmful misinformation',                                  # 10
+    'Deepfakes, synthetic media, and manipulated media',       # 11
+    'Child sexual exploitation',                               # 12
+    'Illegal hate speech',                                     # 13
+    'Content relating to violent or organized crime',          # 14
+    'Harassment or threats',                                   # 15
+    'Defamation',                                              # 16
+    'Other'                                                    # 17
+]
+
+
+tiktok_posts_to_report = [
+    ("https://vm.tiktok.com/ZGdNeymS6/" ,4),
+    ("https://vm.tiktok.com/ZGdNeFh4w/" ,4),
+    ("https://vm.tiktok.com/ZGdNe6WP9/" ,4),
+    ("https://vm.tiktok.com/ZGdNeBx2t/" ,4),
+    ("https://vm.tiktok.com/ZGdNefREq/" ,4),
+    ("https://vm.tiktok.com/ZGdNeMagN/" ,4),
+    ("https://www.tiktok.com/@nyxnyc/video/7351857780162284846?q=From%20the%20river%20to%20the%20sea&t=1730973145737" ,4),
+    ("https://www.tiktok.com/@kindakhatib22/video/7287249443303329031?q=palestine&t=1730973507062" ,4),
+    ("https://www.tiktok.com/@pascoliiii/video/7396072279362276641?q=From%20the%20river%20to%20&t=1730973687107" ,4),
+    ("https://www.tiktok.com/@amna.naji/video/7088113841766206726?q=freepalestine&t=1730973776643" ,4),
+    ("https://www.tiktok.com/@leyaaalyaa/video/7296362568703020290?q=freepalestine&t=1730973776643" ,4),
 ]
 
 instagram_posts_to_report = [
 
 ]
 
-tiktok_posts_to_report = [
-    
-]
+
 report_instagram_post_clicks = {
     "bullying or harassment":"d.click(370,750):d.click(370,660):d.click(370,614):d.click(370,1481)",
     "Credible threat to safty":"d.click(370,930):d.click(370,571):d.click(370,1481)",
@@ -636,12 +633,12 @@ def execute_action(d,reason,report_dict):
 
 file_lock = threading.Lock()
 
-def update_results_file(action_type):
+def update_results_file(action_type, counter=1):
     """
     Updates the results file with the incremented count for the given action.
     
     Parameters:
-    action_type (str): The action type to update ('Likes', 'Comments', 'Follows', 'Reports').
+    action_type (str): The action type to update ('Likes', 'Comments', 'Follows', 'Reports', 'Scrolls').
     """
     file_path = "results.txt"
     
@@ -658,7 +655,7 @@ def update_results_file(action_type):
         
         # Increment the relevant action count
         if action_type in stats:
-            stats[action_type] += 1
+            stats[action_type] += counter
 
         # Write updated values back to the file
         with open(file_path, "w") as file:
