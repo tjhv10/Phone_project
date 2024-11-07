@@ -154,7 +154,7 @@ def run_on_multiple_devices():
 
 def main_for_1_phone():
     # Run the program on the specified device
-    like_comment_follow("10.0.0.6")
+    like_comment_follow("10.0.0.34")
 
 
 # Uncomment the function you want to run

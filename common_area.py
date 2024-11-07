@@ -3,7 +3,6 @@ import threading
 from time import sleep
 import cv2
 import numpy as np
-import openai
 import requests
 from PIL import Image
 from io import BytesIO
@@ -191,7 +190,8 @@ twitter_handles = [
     "KhaledAbuToameh",
     "LahavHarkov",
     "DannyNis",
-    
+    "TuckerAndrew_",
+    "EC4Israel"
 ]
 
 tiktok_accounts = [
@@ -218,7 +218,8 @@ tiktok_accounts = [
     "Jewisnews",
     "EndJewHatred",
     "jew_ishcontent",
-    "alizalicht"
+    "alizalicht",
+    "ec4israel"
     ]
 
 instagram_accounts = [
@@ -271,9 +272,51 @@ instagram_handles_special = [
 ]
 
 
-# TODO
-# anti_israel_tiktok
-# anti_israel_twitter
+anti_israel_twitter = [
+    "PressTV",
+    "Tasnimnews_E",
+    "EnglishFars",
+    "MehrnewsCom",
+    "AlalamChannel",
+    "khamenei_ir",
+    "HassanRouhani",
+    "JZarif",
+    "IranFrontPage",
+    "IranDaily",
+    "AJEnglish",
+    "AJArabic",
+    "QNAEnglish",
+    "dohanews",
+    "GulfTimes_QATAR",
+    "PeninsulaQatar",
+    "Qatar_Tribune",
+    "QF",
+    "qatarairways",
+    "qatar_olympic",
+    "khamenei_ir",
+    "raisi_com",
+    "TamimBinHamad",
+    "MBA_AlThani",
+]
+
+anti_israel_tiktok = [
+    "AlalamChannel",
+    "aljazeeraenglish",
+    "qatarliving",
+    "qatarlivingmagazine",
+    "qatarsports",
+    "peninsulanewsdaily",
+    "qatarday",
+    "qatarlifestyle",
+    "visitqatar",
+    "irigcnews",
+    "iranianvoice",
+    "tehrantimesdaily",
+    "realirannews",
+    "ajplus",
+    "iranintltv1",
+]
+
 
 
 keyboard_dic = {
@@ -412,6 +455,33 @@ twitter_report_keys = [
 
 twitter_posts_to_report = [
     ("https://x.com/marwanbishara/status/1805202165054493148?t=zbQJshyDikFcHUFcMKC1yg&s=19",4)
+    ("https://x.com/Lucas_Gage_/status/1720998157369192710",5)
+    ("https://x.com/Mr_RimoniTMD/status/1854267057275306105",5)
+    ("https://x.com/nuzlyazhar/status/1854454771358519722",5)
+    ("https://x.com/fedoration/status/1852116998064607390",5)
+    ("https://x.com/nick_rose96/status/1850365270302634042",5)
+    ("https://x.com/OmarShargawi/status/1851868583057297697",5)
+    ("https://x.com/HackneySwp/status/1852772248324633040",15)
+    ("https://x.com/Yusufafsar/status/1852385840921456846",15)
+    ("https://x.com/Yusufafsar/status/1852385492639035798",15)
+    ("https://x.com/Du_con_Lajoie/status/1851356793328296326",15)
+    ("https://x.com/komugi_twit/status/1852406478277357956",15)
+    ("https://x.com/BeautyMrked/status/1853873503188984175",15)
+    ("",5)
+]
+
+tiktok_report = [
+    "https://vm.tiktok.com/ZGdNeymS6/",
+    "https://vm.tiktok.com/ZGdNeFh4w/",
+    "https://vm.tiktok.com/ZGdNe6WP9/",
+    "https://vm.tiktok.com/ZGdNeBx2t/",
+    "https://vm.tiktok.com/ZGdNefREq/",
+    "https://vm.tiktok.com/ZGdNeMagN/",
+    "https://www.tiktok.com/@nyxnyc/video/7351857780162284846?q=From%20the%20river%20to%20the%20sea&t=1730973145737",
+    "https://www.tiktok.com/@kindakhatib22/video/7287249443303329031?q=palestine&t=1730973507062",
+    "https://www.tiktok.com/@pascoliiii/video/7396072279362276641?q=From%20the%20river%20to%20&t=1730973687107",
+    "https://www.tiktok.com/@amna.naji/video/7088113841766206726?q=freepalestine&t=1730973776643",
+    "https://www.tiktok.com/@leyaaalyaa/video/7296362568703020290?q=freepalestine&t=1730973776643",
 ]
 
 instagram_posts_to_report = [
