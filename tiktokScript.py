@@ -172,6 +172,15 @@ def like_a_page(d, page):
     scroll_like_and_comment(d)
 
 
+def report_tiktok_posts(d):
+    choice = random.choice([1, 2])
+
+    if choice == 1:
+        size = len(tiktok_posts_to_report)
+        post_i = random.randint(1, size)
+        report_post(d, tiktok_posts_to_report[post_i][0], tiktok_posts_to_report[post_i][1])
+
+
 def report_post(d, link,action = 0):
     # Open TikTok app
     d.app_start("com.zhiliaoapp.musically")
@@ -267,6 +276,7 @@ def main(d):
             scroll_random_number(d)
             sleep(10)
         support_accounts(d,tiktok_handles_specials)
+        report_tiktok_posts(d)
         sleep(3)
         d.app_stop("com.zhiliaoapp.musically")
         sleep(4)

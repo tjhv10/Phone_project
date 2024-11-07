@@ -243,13 +243,12 @@ def search_sentence(d, name, tolerance=20):
 
 
 def report_twitter_posts(d):
-    for post in twitter_posts_to_report:
-        report_post(d, post[0][0], post[0][1])
+    choice = random.choice([1, 2])
 
-
-def report_tiktok_posts(d):
-    for post in tiktok_posts_to_report:
-        report_post(d, post[0][0], post[0][1])
+    if choice == 1:
+        size = len(twitter_posts_to_report)
+        post_i = random.randint(1, size)
+        report_post(d, twitter_posts_to_report[post_i][0], twitter_posts_to_report[post_i][1])
 
 
 def report_post(d, link,action = 0):
@@ -347,10 +346,12 @@ def main(d):
             sleep(2)
         sleep(5)
     support_accounts(d,twitter_handles_specials)
+    report_twitter_posts(d)
     sleep(3)
     d.app_stop("com.twitter.android")
     sleep(4)
-# d = u2.connect("10.0.0.6")
+d = u2.connect("10.0.0.40")
+report_twitter_posts(d)
 # tap_repost_button(d)
 # report_post(d,"https://x.com/marwanbishara/status/1805202165054493148?t=zbQJshyDikFcHUFcMKC1yg&s=19")
 # report_account(d,"https://x.com/marwanbishara?t=Ut7owo1yPl0b9VSvGGI4cQ&s=08")
