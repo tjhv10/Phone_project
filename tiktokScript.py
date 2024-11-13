@@ -35,7 +35,7 @@ def search(d, text):
     tap_keyboard(d,text)
     sleep(5)
     d.press(66)  # Press the search button
-    sleep(6)
+    sleep(10)
 
     tap_users(d)  # Click to go to users
     sleep(5)
@@ -165,6 +165,15 @@ def scroll_like_and_comment(d):
 
 
 def like_a_page(d, page):
+    # Open TikTok app
+    if "com.zhiliaoapp.musically" in d.app_list_running():
+        # Stop Tiktok app
+        d.app_stop("com.zhiliaoapp.musically")
+        sleep(4)
+
+    # Start the Twitter app 
+    d.app_start("com.zhiliaoapp.musically")
+    sleep(5)
     search(d, page)
     sleep(2)
     d.click(120, 1450) # Get in the first page
@@ -331,8 +340,8 @@ def main(d):
     print(f"{threading.current_thread().name}:{d.wlan_ip} done")
 
 
-d = u2.connect("10.0.0.31")
-for handle in tiktok_accounts:
-    search(d, handle)
+# d = u2.connect("10.0.0.21")
+# for handle in tiktok_accounts:
+#     like_a_page(d, handle)
 # d = u2.connect("10.0.0.15")
 # report_post(d,"https://vt.tiktok.com/ZSjFJUTw5/")

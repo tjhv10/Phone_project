@@ -21,7 +21,7 @@ def like_comment_follow(device_id):
         try:
             print(f"Attempting to connect to device: {device_id}")
             start_time = time.time()
-            d = u2.connect(device_id)
+            d = u2.connect(device_id).app_list_running
             
             if d is not None:
                 for _ in range(2):
@@ -112,22 +112,6 @@ def report_tiktok(device_id):
 
 
 def main():
-    start_and_connect_all_servers()
-    # Define the maximum number of concurrent threads to limit CPU usage
-    max_threads = 1 #13  # Adjust this based on your system’s capabilities
-    
-    # Use ThreadPoolExecutor to manage thread pool
-    with ThreadPoolExecutor(max_threads) as executor:
-        # Submit each device to the thread pool
-        futures = [executor.submit(like_comment_follow, dev) for dev in device_ips]  # ["10.0.0.6", "10.0.0.15"]   ] 
-        
-        # Wait for all threads to complete
-        for future in futures:
-            future.result()  # Blocking call to ensure each thread completes
-
-
-
-def run_on_multiple_devices():
     """
     Function to run the like_comment_follow function concurrently on multiple devices.
     
@@ -152,13 +136,43 @@ def run_on_multiple_devices():
             except Exception as e:
                 print(f"An error occurred for device {futures[future]}: {e}")
 
+
+
+def run_on_multiple_devices():
+    """
+    Function to run the like_comment_follow function concurrently on multiple devices.
+    
+    Parameters:
+    device_ids (list): List of device IPs.
+    """
+    start_and_connect_all_servers()
+    d = u2.connect("10.0.0.21"),  u2.connect("10.0.0.31")
+
+    # Define the maximum number of concurrent threads to limit CPU usage
+    max_threads = 1  # Adjust this based on your system’s capabilities
+    
+    # Use ThreadPoolExecutor to manage thread pool
+    with ThreadPoolExecutor(max_threads) as executor:
+        # Submit each device to the thread pool, and store the Future object with its associated device IP
+        futures = {executor.submit(twi.report_twitter_posts, dev): dev for dev in d}
+        
+        # Keep the main thread alive while the workers run
+        for future in futures:
+            try:
+                # Block until the worker completes, handling any exceptions
+                future.result()
+            except Exception as e:
+                device_ip = futures[future]  # Retrieve the device IP associated with the Future
+                print(f"An error occurred for device {device_ip}: {e}")
+
+
 def main_for_1_phone():
     # Run the program on the specified device
     like_comment_follow("10.0.0.34")
 
 
 # Uncomment the function you want to run
-run_on_multiple_devices()
-# main()
+# run_on_multiple_devices()
+main()
 # main_for_1_phone()
 

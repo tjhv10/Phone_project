@@ -264,7 +264,7 @@ def report_twitter_posts(d):
 
 def report_post(d, link, action=0):
     # Open Twitter app
-
+    
     if "com.twitter.android" in d.app_list_running():
         # Stop Twitter app
         d.app_stop("com.twitter.android")
@@ -347,6 +347,15 @@ def report_account(d, link):
 def support_accounts(d,accounts):
     random.shuffle(accounts)
     for account in accounts:
+        # Start the Twitter app 
+        if "com.twitter.android" in d.app_list_running():
+            # Stop Twitter app
+            d.app_stop("com.twitter.android")
+            sleep(2)
+
+        # Start the Twitter app 
+        d.app_start("com.twitter.android")
+        
         search_and_go_to_page(d,account)
         sleep(2)
         scroll_like_and_comment(d,5)
@@ -403,9 +412,11 @@ def main(d):
     sleep(3)
     d.app_stop("com.twitter.android")
     sleep(4)
-d = u2.connect("10.0.0.21")
-for handle in twitter_handles:
-    search_and_go_to_page(d, handle)
+# d = u2.connect("10.0.0.21")
+# search_and_go_to_page(d, "DannyNis")
+
+# for handle in twitter_handles:
+#     search_and_go_to_page(d, handle)
 
 # report_twitter_posts(d)
 # tap_repost_button(d)
