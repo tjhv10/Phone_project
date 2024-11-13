@@ -148,6 +148,18 @@ def search_and_go_to_page(d, page_name):
     d (uiautomator2.Device): The connected device object from uiautomator2.
     text (str): The text to search for.
     """
+    # Start the Twitter app 
+
+    if "com.twitter.android" in d.app_list_running():
+        # Stop Twitter app
+        d.app_stop("com.twitter.android")
+        sleep(2)
+
+    # Start the Twitter app 
+    d.app_start("com.twitter.android")
+    print(f"{threading.current_thread().name}:{d.wlan_ip} : Opened Twitter!")
+    sleep(10)
+
     # Swipe up to return to the previous content
     d.swipe(500, 300, 500, 1000, duration = 0.05)
     sleep(3)
@@ -160,7 +172,7 @@ def search_and_go_to_page(d, page_name):
     sleep(3)
      # Type each character of the search term with a random delay to simulate human typing
     tap_keyboard(d,page_name)
-    sleep(4)
+    sleep(8)
     print(f"{threading.current_thread().name}:{d.wlan_ip} Typed '{page_name}' in the search bar naturally.")
     try:
         x,y = search_sentence(d,"@"+page_name)
@@ -246,15 +258,21 @@ def report_twitter_posts(d):
     choice = random.choice([1, 2])
 
     if choice == 1:
-        size = len(twitter_posts_to_report)
-        post_i = random.randint(1, size)
-        report_post(d, twitter_posts_to_report[post_i][0], twitter_posts_to_report[post_i][1])
+        post = random.choice(twitter_posts_to_report)
+        report_post(d, post[0], post[1])
 
 
-def report_post(d, link,action = 0):
+def report_post(d, link, action=0):
     # Open Twitter app
+
+    if "com.twitter.android" in d.app_list_running():
+        # Stop Twitter app
+        d.app_stop("com.twitter.android")
+        sleep(2)
+
+    # Start the Twitter app 
     d.app_start("com.twitter.android")
-    print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Twitter!")
+    print(f"{threading.current_thread().name}:{d.wlan_ip} : Opened Twitter!")
     sleep(10)
 
     if "com.twitter.android" in d.app_list_running():
@@ -263,24 +281,43 @@ def report_post(d, link,action = 0):
         d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
         print(f"{threading.current_thread().name}:{d.wlan_ip} Opened tweet: {link}")
         sleep(3)
-        # Click on the share button
-        d.click(685, 210)
-        sleep(3)
-        # Click on the report button
-        x,y = search_sentence(d,"Report post")
-        sleep(3)
-        d.click(int(x), int(y))
-        sleep(15)
-        if action == 0: 
-            handle_user_selection(d,report_twitter_clicks)
-        else:
-            execute_action(d,twitter_report_keys[action-1],report_twitter_clicks)
-        update_results_file("Posts reported")
-        d.app_stop("com.twitter.android")
+            
+        try:
+            # Click on the share button
+            d.click(685, 210)
+            sleep(3)
+            
+            # Click on the report button
+            x, y = search_sentence(d, "Report post")
+            sleep(3)
+            d.click(int(x), int(y))
+            sleep(15)
+            
+            if action == 0: 
+                handle_user_selection(d, report_twitter_clicks)
+            else:
+                execute_action(d, twitter_report_keys[action-1], report_twitter_clicks)
+            
+            update_results_file("Posts reported")
+        
+            # Stop Twitter app
+            d.app_stop("com.twitter.android")
+
+        except Exception as e:
+            print(f"{threading.current_thread().name}:{d.wlan_ip} already reported that post.")
+            # Stop Twitter app
+            d.app_stop("com.twitter.android")
+
 
 
 def report_account(d, link):
     # Open Twitter app
+    if "com.twitter.android" in d.app_list_running():
+        # Stop Twitter app
+        d.app_stop("com.twitter.android")
+        sleep(2)
+
+    # Start the Twitter app 
     d.app_start("com.twitter.android")
     print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Twitter!")
     sleep(15)
@@ -313,13 +350,22 @@ def support_accounts(d,accounts):
         search_and_go_to_page(d,account)
         sleep(2)
         scroll_like_and_comment(d,5)
+        # Stop Twitter app
+        d.app_stop("com.twitter.android")
+        sleep(2)
 
 
 def main(d):
     """
     The main function connects to the Android device and performs various Twitter actions.
     """
-    # Start the Twitter app
+    # Start the Twitter app 
+    if "com.twitter.android" in d.app_list_running():
+        # Stop Twitter app
+        d.app_stop("com.twitter.android")
+        sleep(2)
+
+    # Start the Twitter app 
     d.app_start("com.twitter.android")
     print(f"{threading.current_thread().name}:{d.wlan_ip} Opened Twitter!")
     sleep(12)  # Wait for Twitter to fully load
@@ -329,6 +375,9 @@ def main(d):
         sleep(4)
         # tap_like_button(d)   #don't use until fyp is pro israel
         sleep(2)
+
+    # Stop Twitter app
+    d.app_stop("com.twitter.android")
     sleep(2)
     for _ in range(1):
         search_and_go_to_page(d, random.choice(twitter_handles))
@@ -339,20 +388,27 @@ def main(d):
         scroll_like_and_comment(d,20)
         d.click(75,1500) # Go to home
         sleep(4)
+        
         for _ in range(random.randint(1,12)):
             scroll_random_number(d)
             sleep(2)
             # tap_like_button(d)
             sleep(2)
+            
+        # Stop Twitter app
+        d.app_stop("com.twitter.android")
         sleep(5)
     support_accounts(d,twitter_handles_specials)
     report_twitter_posts(d)
     sleep(3)
     d.app_stop("com.twitter.android")
     sleep(4)
-d = u2.connect("10.0.0.40")
-report_twitter_posts(d)
+d = u2.connect("10.0.0.21")
+for handle in twitter_handles:
+    search_and_go_to_page(d, handle)
+
+# report_twitter_posts(d)
 # tap_repost_button(d)
-# report_post(d,"https://x.com/marwanbishara/status/1805202165054493148?t=zbQJshyDikFcHUFcMKC1yg&s=19")
+# report_post(d,"https://x.com/MannieMighty1/status/1853460648673300801", 5)
 # report_account(d,"https://x.com/marwanbishara?t=Ut7owo1yPl0b9VSvGGI4cQ&s=08")
 

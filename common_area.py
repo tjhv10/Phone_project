@@ -441,10 +441,43 @@ twitter_posts_to_report = [
     ("https://x.com/OmarShargawi/status/1851868583057297697",5),
     ("https://x.com/HackneySwp/status/1852772248324633040",15),
     ("https://x.com/Yusufafsar/status/1852385840921456846",15),
-    ("https://x.com/Yusufafsar/status/1852385492639035798",15),
-    ("https://x.com/Du_con_Lajoie/status/1851356793328296326",15),
+    # ("https://x.com/Yusufafsar/status/1852385492639035798",15),       #The post has been deleted
+    # ("https://x.com/Du_con_Lajoie/status/1851356793328296326",15),    #The post has been deleted
     ("https://x.com/komugi_twit/status/1852406478277357956",15),
     ("https://x.com/BeautyMrked/status/1853873503188984175",15),
+    ("https://x.com/mohamadfakih8/status/1855306559800385623",5),
+    ("https://x.com/TorahJudaism/status/1848359235400147297",2),
+    ("https://x.com/bobbydilettante/status/1804188608015876209",4),
+    ("https://x.com/realflanbinflan/status/1759489765152346571",5),
+    ("https://x.com/avoidingtrolls/status/1808133225190916122",4),
+    ("https://x.com/b_salem1/status/1803164191315870120",4),
+    ("https://x.com/utalkntme/status/1786263653748256919",13),
+    ("https://x.com/drhusseinabd/status/1803744396375941322",4),
+    ("https://x.com/drhusseinabd/status/1783478189567697302",4),
+    ("https://x.com/ithaitmelloul/status/1754229590380212582",5),
+    ("https://x.com/paulinepark/status/1855762196145266894",5),
+    ("https://x.com/muslimnogo/status/1853502864678699251",4),
+    ("https://x.com/Bernadotte22/status/1763231563045818814",5),
+    ("https://x.com/Africa4Pal/status/1600882395120799745",5),
+    ("https://x.com/sabriaballand/status/1855738166935744936",5),
+    ("https://x.com/Andre__Damon/status/1854055465778642973",5),
+    ("https://x.com/sabriaballand/status/1855738166935744936",5),
+    ("https://x.com/bkeithb/status/1856448330575884619",5),
+    ("https://x.com/MannieMighty1/status/1853460648673300801",5),
+    ("https://x.com/Adli02030892/status/1853467503722197266",5),
+    ("https://x.com/TheGreatFausto1/status/1853767671625683077",4),
+    ("https://x.com/Michael35081695/status/1853464937147892090",5),
+    ("https://x.com/quadrafenians/status/1853558606131597576",5),
+    ("https://x.com/quadrafenians/status/1853558606131597576",5),
+    ("https://x.com/ClaireD3041358/status/1853759909105467748",5),
+    ("https://x.com/ElHombreEHombre/status/1853465961749160318",10),
+    ("https://x.com/I2funSmile/status/1853480884684701817",5),
+    ("https://x.com/itariqshah1/status/1854701705738203484",12),
+    ("https://x.com/Anna_AnninaEl/status/1855004248905257382",4),
+    ("https://x.com/RyanRozbiani/status/1855422624207425626",5),
+    ("https://x.com/GAZAWOOD1/status/1855703803158253968",13),
+    ("https://x.com/Amieradjah/status/1837128137148350957",4),
+    # ("",),
 ]
 
 
@@ -470,7 +503,7 @@ report_tiktok_keys = [
 
 
 tiktok_posts_to_report = [
-    ("https://vm.tiktok.com/ZGdNeymS6/" ,4),
+    # ("https://vm.tiktok.com/ZGdNeymS6/" ,4),      #The post has been deleted
     ("https://vm.tiktok.com/ZGdNeFh4w/" ,4),
     ("https://vm.tiktok.com/ZGdNe6WP9/" ,4),
     ("https://vm.tiktok.com/ZGdNeBx2t/" ,4),
@@ -481,6 +514,27 @@ tiktok_posts_to_report = [
     ("https://www.tiktok.com/@pascoliiii/video/7396072279362276641?q=From%20the%20river%20to%20&t=1730973687107" ,4),
     ("https://www.tiktok.com/@amna.naji/video/7088113841766206726?q=freepalestine&t=1730973776643" ,4),
     ("https://www.tiktok.com/@leyaaalyaa/video/7296362568703020290?q=freepalestine&t=1730973776643" ,4),
+    ("https://www.tiktok.com/@hakamsoufan/video/7303444764655881490?is_from_webapp=1&sender_device=pc&web_id=7435566416340747831" ,8),
+    ("https://www.tiktok.com/@imrankan937/video/7435347634035985697?is_from_webapp=1&sender_device=pc&web_id=7435566416340747831" ,8),
+    ("https://www.tiktok.com/@thaliaelansari/video/7368556524911873288?is_from_webapp=1&sender_device=pc&web_id=7435566416340747831" ,8),
+    ("https://www.tiktok.com/@ajnabiyeh/video/7307300683462593824?is_from_webapp=1&sender_device=pc&web_id=7435566416340747831" ,8),
+    ("https://www.tiktok.com/@fromthe.river.to_the.sea/video/7430161622431255841?is_from_webapp=1&sender_device=pc&web_id=7435566416340747831" ,8),
+    ("https://www.tiktok.com/@sellapuspi20/video/7289741587385568517?is_from_webapp=1&sender_device=pc&web_id=7435566416340747831" ,10),
+    ("https://www.tiktok.com/@palestine3030/video/7435474614223899912?is_from_webapp=1&sender_device=pc&web_id=7435566416340747831" ,8),
+    ("https://www.tiktok.com/@sethwatkinsmusic/video/7321073871388462382?is_from_webapp=1&sender_device=pc&web_id=7435566416340747831" ,8),
+    ("https://www.tiktok.com/@palestine1thefirstone/video/7292327559075843333?q=river%20to%20the%20sea&t=1731334335157" ,8),
+    ("https://www.tiktok.com/@aygofiz/video/7398070083152661765?q=genocide&t=1731334563770" ,8),
+    ("https://www.tiktok.com/@wisdom.tales.from/video/7300860659036622113?q=zionist&t=1731334722020" ,8),
+    ("https://www.tiktok.com/@thatorthodoxguy/video/7435282676090801431", 15),
+    ("https://www.tiktok.com/@warproject.xy/video/7087965041647029530" ,8),
+    ("https://www.tiktok.com/@reksifyptiktok/video/7323219220668501254" ,8),
+    ("https://www.tiktok.com/@umut_var61/video/7292493802332474630?q=israwl&t=1731336259759" ,8),
+    ("https://www.tiktok.com/@sam84178/video/7435315683027684640?is_from_webapp=1&sender_device=pc&web_id=7435566416340747831" ,8),
+    ("https://www.tiktok.com/@sarrbiran/video/7436524242327407894?q=genocide&t=1731481221680" ,8),
+    ("https://www.tiktok.com/@mohamed.elhady/video/7289816386308771079?q=genocide&t=1731481221680" ,8),
+    ("https://www.tiktok.com/@dearmoooooon/video/7292009641440054529?q=genocide&t=1731481221680" ,8),
+    ("https://www.tiktok.com/@babah.ja/video/7296793814633614597" ,8),
+    # ("" ,),
 ]
 
 instagram_posts_to_report = [
@@ -529,7 +583,7 @@ def tap_keyboard(d, text, keyboard = keyboard_dic):
     Simulates tapping on the screen using the keyboard coordinates for each character in the text.
     """
     for char in text.lower():
-        if char == "_":
+        if char in ("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "_"):
             char = " "  
         if char in keyboard:
             x, y = keyboard[char]
@@ -537,6 +591,7 @@ def tap_keyboard(d, text, keyboard = keyboard_dic):
             sleep(random.uniform(0.04, 0.07))  # Add a small delay between taps
         else:
             print(f"{threading.current_thread().name}:{d.wlan_ip} Character '{char}' not found in keyboard dictionary!")
+                
 
 
 def take_screenshot(d, thread = threading.current_thread().name, app = "inst"):
