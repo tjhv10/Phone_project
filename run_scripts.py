@@ -21,7 +21,7 @@ def like_comment_follow(device_id):
         try:
             print(f"Attempting to connect to device: {device_id}")
             start_time = time.time()
-            d = u2.connect(device_id).app_list_running
+            d = u2.connect(device_id)
             
             if d is not None:
                 for _ in range(2):
