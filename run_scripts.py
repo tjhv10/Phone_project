@@ -122,7 +122,7 @@ def main():
 
     start_and_connect_all_servers()
     # Define the maximum number of concurrent threads to limit CPU usage
-    max_threads = 15  # Adjust this based on your system’s capabilities
+    max_threads = 12  # Adjust this based on your system’s capabilities
     
     # Use ThreadPoolExecutor to manage thread pool
     with ThreadPoolExecutor(max_threads) as executor:
