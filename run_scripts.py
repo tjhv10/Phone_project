@@ -122,8 +122,9 @@ def main():
     This ensures devices are connected once, and the thread is reused for the next worker.
     """
     global worker_queue
+    start_and_connect_all_servers()
     # Connect all devices before submitting tasks to the thread pool
-    devices = start_and_connect_all_servers()  # This will return a list of connected devices (already u2.Device objects)
+    devices =  get_connected_devices() # This will return a list of connected devices (already u2.Device objects)
 
     # Define the maximum number of concurrent threads to limit CPU usage
     max_threads = 12  # Adjust this based on your system’s capabilities
