@@ -4,50 +4,55 @@ import twitterScript as twi
 import instegramScript as inst
 import uiautomator2 as u2
 from start_adb import *
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from common_area import *
+from queue import Queue
 import os
 import time
 
 # TODO: nonscrollable countdown
-
-def like_comment_follow(device_id):
+def like_comment_follow(device, max_duration=3600 * 1.5):  # 1 hour = 3600 seconds
     """
-    Function to run Twitter and TikTok scripts on a specific phone connected to a custom ADB server port.
+    Function to run Twitter and TikTok scripts on a specific phone.
+    Each worker takes a 3-hour break after finishing its task, and the thread is reused by another worker.
+    
     Parameters:
-    device_id (str): The IP of the phone.
+    device (uiautomator2.Device): The connected device.
+    max_duration (int): Maximum time in seconds to spend on a device before switching.
     """
-    while True:
-        try:
-            print(f"Attempting to connect to device: {device_id}")
-            start_time = time.time()
-            d = u2.connect(device_id)
-            
-            if d is not None:
-                for _ in range(2):
-                    print(f"Running Twitter script on device: {device_id}")
-                    twi.main(d)
-                    time.sleep(5)  # Delay between scripts
-                    print(f"Running TikTok script on device: {device_id}")
-                    tik.main(d)
-                    time.sleep(5)  # Delay between scripts
+    start_time = time.time()
+    try:
+        print(f"Running tasks on device: {device}")
+        
+        # Run Twitter and TikTok scripts once
+        print(f"Running Twitter script on device: {device}")
+        twi.main(device)
+        time.sleep(5)  # Delay between scripts
 
-                print(f"Disconnecting from device: {device_id}")
-                os.system(f'adb disconnect {device_id}')
-            else:
-                print(f"Could not connect to device: {device_id}")
-            
-            end_time = time.time()
-            elapsed_time = end_time - start_time
-            print(f"Total time taken to run the program: {elapsed_time:.2f} seconds")
+        print(f"Running TikTok script on device: {device}")
+        tik.main(device)
+        time.sleep(5)  # Delay between scripts
 
-            d.click(360, 1600)  # Go to home
+        print(f"{device} completed its tasks.")
+        
+        elapsed_time = time.time() - start_time
+        print(f"Total time taken for {device}: {elapsed_time:.2f} seconds")
 
-            print(f"{device_id} completed its tasks. Sleeping for 3 hours...")
-            time.sleep(3 * 3600)  # 3 hours break for this worker
-        except Exception as e:
-            print(f"Error while processing {device_id}: {e}")
-            time.sleep(60)  # Wait before retrying on error
+        if elapsed_time > max_duration:
+            print(f"{device} exceeded max duration, switching to next device.")
+    except Exception as e:
+        print(f"Error while processing {device}: {e}")
+        time.sleep(60)  # Wait before retrying on error
+
+    # Independent 3-hour break for this worker
+    print(f"{device} is sleeping for 3 hours before restarting tasks...")
+    
+    # Releasing the worker thread back into the queue while on break
+    time.sleep(3 * 3600)  # 3 hours break for the worker
+    
+    # After break, put this worker back in the queue to be reused
+    worker_queue.put(device)  # Put the device back in the queue
+
 
 
 def report_twitter(device_id):
@@ -114,27 +119,42 @@ def report_tiktok(device_id):
 def main():
     """
     Function to run the like_comment_follow function concurrently on multiple devices.
-    
-    Parameters:
-    device_ids (list): List of device IPs.
+    This ensures devices are connected once, and the thread is reused for the next worker.
     """
+    global worker_queue
+    # Connect all devices before submitting tasks to the thread pool
+    devices = start_and_connect_all_servers()  # This will return a list of connected devices (already u2.Device objects)
 
-
-    start_and_connect_all_servers()
     # Define the maximum number of concurrent threads to limit CPU usage
     max_threads = 12  # Adjust this based on your system’s capabilities
     
+    # Initialize a queue to manage workers
+    worker_queue = Queue()
+
+    # Put all the devices into the queue
+    for device in devices:
+        worker_queue.put(device)
+
     # Use ThreadPoolExecutor to manage thread pool
     with ThreadPoolExecutor(max_threads) as executor:
-        # Submit each device to the thread pool
-        futures = [executor.submit(like_comment_follow, dev) for dev in device_ips]  # ["10.0.0.6", "10.0.0.15"]   ] 
+        # Function to pick up devices from the queue and assign tasks
+        def worker_task():
+            while True:
+                device = worker_queue.get()  # Get the next available device
+                if device is None:
+                    break  # Stop when the device queue is empty (not expected in your case)
+                like_comment_follow(device)  # Perform tasks on this device
+                worker_queue.task_done()  # Mark task as done
         
-         # Keep the main thread alive while the workers run
-        for future in futures:
+        # Submit tasks to the thread pool
+        futures = [executor.submit(worker_task) for _ in range(max_threads)]
+        
+        # Wait for all tasks to be done
+        for future in as_completed(futures):
             try:
-                future.result()  # This will block until the worker completes, which is never in this case
+                future.result()
             except Exception as e:
-                print(f"An error occurred for device {futures[future]}: {e}")
+                print(f"An error occurred: {e}")
 
 
 
