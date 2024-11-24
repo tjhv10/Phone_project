@@ -13,7 +13,7 @@ threads = []
 stop_events = []
 
 # Start multiple threads
-for i in range(1000):  # Adjust the range for more threads
+for i in range(100):  # Adjust the range for more threads
     stop_event = threading.Event()
     thread = threading.Thread(target=worker, args=(stop_event,))
     threads.append(thread)

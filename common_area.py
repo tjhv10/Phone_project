@@ -213,6 +213,7 @@ twitter_handles = [
     "bandlersbanter",
     "HilzFuld",
     "ZionistFed",
+    "all_israel_news",
 ]
 
 tiktok_accounts = [
@@ -240,7 +241,9 @@ tiktok_accounts = [
     "EndJewHatred",
     "jew_ishcontent",
     "alizalicht",
-    "ec4israel"
+    "ec4israel",
+    "women.of.the.midd",
+    "unapologetic.israeli"
     ]
 
 instagram_accounts = [
@@ -273,14 +276,15 @@ instagram_accounts = [
 ]
 
 twitter_handles_specials = [
-    "YosephHaddad",
-    "ariseforisrael"
+    "ariseforisrael",
+    "israel"
 ]
 
 
 tiktok_handles_specials = [
     "ariseforisrael",
-    "yosephhaddad"
+    "women.of.the.midd",
+    "unapologetic.israeli"
 ]
 
 
