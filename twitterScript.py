@@ -72,7 +72,7 @@ def scroll_like_and_comment(d,posts):
             swipe_duration = random.uniform(0.04, 0.06)
             d.swipe(start_x, start_y, start_x, end_y, duration=swipe_duration)
             print(f"{threading.current_thread().name}:{d.wlan_ip} Scrolled from ({start_x}, {start_y}) to ({start_x}, {end_y}) in {swipe_duration:.2f} seconds.")
-            update_results_file("Scroll", 1)
+            update_results_file("Scrolls")
         else:
             print(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
         sleep(random.uniform(2, 14))
@@ -120,7 +120,7 @@ def scroll_random_number(d):
         num_swipes = random.randint(1, 6)
         print(f"{threading.current_thread().name}:{d.wlan_ip} Number of swipes: {num_swipes}")
 
-        update_results_file("Scroll", num_swipes)
+        update_results_file("Scrolls", num_swipes)
 
 
         # Perform the swipe action for the chosen number of times
@@ -261,6 +261,13 @@ def report_twitter_posts(d):
         post = random.choice(twitter_posts_to_report)
         report_post(d, post[0], post[1])
 
+def report_twitter_accounts(d):
+    choice = random.choice([1, 2])
+
+    if choice == 1:
+        account = random.choice(anti_israel_twitter)
+        report_account(d, account)
+
 
 def report_post(d, link, action=0):
     # Open Twitter app
@@ -286,7 +293,9 @@ def report_post(d, link, action=0):
             # Click on the share button
             d.click(685, 210)
             sleep(3)
-            
+            if search_sentence(d, "you reported this post.") != None:
+                print(f"{threading.current_thread().name}:{d.wlan_ip} already reported this tweet.")
+                return 
             # Click on the report button
             x, y = search_sentence(d, "Report post")
             sleep(3)
@@ -310,7 +319,7 @@ def report_post(d, link, action=0):
 
 
 
-def report_account(d, link):
+def report_account(d, account='',link=''):
     # Open Twitter app
     if "com.twitter.android" in d.app_list_running():
         # Stop Twitter app
@@ -325,10 +334,16 @@ def report_account(d, link):
     if "com.twitter.android" in d.app_list_running():
         print(f"{threading.current_thread().name}:{d.wlan_ip} Twitter is running!")
 
-        # Open the tweet in the Twitter app
-        d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Opened account: {link}")
-        sleep(3)
+        if link != '':
+            # Open the tweet in the Twitter app
+            d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
+            print(f"{threading.current_thread().name}:{d.wlan_ip} Opened account: {link}")
+            sleep(3)
+        elif account != '':
+            search_and_go_to_page(d, account)
+        else:
+            print(f"{threading.current_thread().name}:{d.wlan_ip} didn't get link nor an account name. exiting the function..")
+            return
         # Click on the share button
         d.click(667, 120)
         sleep(3)

@@ -114,7 +114,7 @@ def scroll_random_number(d):
             d.swipe(x_start, y_start, x_end, y_end, duration=0.05)
             random_time = random.randint(2, 15)
             sleep(random_time)
-            update_results_file("Scroll", i + 1)
+            update_results_file("Scrolls", i + 1)
             print(f"{threading.current_thread().name}:{d.wlan_ip} Swiped down {i + 1} time(s).")
     else:
         print(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
@@ -138,7 +138,7 @@ def scroll_like_and_comment(d):
             random_time = random.randint(2, 15)
             sleep(random_time)
             print(f"{threading.current_thread().name}:{d.wlan_ip} Swiped down {i + 1} time(s).")
-            update_results_file("Scroll", i + 1)
+            update_results_file("Scrolls", i + 1)
         else:
             print(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
         num = random.choice([1, 2, 3, 4, 5])
@@ -338,6 +338,11 @@ def main(d):
     # else:
     #     print(f"{threading.current_thread().name}:{d.wlan_ip} TikTok is not running!")
     print(f"{threading.current_thread().name}:{d.wlan_ip} done")
+    
+        
+    # Sleep for 0.5 hours before the next cycle
+    print(f"{threading.current_thread().name}:{d.wlan_ip} completed its tasks. Sleeping for 0.5 hours...")
+    sleep(.5 * 3600)  # 0.5 hours break for this worker
 
 
 # d = u2.connect("10.0.0.21")

@@ -31,12 +31,12 @@ def like_comment_follow(device, max_duration=3600 * 2):  # 1 hour = 3600 seconds
         # Run Twitter and TikTok scripts once
         print(f"Running Twitter script on device with IP: {device_ip}")
         twi.main(device)  # Assuming twi.main is the function for running the Twitter script
-        time.sleep(5)  # Delay between scripts
+        sleep(5)  # Delay between scripts
         open_vpn(device)
 
         print(f"Running TikTok script on device with IP: {device_ip}")
         tik.main(device)  # Assuming tik.main is the function for running the TikTok script
-        time.sleep(5)  # Delay between scripts
+        sleep(5)  # Delay between scripts
         open_vpn(device)
 
         print(f"Device with IP {device_ip} completed its tasks.")
@@ -79,10 +79,6 @@ def report_twitter(device_id):
     else:
         print(f"Could not connect to device: {device_id}")
 
-        
-    # Sleep for 4 hours before the next cycle
-    print(f"{device_id} completed its tasks. Sleeping for 4 hours...")
-    sleep(.5 * 3600)  # 4 hours break for this worker
 
 
 
@@ -169,12 +165,12 @@ def main():
 
 def main_for_1_phone():
     # Run the program on the specified device
-    d1 = u2.connect("10.0.0.31")
-    d2 = u2.connect("10.0.0.32")    
-    open_vpn(d1)
-    open_vpn(d2)
+    d1 = u2.connect("10.0.0.11")
+    # d2 = u2.connect("10.0.0.32")    
+    # open_vpn(d1)
+    # open_vpn(d2)
     # print(d.app_list_running())
-    # like_comment_follow("10.0.0.32")
+    like_comment_follow(d1)
 
 
 def run_on_multiple_devices():
@@ -211,7 +207,8 @@ stop_event = threading.Event()
 def open_vpn(d):
     print(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!") 
     d.app_start("com.nordvpn.android")
-    sleep(60)  # Optional: if you want to add a delay after opening the VPN
+    while twi.search_sentence(d, "Finding the best server...") != None:
+        sleep(60)  # 1 minute of delay after opening the VPN
 
 # Worker thread function
 def worker_task():
@@ -290,21 +287,12 @@ def test():
 # Set up the signal handler for SIGINT (Ctrl+C)
 signal.signal(signal.SIGINT, handle_signal)
 
-# Call the test function to run
-if __name__ == "__main__":
-    try:
-        main()    
-        # test()
-    except KeyboardInterrupt:
-        print("\nMain thread: Stopping all workers.")
-        stop_event.set()
-
-
-
-
-
-# Uncomment the function you want to run
-# run_on_multiple_devices()
-# main_for_1_phone()
-# test()
-
+try:
+    # Uncomment the function you want to run
+    # run_on_multiple_devices()
+    # main_for_1_phone()
+    main()    
+    # test()
+except KeyboardInterrupt:
+    print("\nMain thread: Stopping all workers.")
+    stop_event.set()
