@@ -18,7 +18,6 @@ def scroll_once(d):
         d.swipe(500, rnd_swipe, 500, rnd_swipe - 500, duration = 0.05)
         # Wait for a random number of seconds between 1 and 6
         random_time = random.randint(1, 6)
-        update_results_file("Scroll", 1)
         print(f"Waiting {random_time} seconds...")  # Display the wait time
     else:
         print("No scrollable view found!")  # If the screen is not scrollable, display a message
@@ -36,8 +35,6 @@ def scroll_random_number(d):
         # Randomly choose how many times to swipe (between 1 and 3)
         num_swipes = random.randint(3,8)
         print(f"Number of swipes: {num_swipes}")
-
-        update_results_file("Scroll", num_swipes)
 
         # Perform the swipe action for the chosen number of times
         for i in range(num_swipes):

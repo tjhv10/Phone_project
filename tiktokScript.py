@@ -35,7 +35,7 @@ def search(d, text):
     tap_keyboard(d,text)
     sleep(5)
     d.press(66)  # Press the search button
-    sleep(10)
+    sleep(6)
 
     tap_users(d)  # Click to go to users
     sleep(5)
@@ -114,7 +114,6 @@ def scroll_random_number(d):
             d.swipe(x_start, y_start, x_end, y_end, duration=0.05)
             random_time = random.randint(2, 15)
             sleep(random_time)
-            update_results_file("Scrolls", i + 1)
             print(f"{threading.current_thread().name}:{d.wlan_ip} Swiped down {i + 1} time(s).")
     else:
         print(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
@@ -138,7 +137,6 @@ def scroll_like_and_comment(d):
             random_time = random.randint(2, 15)
             sleep(random_time)
             print(f"{threading.current_thread().name}:{d.wlan_ip} Swiped down {i + 1} time(s).")
-            update_results_file("Scrolls", i + 1)
         else:
             print(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
         num = random.choice([1, 2, 3, 4, 5])
@@ -165,15 +163,6 @@ def scroll_like_and_comment(d):
 
 
 def like_a_page(d, page):
-    # Open TikTok app
-    if "com.zhiliaoapp.musically" in d.app_list_running():
-        # Stop Tiktok app
-        d.app_stop("com.zhiliaoapp.musically")
-        sleep(4)
-
-    # Start the Twitter app 
-    d.app_start("com.zhiliaoapp.musically")
-    sleep(5)
     search(d, page)
     sleep(2)
     d.click(120, 1450) # Get in the first page
@@ -181,24 +170,10 @@ def like_a_page(d, page):
     scroll_like_and_comment(d)
 
 
-def report_tiktok_posts(d):
-    choice = random.choice([1, 2])
-
-    if choice == 1:
-        post = random.choice(tiktok_posts_to_report)
-        report_post(d, post[0], post[1])
-
-
-def report_post(d, link, action=0):
+def report_post(d, link,action = 0):
     # Open TikTok app
-    if "com.zhiliaoapp.musically" in d.app_list_running():
-        # Stop Tiktok app
-        d.app_stop("com.zhiliaoapp.musically")
-        sleep(4)
-
-    # Start the Twitter app 
     d.app_start("com.zhiliaoapp.musically")
-    print(f"{threading.current_thread().name}:{d.wlan_ip} : Opened TikTok!")
+    print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened TikTok!")
     # sleep(15)
 
     if "com.zhiliaoapp.musically" in d.app_list_running():
@@ -206,47 +181,28 @@ def report_post(d, link, action=0):
         d.shell(f"am start -a android.intent.action.VIEW -d {link}")
         print(f"{threading.current_thread().name}:{d.wlan_ip} Opened link: {link}")
         sleep(2)
-            
-        try:   
-            # Find and click the "Watch only" button
-            x, y = search_sentence(d, "Watch only")
-            d.click(int(x), int(y))
-            sleep(7)
-            
-            # Click on the share button
-            d.click(660, 1240)
-            sleep(3)
+        x,y = search_sentence(d,"Watch only")
+        d.click(int(x),int(y))
+        sleep(7)   
+        # Click on the share button
+        d.click(660, 1240)
+        sleep(3)
 
-            # Click on the report button
-            d.click(90, 1400)
-            sleep(5)
-            
-            if action == 0: 
-                handle_user_selection(d, report_tiktok_clicks)
-            else:
-                print(report_tiktok_clicks[report_tiktok_keys[action - 1]])
-                execute_action(d, report_tiktok_keys[action - 1], report_tiktok_clicks)
-            
-            sleep(4)
-            update_results_file("Posts reported")
+        # Click on the report button
+        d.click(90, 1400)
+        sleep(5)
         
-            # Stop TikTok app
-            d.app_stop("com.zhiliaoapp.musically")
-
-        except Exception as e:
-            print(f"{threading.current_thread().name}:{d.wlan_ip} already reported that post.")
-
-            # Stop TikTok app
-            d.app_stop("com.zhiliaoapp.musically")
+        if action == 0: 
+            handle_user_selection(d,report_tiktok_clicks)
+        else:
+            print(report_tiktok_clicks[report_tiktok_keys[action-1]])
+            execute_action(d,report_tiktok_keys[action-1],report_tiktok_clicks)
+        sleep(4)
+        update_results_file("Posts reported")
+        d.app_stop("com.zhiliaoapp.musically")
 
 def report_account(d, link):
     # Open TikTok app
-    if "com.zhiliaoapp.musically" in d.app_list_running():
-        # Stop Tiktok app
-        d.app_stop("com.zhiliaoapp.musically")
-        sleep(4)
-
-    # Start the Twitter app 
     d.app_start("com.zhiliaoapp.musically")
     print(f"{threading.current_thread().name}:{d.wlan_ip} : Opened TikTok!")
 
@@ -287,66 +243,33 @@ def report_account(d, link):
 def support_accounts(d,accounts):
     accounts = random.shuffle(accounts)
     for account in accounts:
-        if "com.zhiliaoapp.musically" in d.app_list_running():
-            # Stop Tiktok app
-            d.app_stop("com.zhiliaoapp.musically")
-            sleep(4)
-
-        # Start the Twitter app 
-        d.app_start("com.zhiliaoapp.musically")  # Open TikTok app
-        print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened TikTok!")
-        sleep(15)
         search(d,account)
         sleep(2)
         scroll_like_and_comment(d,5)
-        d.app_stop("com.zhiliaoapp.musically")
-        sleep(4)
-
 
 def main(d):
     """
     Main function to connect to the device and perform actions on TikTok.
-    # """
-    # d.app_start("com.zhiliaoapp.musicallyy")  # Open TikTok app
-    # print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened TikTok!")
-    # sleep(15)
-    # if "com.zhiliaoapp.musically" in d.app_list_running():
-    #     print(f"{threading.current_thread().name}:{d.wlan_ip} TikTok is running!")
-    for _ in range(10):
-        if "com.zhiliaoapp.musically" in d.app_list_running():
-            # Stop Tiktok app
-            d.app_stop("com.zhiliaoapp.musically")
+    """
+    d.app_start("com.zhiliaoapp.musically")  # Open TikTok app
+    print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened TikTok!")
+    sleep(15)
+    if "com.zhiliaoapp.musically" in d.app_list_running():
+        print(f"{threading.current_thread().name}:{d.wlan_ip} TikTok is running!")
+        for _ in range(10):
+            scroll_random_number(d)
+            # sleep(1)
+            # tap_like_button(d)
             sleep(4)
-
-        # Start the Twitter app 
-        d.app_start("com.zhiliaoapp.musically")  # Open TikTok app
-        print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened TikTok!")
-        sleep(15)
-        scroll_random_number(d)
-        # sleep(1)
-        # tap_like_button(d)
+            like_a_page(d,random.choice(tiktok_accounts))
+            scroll_random_number(d)
+            sleep(10)
+        support_accounts(d,tiktok_handles_specials)
+        sleep(3)
+        d.app_stop("com.zhiliaoapp.musically")
         sleep(4)
-        like_a_page(d,random.choice(tiktok_accounts))
-        scroll_random_number(d)
-        sleep(10)
-
-    support_accounts(d,tiktok_handles_specials)
-    report_tiktok_posts(d)
-    sleep(3)
-    d.app_stop("com.zhiliaoapp.musically")
-    sleep(4)
-    # else:
-    #     print(f"{threading.current_thread().name}:{d.wlan_ip} TikTok is not running!")
+    else:
+        print(f"{threading.current_thread().name}:{d.wlan_ip} TikTok is not running!")
     print(f"{threading.current_thread().name}:{d.wlan_ip} done")
-    
-        
-    # Sleep for 0.5 hours before the next cycle
-    print(f"{threading.current_thread().name}:{d.wlan_ip} completed its tasks. Sleeping for 0.5 hours...")
-    sleep(.5 * 3600)  # 0.5 hours break for this worker
-
-
-# d = u2.connect("10.0.0.21")
-# for handle in tiktok_accounts:
-#     like_a_page(d, handle)
 # d = u2.connect("10.0.0.15")
 # report_post(d,"https://vt.tiktok.com/ZSjFJUTw5/")
