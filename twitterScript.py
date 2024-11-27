@@ -188,7 +188,7 @@ def follow_page(d, follow_template_path="icons/twitter_icons/follow.png"):
     screenshot_path = take_screenshot(d,threading.current_thread().name,"twi")
     best_match = find_best_match(screenshot_path, follow_template_path,d)
     if best_match:
-        num = random.choice([1, 2])
+        num = random.choice([1, 2]) #TODO change to 4,20
         if  num == 1:
             d.click(int(best_match[0]), int(best_match[1]))
             print(f"{threading.current_thread().name}:{d.wlan_ip} Followed account!")
