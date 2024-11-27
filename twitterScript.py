@@ -178,6 +178,8 @@ def search_and_go_to_page(d, page_name):
         x,y = search_sentence(d,"@"+page_name)
         d.click(int(x),int(y))
     except:
+        x,y = search_sentence(d,"@"+page_name.lower())
+        d.click(int(x),int(y))
         print("Didnt find page!")
     
     print(f"{threading.current_thread().name}:{d.wlan_ip} Got into the page!")

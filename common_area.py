@@ -373,7 +373,8 @@ keyboard_dic = {
     "m": (570, 1400),
     ".": (570,1500),
     ",": (150,1500),
-    " ": (400,1500)
+    " ": (400,1500),
+    "_": [(65,1500),(25,1300),(65,1500)]
 }
 
 report_tiktok_clicks = {
@@ -608,12 +609,13 @@ def tap_keyboard(d, text, keyboard = keyboard_dic):
     Simulates tapping on the screen using the keyboard coordinates for each character in the text.
     """
     for char in text.lower():
-        if char in ("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "_"):
+        if char in ("1", "2", "3", "4", "5", "6", "7", "8", "9", "0"):
             char = " "  
         if char in keyboard:
-            x, y = keyboard[char]
-            d.click(x, y)  # Simulate a tap on the screen at the corresponding coordinates
-            sleep(random.uniform(0.04, 0.07))  # Add a small delay between taps
+            for act in keyboard[char]:
+                x, y = keyboard[char][act]
+                d.click(x, y)  # Simulate a tap on the screen at the corresponding coordinates
+                sleep(random.uniform(0.04, 0.07))  # Add a small delay between taps
         else:
             print(f"{threading.current_thread().name}:{d.wlan_ip} Character '{char}' not found in keyboard dictionary!")
                 
