@@ -241,56 +241,16 @@ def worker_task():
 
 def handle_signal(sig, frame):
     """Function to handle the Ctrl+C signal."""
-    print("\nCtrl+C detected. Stopping workers...")
+    print("\nCtrl+C detected. Stopping workers and closing apps on all devices...")
     stop_event.set()  # Set the stop event to stop all threads
-
-def test():
-    """
-    Function to run the like_comment_follow function concurrently on multiple devices.
-    This ensures devices are connected once, and the thread is reused for the next worker.
-    """
-    global worker_queue
-
-    # Connect devices
-    d1 = u2.connect("10.0.0.31")
-    d2 = u2.connect("10.0.0.32")
-    # Connect all devices before submitting tasks to the thread pool
-    devices = [d1, d2]  # This will return a list of connected devices (already u2.Device objects)
-
-    # Define the maximum number of concurrent threads to limit CPU usage
-    max_threads = 1  # Set the number of concurrent threads you want
-
-    # Initialize a queue to manage workers
-    worker_queue = Queue()
-
-    # Put all the devices into the queue
-    for device in devices:
-        worker_queue.put(device)
-
-    # Create and start worker threads manually
-    threads = []
-    for i in range(max_threads):
-        t = threading.Thread(target=worker_task)
-        t.start()
-        threads.append(t)
-
-    print("All tasks started!")
-
-    try:
-        # Wait for all tasks to be done (even after stopping)
-        worker_queue.join()  # This will block until all tasks are finished
-    except KeyboardInterrupt:
-        # This will now be handled by the signal handler
-        pass
     
-    # Wait for threads to exit gracefully
-    for t in threads:
-        t.join()  # Ensure each thread finishes before proceeding
-
-    print("Done with all tasks!")
-
-# Set up the signal handler for SIGINT (Ctrl+C)
-signal.signal(signal.SIGINT, handle_signal)
+    # Close apps on all devices in the queue
+    while not worker_queue.empty():
+        try:
+            device = worker_queue.get_nowait()  # Get device from queue
+            close_apps(device)  # Close apps on this device
+        except Exception as e:
+            print(f"Error closing apps on device: {e}")
 
 try:
     # Uncomment the function you want to run
