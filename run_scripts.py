@@ -7,15 +7,11 @@ from start_adb import *
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from common_area import *
 from queue import Queue
-import os
 import time
 import threading
-import signal
-import sys
 from queue import Empty
 
 
-# TODO: nonscrollable countdown
 def like_comment_follow(device, max_duration=3600 * 2):  # 1 hour = 3600 seconds
     """
     Function to run Twitter and TikTok scripts on a specific phone.
@@ -32,12 +28,12 @@ def like_comment_follow(device, max_duration=3600 * 2):  # 1 hour = 3600 seconds
         
         # Run Twitter and TikTok scripts once
         print(f"Running Twitter script on device with IP: {device_ip}")
-        twi.main(device)  # Assuming twi.main is the function for running the Twitter script
-        sleep(5)  # Delay between scripts
-        open_vpn(device)
+        # twi.main(device)  # Assuming twi.main is the function for running the Twitter script
+        # sleep(5)  # Delay between scripts
+        # open_vpn(device)
 
         print(f"Running TikTok script on device with IP: {device_ip}")
-        tik.main(device)  # Assuming tik.main is the function for running the TikTok script
+        twi.report_post(device,random.choice(twitter_posts_to_report)[0])  # Assuming tik.main is the function for running the TikTok script
         sleep(5)  # Delay between scripts
         open_vpn(device)
 
@@ -214,7 +210,7 @@ stop_event = threading.Event()
 def open_vpn(d):
     print(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!") 
     d.app_start("com.nordvpn.android")
-    while twi.search_sentence(d, "Finding the best server...") != None:
+    while search_sentence(d, "Finding the best server..."):
         sleep(60)  # 1 minute of delay after opening the VPN
 
 

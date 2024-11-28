@@ -1,7 +1,7 @@
-Likes - 26153
-Comments - 41967
-Follows - 591
+Likes - 26179
+Comments - 41980
+Follows - 592
 Reposts - 2354
 Posts reported - 389
 Accounts reported - 2
-Scrolls - 1289
+Actions - 685
