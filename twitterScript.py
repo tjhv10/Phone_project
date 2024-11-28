@@ -35,9 +35,16 @@ def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png
         sleep(2)
         tap_keyboard(d,text) 
         sleep(1)
-        update_results_file("Comments")
-        sleep(1)
-        d.click(600, 125)  # Click the post button
+        if search_sentence(d,text,tolerance=10):
+            update_results_file("Comments")
+            sleep(1)
+            d.click(600, 125)  # Click the post button
+        else:
+            print(f"{threading.current_thread().name}:{d.wlan_ip} Comment is deprecated, canceling.")
+            d.press(60,130)
+            sleep(3)
+            d.press(430,920)
+            print(f"{threading.current_thread().name}:{d.wlan_ip} Got out of deprecated comment.")
     else:
         print(f"{threading.current_thread().name}:{d.wlan_ip} Comment icon not found on the screen.")
     print(f"{threading.current_thread().name}:{d.wlan_ip} Finished comment_text function")
@@ -83,20 +90,21 @@ def scroll_like_and_comment(d,posts):
             tap_like_button(d)
             print(f"{threading.current_thread().name}:{d.wlan_ip} Liked the post.")
 
-        elif action == 'comment':
-            comment_text(d, text)
-            print(f"{threading.current_thread().name}:{d.wlan_ip} Commented: {text}")
-
         elif action == 'both':
             tap_like_button(d)
             print(f"{threading.current_thread().name}:{d.wlan_ip} Liked the post.")
             sleep(2)
-            comment_text(d, text)
-            print(f"{threading.current_thread().name}:{d.wlan_ip} Commented: {text}")
             sleep(2)
             num = random.choice([1,2,3,4,5])
-            if num==1:
+            if num==3:
+                comment_text(d, text)
+                print(f"{threading.current_thread().name}:{d.wlan_ip} Commented: {text}")
                 tap_repost_button(d)
+                print(f"{threading.current_thread().name}:{d.wlan_ip} Reposted.")
+            elif num<=2:
+                comment_text(d, text)
+                print(f"{threading.current_thread().name}:{d.wlan_ip} Commented: {text}")
+        
         sleep(3)
     sleep(2)
     d.press("back")
@@ -178,9 +186,11 @@ def search_and_go_to_page(d, page_name):
         x,y = search_sentence(d,"@"+page_name)
         d.click(int(x),int(y))
     except:
-        x,y = search_sentence(d,"@"+page_name.lower())
-        d.click(int(x),int(y))
-        print("Didnt find page!")
+        try:
+            x,y = search_sentence(d,"@"+page_name.lower())
+            d.click(int(x),int(y))
+        except:
+            print("Didnt find page!")
     
     print(f"{threading.current_thread().name}:{d.wlan_ip} Got into the page!")
     sleep(5)
@@ -396,7 +406,7 @@ def main(d):
     print(f"{threading.current_thread().name}:{d.wlan_ip} Opened Twitter!")
     sleep(12)  # Wait for Twitter to fully load
     d.click(75,1500) # Go to home
-    for _ in range(random.randint(4,10)):
+    for _ in range(random.randint(1,2)):
         scroll_random_number(d)
         sleep(4)
         # tap_like_button(d)   #don't use until fyp is pro israel
@@ -415,7 +425,7 @@ def main(d):
         d.click(75,1500) # Go to home
         sleep(4)
         
-        for _ in range(random.randint(1,12)):
+        for _ in range(random.randint(1,2)):
             scroll_random_number(d)
             sleep(2)
             # tap_like_button(d)
@@ -429,14 +439,15 @@ def main(d):
     sleep(3)
     d.app_stop("com.twitter.android")
     sleep(4)
-# d = u2.connect("10.0.0.21")
+# d = u2.connect("10.100.102.195")
 # search_and_go_to_page(d, "DannyNis")
 
 # for handle in twitter_handles:
-#     search_and_go_to_page(d, handle)
+# search_and_go_to_page(d,"Ostrov_A")
 
 # report_twitter_posts(d)
 # tap_repost_button(d)
 # report_post(d,"https://x.com/MannieMighty1/status/1853460648673300801", 5)
 # report_account(d,"https://x.com/marwanbishara?t=Ut7owo1yPl0b9VSvGGI4cQ&s=08")
+
 

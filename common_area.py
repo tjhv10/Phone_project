@@ -4,8 +4,11 @@ from time import sleep
 import cv2
 import numpy as np
 import requests
-from PIL import Image
-from io import BytesIO
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+import time
+import requests
 
 
 israel_support_comments = [
@@ -345,36 +348,36 @@ anti_israel_tiktok = [
 
 
 keyboard_dic = {
-    "q": (40, 1200),
-    "w": (110, 1200),
-    "e": (180, 1200),
-    "r": (250, 1200),
-    "t": (320, 1200),
-    "y": (390, 1200),
-    "u": (460, 1200),
-    "i": (530, 1200),
-    "o": (600, 1200),
-    "p": (670, 1200),
-    "a": (70, 1285),
-    "s": (140, 1285),
-    "d": (210, 1285),
-    "f": (280, 1285),
-    "g": (350, 1285),
-    "h": (420, 1285),
-    "j": (490, 1285),
-    "k": (560, 1285),
-    "l": (630, 1285),
-    "z": (150, 1400),
-    "x": (220, 1400),
-    "c": (290, 1400),
-    "v": (360, 1400),
-    "b": (430, 1400),
-    "n": (500, 1400),
-    "m": (570, 1400),
-    ".": (570,1500),
-    ",": (150,1500),
-    " ": (400,1500),
-    "_": [(65,1500),(25,1300),(65,1500)]
+    "q": [(40, 1200)],
+    "w": [(110, 1200)],
+    "e": [(180, 1200)],
+    "r": [(250, 1200)],
+    "t": [(320, 1200)],
+    "y": [(390, 1200)],
+    "u": [(460, 1200)],
+    "i": [(530, 1200)],
+    "o": [(600, 1200)],
+    "p": [(670, 1200)],
+    "a": [(70, 1285)],
+    "s": [(140, 1285)],
+    "d": [(210, 1285)],
+    "f": [(280, 1285)],
+    "g": [(350, 1285)],
+    "h": [(420, 1285)],
+    "j": [(490, 1285)],
+    "k": [(560, 1285)],
+    "l": [(630, 1285)],
+    "z": [(150, 1400)],
+    "x": [(220, 1400)],
+    "c": [(290, 1400)],
+    "v": [(360, 1400)],
+    "b": [(430, 1400)],
+    "n": [(500, 1400)],
+    "m": [(570, 1400)],
+    ".": [(570,1500)],
+    ",": [(150,1500)],
+    " ": [(400,1500)],
+    "_": [(65,1500),(250,1300),(65,1500)]
 }
 
 report_tiktok_clicks = {
@@ -612,8 +615,8 @@ def tap_keyboard(d, text, keyboard = keyboard_dic):
         if char in ("1", "2", "3", "4", "5", "6", "7", "8", "9", "0"):
             char = " "  
         if char in keyboard:
-            for act in keyboard[char]:
-                x, y = keyboard[char][act]
+            for i,act in enumerate(keyboard[char]):
+                x, y = keyboard[char][i]
                 d.click(x, y)  # Simulate a tap on the screen at the corresponding coordinates
                 sleep(random.uniform(0.04, 0.07))  # Add a small delay between taps
         else:
@@ -746,59 +749,55 @@ def update_results_file(action_type, counter=1):
 
 
 
-# from selenium import webdriver
-# from selenium.webdriver.common.keys import Keys
-# from selenium.webdriver.common.by import By
-# import time
-# import requests
 
-# # Set up the WebDriver to connect to the existing Chrome instance with remote debugging
-# chrome_options = webdriver.ChromeOptions()
-# chrome_options.add_experimental_option("debuggerAddress", "localhost:9222")  # Connect to the remote debugging port
+def startAccount():
+    # Set up the WebDriver to connect to the existing Chrome instance with remote debugging
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_experimental_option("debuggerAddress", "localhost:9222")  # Connect to the remote debugging port
 
-# # Set up the Chrome WebDriver path
-# chrome_driver_path = 'C:/Users/goldf/OneDrive/Documents/chromedriver_win32/chromedriver.exe'
+    # Set up the Chrome WebDriver path
+    chrome_driver_path = 'C:/Users/goldf/OneDrive/Documents/chromedriver_win32/chromedriver.exe'
 
-# # Initialize the WebDriver with the specified options to connect to the existing browser
-# driver = webdriver.Chrome(options=chrome_options)
+    # Initialize the WebDriver with the specified options to connect to the existing browser
+    driver = webdriver.Chrome(options=chrome_options)
 
-# # Open ChatGPT in the existing Chrome window (this will use the existing session)
-# driver.get("https://chat.openai.com/")
+    # Open ChatGPT in the existing Chrome window (this will use the existing session)
+    driver.get("https://chat.openai.com/")
 
-# # Wait for the page to load
-# time.sleep(15)
+    # Wait for the page to load
+    time.sleep(15)
 
-# # Send a prompt
-# prompt_text = "Generate an image of a futuristic city skyline at sunset with flying cars."
-# chat_input = driver.find_element(By.XPATH, '//*[@id="prompt-textarea"]/p')  # Find the text input box
-# chat_input.send_keys(prompt_text)
-# time.sleep(1)
-# chat_input.send_keys(Keys.ENTER)
+    # Send a prompt
+    prompt_text = "Generate an image of a futuristic city skyline at sunset with flying cars."
+    chat_input = driver.find_element(By.XPATH, '//*[@id="prompt-textarea"]/p')  # Find the text input box
+    chat_input.send_keys(prompt_text)
+    time.sleep(1)
+    chat_input.send_keys(Keys.ENTER)
 
-# # Wait for the image to be generated (adjust timing as needed)
-# time.sleep(30)
+    # Wait for the image to be generated (adjust timing as needed)
+    time.sleep(30)
 
-# # Locate the generated image and download it
-# try:
-#     image_element = driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/main/div[1]/div[1]/div/div/div/div/article[2]/div/div/div[2]/div/div[1]/div[1]/div/div/div/div[2]/img')
-#     image_url = image_element.get_attribute("src")
+    # Locate the generated image and download it
+    try:
+        image_element = driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/main/div[1]/div[1]/div/div/div/div/article[2]/div/div/div[2]/div/div[1]/div[1]/div/div/div/div[2]/img')
+        image_url = image_element.get_attribute("src")
 
-#     # Download the image using requests
-#     image_response = requests.get(image_url)
-    
-#     # Save the image
-#     if image_response.status_code == 200:
-#         with open("generated_image.png", 'wb') as f:
-#             f.write(image_response.content)
-#         print("Image downloaded successfully.")
-#     else:
-#         print("Failed to download the image.")
+        # Download the image using requests
+        image_response = requests.get(image_url)
+        
+        # Save the image
+        if image_response.status_code == 200:
+            with open("generated_image.png", 'wb') as f:
+                f.write(image_response.content)
+            print("Image downloaded successfully.")
+        else:
+            print("Failed to download the image.")
 
-# except Exception as e:
-#     print(f"Error: {e}")
+    except Exception as e:
+        print(f"Error: {e}")
 
-# # Close the browser if necessary
-# # driver.quit()
+    # Close the browser if necessary
+    driver.quit()
 
 
     
