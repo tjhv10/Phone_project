@@ -41,9 +41,9 @@ def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png
             d.click(600, 125)  # Click the post button
         else:
             print(f"{threading.current_thread().name}:{d.wlan_ip} Comment is deprecated, canceling.")
-            d.press(60,130)
+            d.click(60,130)
             sleep(3)
-            d.press(430,920)
+            d.click(430,920)
             print(f"{threading.current_thread().name}:{d.wlan_ip} Got out of deprecated comment.")
     else:
         print(f"{threading.current_thread().name}:{d.wlan_ip} Comment icon not found on the screen.")
@@ -449,5 +449,3 @@ def main(d):
 # tap_repost_button(d)
 # report_post(d,"https://x.com/MannieMighty1/status/1853460648673300801", 5)
 # report_account(d,"https://x.com/marwanbishara?t=Ut7owo1yPl0b9VSvGGI4cQ&s=08")
-
-
