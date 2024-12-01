@@ -267,7 +267,7 @@ instagram_accounts = [
     "idf",
     "fleurhassann",
     "standwithus",
-    "israel", 
+    "israel",
     "israeltodaymag", 
     "jewishagency", 
     "honestreporting", 
@@ -783,7 +783,7 @@ def update_results_file(action_type, counter=1):
     Parameters:
     action_type (str): The action type to update ('Likes', 'Comments', 'Follows', 'Reports', 'Scrolls').
     """
-    file_path = "results.txt"
+    file_path = "result.txt"
     
     with file_lock:  # Ensure only one thread accesses the file at a time
         # Load current values
