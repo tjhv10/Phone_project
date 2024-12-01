@@ -393,7 +393,9 @@ def main(d):
     d.app_stop("com.twitter.android")
     sleep(2)
     for _ in range(1):
-        search_and_go_to_page(d, random.choice(twitter_handles))
+        account= random.choice(twitter_handles)
+        print(f"{threading.current_thread().name}:{d.wlan_ip} The account is: {account}!")
+        search_and_go_to_page(d, account)
         sleep(2)
         follow_page(d)
         sleep(2)
