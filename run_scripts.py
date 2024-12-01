@@ -7,13 +7,11 @@ from start_adb import *
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from common_area import *
 from queue import Queue
-import os
 import time
 import threading
-import signal
-import sys
+from queue import Empty
 
-# TODO: nonscrollable countdown
+
 def like_comment_follow(device, max_duration=3600 * 2):  # 1 hour = 3600 seconds
     """
     Function to run Twitter and TikTok scripts on a specific phone.
@@ -30,12 +28,12 @@ def like_comment_follow(device, max_duration=3600 * 2):  # 1 hour = 3600 seconds
         
         # Run Twitter and TikTok scripts once
         print(f"Running Twitter script on device with IP: {device_ip}")
-        twi.main(device)  # Assuming twi.main is the function for running the Twitter script
-        sleep(5)  # Delay between scripts
-        open_vpn(device)
+        # twi.main(device)  # Assuming twi.main is the function for running the Twitter script
+        # sleep(5)  # Delay between scripts
+        # open_vpn(device)
 
         print(f"Running TikTok script on device with IP: {device_ip}")
-        tik.main(device)  # Assuming tik.main is the function for running the TikTok script
+        twi.report_post(device,random.choice(twitter_posts_to_report)[0])  # Assuming tik.main is the function for running the TikTok script
         sleep(5)  # Delay between scripts
         open_vpn(device)
 
@@ -122,7 +120,7 @@ def report_tiktok(device_id):
 def close_apps(device): 
     device.app_stop("com.twitter.android")     
     device.app_stop("com.zhiliaoapp.musically")     
-    print(device.wlan_ip+" closed apps.")
+    print(device.wlan_ip + " closed apps.")
 
 def main():
     """
@@ -212,10 +210,10 @@ stop_event = threading.Event()
 def open_vpn(d):
     print(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!") 
     d.app_start("com.nordvpn.android")
-    while twi.search_sentence(d, "Finding the best server...") != None:
+    while search_sentence(d, "Finding the best server..."):
         sleep(60)  # 1 minute of delay after opening the VPN
 
-# Worker thread function
+
 def worker_task():
     while not stop_event.is_set():  # Check if the stop event is set
         try:
@@ -224,33 +222,27 @@ def worker_task():
             if device is None:
                 break  # Stop if there are no devices to process
             
-            # open_vpn(device)  # Perform tasks on this device
-
-            close_apps(device)  # Perform tasks on this device
-
+            # Perform tasks on this device
+            like_comment_follow(device)
+            close_apps(device)
 
             worker_queue.task_done()  # Mark task as done
             time.sleep(5)  # Optional: Add a sleep delay between tasks
             worker_queue.put(device)  # Re-add the device to the queue for the worker to process again
+        except Empty:
+            # print(f"{threading.current_thread().name}: No devices in the queue. Waiting for tasks...")
+            time.sleep(1)  # Optional: Prevent tight loop in case of repeated queue emptiness
         except Exception as e:
             if stop_event.is_set():
                 print(f"{threading.current_thread().name}: Stopping due to stop event.")
                 break  # Exit the loop when the stop event is set
             else:
-                print(f"Error: {e}")
+                print(f"Error in {threading.current_thread().name}: {e}")
+                print("Traceback details:")
+                import traceback
+                traceback.print_exc()  # Print the full traceback
 
-def handle_signal(sig, frame):
-    """Function to handle the Ctrl+C signal."""
-    print("\nCtrl+C detected. Stopping workers and closing apps on all devices...")
-    stop_event.set()  # Set the stop event to stop all threads
-    
-    # Close apps on all devices in the queue
-    while not worker_queue.empty():
-        try:
-            device = worker_queue.get_nowait()  # Get device from queue
-            close_apps(device)  # Close apps on this device
-        except Exception as e:
-            print(f"Error closing apps on device: {e}")
+
 
 try:
     # Uncomment the function you want to run
