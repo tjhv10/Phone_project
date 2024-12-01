@@ -26,6 +26,7 @@ def like_comment_follow(device, max_duration=3600 * 2):  # 1 hour = 3600 seconds
     try:
         print(f"Running tasks on device with IP: {device_ip}")
         close_apps(device)
+        sleep(3)
         open_vpn(device)
         # Run Twitter and TikTok scripts once
         print(f"Running Twitter script on device with IP: {device_ip}")
@@ -117,7 +118,8 @@ def report_tiktok(device_id):
 
 def close_apps(device): 
     device.app_stop("com.twitter.android")     
-    device.app_stop("com.zhiliaoapp.musically")     
+    device.app_stop("com.zhiliaoapp.musically")
+    device.app_stop("com.nordvpn.android")     
     print(device.wlan_ip + " closed apps.")
 
 def main():
@@ -131,7 +133,7 @@ def main():
     devices =  get_connected_devices() # This will return a list of connected devices (already u2.Device objects)
 
     # Define the maximum number of concurrent threads to limit CPU usage
-    max_threads = 15  # Adjust this based on your system’s capabilities
+    max_threads = 5  # Adjust this based on your system’s capabilities
     
     # Initialize a queue to manage workers
       # Initialize a queue to manage workers

@@ -267,7 +267,7 @@ instagram_accounts = [
     "idf",
     "fleurhassann",
     "standwithus",
-    "israel", 
+    "israel",
     "israeltodaymag", 
     "jewishagency", 
     "honestreporting", 

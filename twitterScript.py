@@ -35,7 +35,12 @@ def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png
     if best_match:
         d.click(int(best_match[0]), int(best_match[1]))  # Unpack directly
         update_results_file("Actions")
-        sleep(2)
+        sleep(5)
+        result = search_sentence(d,"Enable", tolerance=30) # For post location message
+        if result:
+            x,y = result
+            d.click(x-50,y)
+            sleep(3)
         tap_keyboard(d,text) 
         sleep(1)
         print(f"{threading.current_thread().name}:{d.wlan_ip} Searching for: {text}")
@@ -187,6 +192,7 @@ def search_and_go_to_page(d, page_name):
     d.click(180, 1500)
     update_results_file("Actions")
     print(f"{threading.current_thread().name}:{d.wlan_ip} Clicked on the search button.")
+    print(f"{threading.current_thread().name}:{d.wlan_ip} serching for {page_name}.")
     sleep(3)
     # Click on the search input field
     d.click(360, 140)
