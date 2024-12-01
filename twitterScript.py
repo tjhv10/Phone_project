@@ -159,7 +159,7 @@ def scroll_random_number(d):
 
 
 def search_and_go_to_page(d, page_name):
-    """
+    """ 
     Searches for the specified text in Twitter and navigates to the desired page.
 
     Parameters:
