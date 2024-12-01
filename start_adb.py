@@ -8,6 +8,7 @@ def get_connected_devices():
     Get a list of connected devices as uiautomator2.Device objects.
     """
     try:
+        print("Getting all connected devices...")
         result = subprocess.run(["adb", "devices"], capture_output=True, text=True)
         devices = []
         
