@@ -1,3 +1,4 @@
+import subprocess
 import threading
 from time import sleep
 import random
@@ -260,7 +261,8 @@ def report_post(d, link, action=0):
     if "com.twitter.android" in d.app_list_running():
         print(f"{threading.current_thread().name}:{d.wlan_ip} Twitter is running!")
         # Open the tweet in the Twitter app
-        result = d.shell(f"cmd package resolve-activity -a android.intent.action.VIEW -d '{link}'")
+        result = d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
+        print(link)
         print(f"Resolve activity result: {result}")
         print(f"{threading.current_thread().name}:{d.wlan_ip} Opened tweet: {link}")
         sleep(10)
@@ -389,8 +391,7 @@ def main(d):
         sleep(2)
         follow_page(d)
         sleep(2)
-        # Perform scrolling and liking of tweets
-        scroll_like_and_comment(d,20)
+        scroll_like_and_comment(d,10)
         d.click(75,1500) # Go to home
         update_results_file("Actions")
         sleep(4)
@@ -409,7 +410,7 @@ def main(d):
     sleep(3)
     d.app_stop("com.twitter.android")
     sleep(4)
-# d = u2.connect("10.100.102.195")
+# d = u2.connect("10.0.0.1")
 # search_and_go_to_page(d, "DannyNis")
 
 # for handle in twitter_handles:
@@ -420,3 +421,4 @@ def main(d):
 # report_post(d,"https://x.com/MannieMighty1/status/1853460648673300801", 5)
 # report_account(d,"https://x.com/marwanbishara?t=Ut7owo1yPl0b9VSvGGI4cQ&s=08")
 # comment_text(d,random.choice(israel_support_comments))
+# report_post(d,twitter_posts_to_report[0][0])
