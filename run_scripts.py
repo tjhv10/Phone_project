@@ -1,3 +1,4 @@
+print("Downloading libraries...")
 from time import sleep
 import tiktokScript as tik
 import twitterScript as twi
@@ -10,6 +11,7 @@ from queue import Queue
 import time
 import threading
 from queue import Empty
+from start_adb import device_ips
 
 
 def like_comment_follow(device, max_duration=3600 * 2):  # 1 hour = 3600 seconds
@@ -119,7 +121,6 @@ def report_tiktok(device_id):
 def close_apps(device): 
     device.app_stop("com.twitter.android")     
     device.app_stop("com.zhiliaoapp.musically")
-    device.app_stop("com.nordvpn.android")     
     print(device.wlan_ip + " closed apps.")
 
 def main():
@@ -129,18 +130,15 @@ def main():
     """
     global worker_queue
     start_and_connect_all_servers()
-    # Connect all devices before submitting tasks to the thread pool
-    devices =  get_connected_devices() # This will return a list of connected devices (already u2.Device objects)
 
     # Define the maximum number of concurrent threads to limit CPU usage
     max_threads = 5  # Adjust this based on your system’s capabilities
     
     # Initialize a queue to manage workers
-      # Initialize a queue to manage workers
     worker_queue = Queue()
 
     # Put all the devices into the queue
-    for device in devices:
+    for device in device_ips:
         worker_queue.put(device)
 
     # Create and start worker threads manually
@@ -210,8 +208,9 @@ stop_event = threading.Event()
 def open_vpn(d):
     print(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!") 
     d.app_start("com.nordvpn.android")
-    while search_sentence(d, "Finding the best server..."):
-        sleep(60)  # 1 minute of delay after opening the VPN
+    sleep(10)
+    while not search_sentence(d, "Disconnect"):
+        sleep(120)  # 2 minute of delay after opening the VPN
 
 
 def worker_task():
