@@ -30,12 +30,12 @@ def like_comment_follow(device, max_duration=3600 * 2):  # 1 hour = 3600 seconds
         close_apps(device)
         sleep(3)
         open_vpn(device)
-        # print(f"Running Twitter script on device with IP: {device_ip}")
-        # twi.main(device)  # Assuming twi.main is the function for running the Twitter script
-        # sleep(5)  # Delay between scripts
-        # open_vpn(device)
+        print(f"Running Twitter script on device with IP: {device_ip}")
+        twi.main(device)  # Assuming twi.main is the function for running the Twitter script
+        sleep(5)  # Delay between scripts
+        open_vpn(device)
         print(f"Running TikTok script on device with IP: {device_ip}")
-        tik.main(device)  # Assuming tik.main is the function for running the TikTok script
+        tik.main(device)  # Assuming tik.main is the function for running the TikTok script hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!!!!!!!!!!!!!!!!!!!!!!!!!!
         sleep(5)  # Delay between scripts
         print(f"Device with IP {device_ip} completed its tasks.")
         
@@ -131,7 +131,7 @@ def main():
     start_and_connect_all_servers()
 
     # Define the maximum number of concurrent threads to limit CPU usage
-    max_threads = 5  # Adjust this based on your system’s capabilities
+    max_threads = 6  # Adjust this based on your system’s capabilities
     
     # Initialize a queue to manage workers
     worker_queue = Queue()
