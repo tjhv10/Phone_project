@@ -34,7 +34,7 @@ def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png
     if best_match:
         d.click(int(best_match[0]), int(best_match[1]))  # Unpack directly
         update_results_file("Actions")
-        sleep(5)
+        sleep(10)
         result = search_sentence(d,"Enable","twi", tolerance=30) # For post location message
         if result:
             x,y = result
@@ -209,10 +209,10 @@ def search_and_go_to_page(d, page_name):
     # Click on the search input field
     d.click(360, 140)
     update_results_file("Actions")
-    sleep(3)
+    sleep(5)
      # Type each character of the search term with a random delay to simulate human typing
     tap_keyboard(d,page_name)
-    sleep(8)
+    sleep(15)
     print(f"{threading.current_thread().name}:{d.wlan_ip} Typed '{page_name}' in the search bar naturally.")
     try:
         x,y = search_sentence(d,"@"+page_name,"twi")
@@ -411,7 +411,7 @@ def main(d):
     sleep(2)
     id_map = {}
 
-    for _ in range(100):
+    for _ in range(5):
         account = random.choice(twitter_handles)
         # Store the current account in the id_map
         id_map[id(account)] = account

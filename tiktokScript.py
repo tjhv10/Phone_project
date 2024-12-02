@@ -26,26 +26,23 @@ def search(d, text):
     """
     screen_width = d.info['displayWidth']
     screen_height = d.info['displayHeight']
-    
     x = screen_width * (650 / 720)
     y = screen_height * (100 / 1560)
-
-    
     d.click(x, y)  # Click on the search bar
     update_results_file("Actions")
-    sleep(4)
+    sleep(10)
     tap_keyboard(d,text)
-    sleep(5)
+    sleep(15)
     d.press(66)  # Press the search button
     update_results_file("Actions")
-    sleep(10)
+    sleep(20)
 
     tap_users(d)  # Click to go to users
-    sleep(8)
+    sleep(10)
 
     d.click(350, 300)  # Click to go into the first result
     update_results_file("Actions")
-    sleep(4)
+    sleep(10)
     
         
 
