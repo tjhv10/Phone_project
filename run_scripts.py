@@ -4,7 +4,7 @@ import twitterScript as twi
 import instegramScript as inst
 import uiautomator2 as u2
 from start_adb import *
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 from common_area import *
 from queue import Queue
 import time
