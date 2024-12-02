@@ -3,7 +3,6 @@ import random
 import threading
 from common_area import *
 import uiautomator2 as u2
-from twitterScript import search_sentence
 
 
 def tap_users(d, users_template_path="icons/tiktok_icons/users.png"):
@@ -220,7 +219,7 @@ def report_post(d, link, action=0):
             
         try:   
             # Find and click the "Watch only" button
-            x, y = search_sentence(d, "Watch only")
+            x, y = search_sentence(d, "Watch only","tik")
             d.click(int(x), int(y))
             update_results_file("Actions")
             sleep(7)
@@ -247,7 +246,7 @@ def report_post(d, link, action=0):
             # Stop TikTok app
             d.app_stop("com.zhiliaoapp.musically")
 
-        except Exception as e:
+        except Exception:
             print(f"{threading.current_thread().name}:{d.wlan_ip} already reported that post.")
 
             # Stop TikTok app
@@ -327,11 +326,6 @@ def main(d):
     """
     Main function to connect to the device and perform actions on TikTok.
     # """
-    # d.app_start("com.zhiliaoapp.musicallyy")  # Open TikTok app
-    # print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened TikTok!")
-    # sleep(15)
-    # if "com.zhiliaoapp.musically" in d.app_list_running():
-    #     print(f"{threading.current_thread().name}:{d.wlan_ip} TikTok is running!")
     for _ in range(10):
         if "com.zhiliaoapp.musically" in d.app_list_running():
             # Stop Tiktok app

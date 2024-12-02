@@ -3,10 +3,9 @@ from time import sleep
 import random
 from common_area import *
 import uiautomator2 as u2
-# import easyocr
-# from fuzzywuzzy import fuzz
 
 
+#TODO add pic equlaizer to save from unexpected behavior
 
 
 def tap_like_button(d, like_button_template_path="icons/twitter_icons/like.png"):
@@ -36,7 +35,7 @@ def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png
         d.click(int(best_match[0]), int(best_match[1]))  # Unpack directly
         update_results_file("Actions")
         sleep(5)
-        result = search_sentence(d,"Enable", tolerance=30) # For post location message
+        result = search_sentence(d,"Enable","twi", tolerance=30) # For post location message
         if result:
             x,y = result
             d.click(x-50,y)
@@ -44,7 +43,7 @@ def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png
         tap_keyboard(d,text) 
         sleep(1)
         print(f"{threading.current_thread().name}:{d.wlan_ip} Searching for: {text}")
-        if search_sentence(d,text):
+        if search_sentence(d,text,"twi"):
             update_results_file("Comments")
             sleep(1)
             d.click(600, 125)  # Click the post button
@@ -195,6 +194,15 @@ def search_and_go_to_page(d, page_name):
     # Perform the search
     d.click(180, 1500)
     update_results_file("Actions")
+    file_name = "bug.txt"
+    print(page_name+" ohhhh")
+    if page_name.strip() == "israel":
+        with open(file_name, "w") as file:
+            file.write(f"Account: {page_name}\n")
+            file.write(f"Memory address: {hex(id(page_name))}\n")
+            file.write("\n")  # Add a newline for better readability
+
+
     print(f"{threading.current_thread().name}:{d.wlan_ip} Clicked on the search button.")
     print(f"{threading.current_thread().name}:{d.wlan_ip} serching for {page_name}.")
     sleep(3)
@@ -207,12 +215,12 @@ def search_and_go_to_page(d, page_name):
     sleep(8)
     print(f"{threading.current_thread().name}:{d.wlan_ip} Typed '{page_name}' in the search bar naturally.")
     try:
-        x,y = search_sentence(d,"@"+page_name)
+        x,y = search_sentence(d,"@"+page_name,"twi")
         d.click(int(x),int(y))
         update_results_file("Actions")
     except:
         try:
-            x,y = search_sentence(d,"@"+page_name.lower())
+            x,y = search_sentence(d,"@"+page_name.lower(),"twi")
             d.click(int(x),int(y))
             update_results_file("Actions")
         except:
@@ -284,16 +292,16 @@ def report_post(d, link, action=0):
             d.click(685, 210)
             update_results_file("Actions")
             sleep(3)
-            if search_sentence(d, "you reported this post.") != None:
+            if search_sentence(d, "you reported this post.","twi") != None:
                 print(f"{threading.current_thread().name}:{d.wlan_ip} already reported this tweet.")
                 return 
             # Click on the report button
-            x, y = search_sentence(d, "Report post")
+            x, y = search_sentence(d, "Report post","twi")
             sleep(3)
             d.click(int(x), int(y))
             update_results_file("Actions")
             sleep(15)
-            while not search_sentence(d,"What type of issue are"):
+            while not search_sentence(d,"What type of issue are","twi"):
                 print(f"{threading.current_thread().name}:{d.wlan_ip} Waiting for report page to load...")
                 sleep(10)
 
@@ -344,7 +352,7 @@ def report_account(d, account='',link=''):
         update_results_file("Actions")
         sleep(3)
         # Click on the report button
-        x,y = search_sentence(d,"Report")
+        x,y = search_sentence(d,"Report","twi")
         sleep(3)
         d.click(int(x), int(y))
         update_results_file("Actions")
@@ -443,7 +451,7 @@ def main(d):
     sleep(3)
     d.app_stop("com.twitter.android")
     sleep(4)
-d = u2.connect("10.100.102.195")
+# d = u2.connect("10.100.102.195")
 # search_and_go_to_page(d, "DannyNis")
 
 # for handle in twitter_handles:

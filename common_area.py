@@ -633,53 +633,98 @@ def tap_keyboard(d, text, keyboard = keyboard_dic):
             sleep(random.uniform(0.04, 0.07))  # Add a small delay between taps
                 
 
-def search_sentence(d, name, tolerance=20,usegpu = True):
-    screen_shot = take_screenshot(d, threading.current_thread().name, "twi")
+def search_sentence(d, name, plat, tolerance=20, usegpu=True):
+    screen_shot = take_screenshot(d, threading.current_thread().name, plat)
     print(f"{threading.current_thread().name}:{d.wlan_ip} Searching for name: {name}")
     
     # Initialize the OCR reader
-    reader = easyocr.Reader(['en'], gpu=usegpu)  # You can add more languages if needed
+    reader = easyocr.Reader(['en'], gpu=usegpu)
 
     # Perform OCR
-    result = reader.readtext(screen_shot, detail=1)  # detail=1 provides bounding box and text
+    result = reader.readtext(screen_shot, detail=1)
 
-    best_match = None
     best_similarity = 0  # Initialize with the lowest possible score (0%)
+    best_match_sentence = ""  # To store the closest matching sentence
+    best_match_bboxes = []  # To store bounding boxes for the best match
 
-    # Ensure both name and detected text retain special characters like '@'
-    processed_name = name.strip()  # Keep special characters, but strip unnecessary spaces
+    # Process the name for matching
+    processed_name = name.strip()
 
-    # Iterate over detected texts
+    # Group detected text into rows by their y-coordinates
+    rows = {}
     for detection in result:
         bbox, text, _ = detection
         top_left, _, bottom_right, _ = bbox
+        y_center = (top_left[1] + bottom_right[1]) // 2
 
-        # Skip any detected text that is above y=200
-        if top_left[1] < 180:
-            continue  # Ignore this text since it's above the desired y position
+        # Skip any text that is outside the vertical range
+        if top_left[1] < 180 or top_left[1] > 1050:
+            continue
 
-        # Keep special characters in the detected text
-        processed_text = text.strip()
-        if "Go to" in processed_text:
-            processed_text = processed_text.replace("Go to",'')
-        # Compare using fuzzy matching
-        similarity_score = fuzz.ratio(processed_name, processed_text)
-        # Check if the similarity score is the highest and within tolerance
-        if similarity_score > best_similarity and similarity_score >= (100 - tolerance):
+        # Skip rows with single-character text
+        if len(text.strip()) == 1:
+            continue
+
+        # Round y_center to group similar rows together
+        row_key = round(y_center, -1)  # Group rows by tens
+        if row_key not in rows:
+            rows[row_key] = []
+        rows[row_key].append((bbox, text.strip()))
+
+    # Combine rows to create multi-line text blocks (up to 3 rows)
+    combined_blocks = []
+    sorted_row_keys = sorted(rows.keys())  # Process rows in vertical order
+    for i, row_key in enumerate(sorted_row_keys):
+        current_block = " ".join(text for _, text in rows[row_key])
+        combined_bboxes = [bbox for bbox, _ in rows[row_key]]
+
+        # Try to merge with the next two rows if they are close vertically
+        for offset in range(1, 3):  # Allow up to 3 rows total
+            if i + offset < len(sorted_row_keys):
+                next_row_key = sorted_row_keys[i + offset]
+                if abs(next_row_key - row_key) <= 0:  # Merge if rows are close
+                    next_row_text = " ".join(text for _, text in rows[next_row_key])
+                    current_block += " " + next_row_text
+                    combined_bboxes.extend(bbox for bbox, _ in rows[next_row_key])
+                else:
+                    break  # Stop merging if rows are too far apart
+
+        combined_blocks.append((current_block, combined_bboxes))
+
+    # Search for the best match across all combined blocks
+    for combined_text, bboxes in combined_blocks:
+        if "Go to" in combined_text:
+            combined_text = combined_text.replace("Go to", '')
+
+        similarity_score = fuzz.ratio(processed_name, combined_text)
+
+        if similarity_score > best_similarity:
             best_similarity = similarity_score
-            best_match = bbox
+            best_match_sentence = combined_text
+            best_match_bboxes = bboxes
 
-    if best_match:
-        # Bounding box gives four points (top-left, top-right, bottom-right, bottom-left)
-        top_left, _, bottom_right, _ = best_match
+    if best_similarity >= (100 - tolerance) and best_match_bboxes:
+        # Calculate the center of the bounding box for the best match
+        all_top_lefts = [bbox[0] for bbox in best_match_bboxes]
+        all_bottom_rights = [bbox[2] for bbox in best_match_bboxes]
 
-        # Calculate the center position of the bounding box
-        center_x = (top_left[0] + bottom_right[0]) // 2
-        center_y = (top_left[1] + bottom_right[1]) // 2
-        return (center_x, center_y)
+        top_left_x = min(coord[0] for coord in all_top_lefts)
+        top_left_y = min(coord[1] for coord in all_top_lefts)
+        bottom_right_x = max(coord[0] for coord in all_bottom_rights)
+        bottom_right_y = max(coord[1] for coord in all_bottom_rights)
+
+        center_x = (top_left_x + bottom_right_x) // 2
+        center_y = (top_left_y + bottom_right_y) // 2
+
+        print(f"Best match found: \"{best_match_sentence}\" with similarity: {best_similarity}%")
+        return center_x, center_y
 
     print(f"{threading.current_thread().name}:{d.wlan_ip} No sufficiently similar text was found.")
     return None
+
+
+
+
 
 
 def take_screenshot(d, thread = threading.current_thread().name, app = "inst"):
