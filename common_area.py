@@ -219,7 +219,7 @@ twitter_handles = [
     "bandlersbanter",
     "HilzFuld",
     "ZionistFed",
-    "all_israel_news"
+    "all_israel_news",
     "JewsFightBack",
     "VividProwess",
     "RosieE2017",
@@ -243,7 +243,7 @@ twitter_handles = [
     "ZionistFed",
     "THEREALJEW613",
     "JakeWSimons",
-    "AvivaKlompas"
+    "AvivaKlompas",
 ]
 # Todo fix some of issue in bad names and add new names
 tiktok_accounts = [
