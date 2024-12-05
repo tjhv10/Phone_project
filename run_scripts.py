@@ -131,7 +131,7 @@ def main():
     start_and_connect_all_servers()
 
     # Define the maximum number of concurrent threads to limit CPU usage
-    max_threads = 6  # Adjust this based on your system’s capabilities
+    max_threads = 15  # Adjust this based on your system’s capabilities
     
     # Initialize a queue to manage workers
     worker_queue = Queue()
@@ -222,8 +222,12 @@ def worker_task():
                 break  # Stop if there are no devices to process
             
             # Perform tasks on this device
-            like_comment_follow(device)
-            close_apps(device)
+            # like_comment_follow(device)
+            # close_apps(device)
+            for i in range(5):
+                device.app_start("com.twitter.android")
+                device.app_stop("com.twitter.android")
+
 
             worker_queue.task_done()  # Mark task as done
             time.sleep(5)  # Optional: Add a sleep delay between tasks

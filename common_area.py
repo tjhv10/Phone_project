@@ -785,7 +785,7 @@ def search_sentence(d, name, plat, tolerance=20, usegpu=True):
         y_center = (top_left[1] + bottom_right[1]) // 2
 
         # Skip any text that is outside the vertical range
-        if top_left[1] < 180 or top_left[1] > 1050:
+        if top_left[1] < 180 or top_left[1] > 1050 and name!="?123":
             continue
 
         # Skip rows with single-character text

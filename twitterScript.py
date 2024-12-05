@@ -40,6 +40,12 @@ def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png
             x,y = result
             d.click(x-50,y)
             sleep(3)
+            d.click(350,350)
+            sleep(5)
+        result = search_sentence(d,"?123","twi", tolerance=20) # For post location message
+        if not result:
+            d.click(350,350)
+            sleep(5)
         tap_keyboard(d,text) 
         sleep(1)
         print(f"{threading.current_thread().name}:{d.wlan_ip} Searching for: {text}")

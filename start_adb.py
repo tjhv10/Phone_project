@@ -63,7 +63,7 @@ def start_and_connect_all_servers():
         print("No devices connected. Exiting.")
         return  # Exit if no devices are connected
 
-    for i in range(NUM_SERVERS):
+    for i in range(1):
         # Calculate the port number (increment from the starting port)
         port = START_PORT + i
         
