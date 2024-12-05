@@ -457,7 +457,7 @@ def main(d):
     sleep(3)
     d.app_stop("com.twitter.android")
     sleep(4)
-d = u2.connect("10.0.0.10")
+# d = u2.connect("10.0.0.10")
 # search_and_go_to_page(d, "DannyNis")
 
 # for handle in twitter_handles:
@@ -467,5 +467,5 @@ d = u2.connect("10.0.0.10")
 # tap_repost_button(d)
 # report_post(d,"https://x.com/MannieMighty1/status/1853460648673300801", 5)
 # report_account(d,"https://x.com/marwanbishara?t=Ut7owo1yPl0b9VSvGGI4cQ&s=08")
-comment_text(d,random.choice(israel_support_comments))
+# comment_text(d,random.choice(israel_support_comments))
 
