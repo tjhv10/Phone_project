@@ -28,23 +28,23 @@ def tap_like_button(d, like_button_template_path="icons/twitter_icons/like.png")
     
 
 def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png"):
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Starting comment_text function")
-    screenshot_path = take_screenshot(d,threading.current_thread().name,"twi")
-    best_match = find_best_match(screenshot_path, comment_template_path,d)
-    if best_match:
-        d.click(int(best_match[0]), int(best_match[1]))  # Unpack directly
-        update_results_file("Actions")
-        sleep(10)
-        result = search_sentence(d,"Enable","twi", tolerance=30) # For post location message
+    # print(f"{threading.current_thread().name}:{d.wlan_ip} Starting comment_text function")
+    # screenshot_path = take_screenshot(d,threading.current_thread().name,"twi")
+    # best_match = find_best_match(screenshot_path, comment_template_path,d)
+    # if best_match:
+        # d.click(int(best_match[0]), int(best_match[1]))  # Unpack directly
+        # update_results_file("Actions")
+        # sleep(10)
+        result = search_sentence(d,"posts.","twi", tolerance=30) # For post location message
         if result:
-            x,y = result
-            d.click(x-50,y)
-            sleep(3)
-            d.click(350,350)
+            d.click(430,910)
+            sleep(5)
+            x,y = search_sentence(d,"Post your replay","twi", tolerance=20) # For post location message
+            d.click(int(x),int(y))
             sleep(5)
         result = search_sentence(d,"?123","twi", tolerance=20) # For post location message
         if not result:
-            d.click(350,350)
+            d.click(int(350),int(350))
             sleep(5)
         tap_keyboard(d,text) 
         sleep(1)
@@ -63,10 +63,10 @@ def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png
             d.click(430,920)
             update_results_file("Actions")
             print(f"{threading.current_thread().name}:{d.wlan_ip} Got out of deprecated comment.")
-    else:
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Comment icon not found on the screen.")
+    # else:
+    #     print(f"{threading.current_thread().name}:{d.wlan_ip} Comment icon not found on the screen.")
         
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Finished comment_text function")
+    # print(f"{threading.current_thread().name}:{d.wlan_ip} Finished comment_text function")
         
 
 def tap_repost_button(d, repost_button_template_path="icons/twitter_icons/repost.png"):
@@ -457,7 +457,7 @@ def main(d):
     sleep(3)
     d.app_stop("com.twitter.android")
     sleep(4)
-# d = u2.connect("10.100.102.195")
+d = u2.connect("10.0.0.10")
 # search_and_go_to_page(d, "DannyNis")
 
 # for handle in twitter_handles:
@@ -467,5 +467,5 @@ def main(d):
 # tap_repost_button(d)
 # report_post(d,"https://x.com/MannieMighty1/status/1853460648673300801", 5)
 # report_account(d,"https://x.com/marwanbishara?t=Ut7owo1yPl0b9VSvGGI4cQ&s=08")
-# comment_text(d,random.choice(israel_support_comments))
+comment_text(d,random.choice(israel_support_comments))
 
