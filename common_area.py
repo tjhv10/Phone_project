@@ -245,7 +245,7 @@ twitter_handles = [
     "JakeWSimons",
     "AvivaKlompas",
 ]
-# Todo fix some of issue in bad names and add new names
+#Todo fix some of issue in bad names and add new names
 tiktok_accounts = [
     "berelsolomon",
     "danielryanspaulding",
@@ -843,7 +843,7 @@ def search_sentence(d, name, plat, tolerance=20, usegpu=True):
         center_x = (top_left_x + bottom_right_x) // 2
         center_y = (top_left_y + bottom_right_y) // 2
 
-        print(f"Best match found: \"{best_match_sentence}\" with similarity: {best_similarity}%")
+        print(f"{threading.current_thread().name}:{d.wlan_ip} Best match found: \"{best_match_sentence}\" with similarity: {best_similarity}%")
         return center_x, center_y
 
     print(f"{threading.current_thread().name}:{d.wlan_ip} No sufficiently similar text was found.")
