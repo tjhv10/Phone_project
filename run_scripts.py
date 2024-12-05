@@ -226,6 +226,7 @@ def worker_task():
             # close_apps(device)
             for i in range(5):
                 device.app_start("com.twitter.android")
+                sleep(5)
                 device.app_stop("com.twitter.android")
 
 
