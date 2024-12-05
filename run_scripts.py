@@ -28,15 +28,15 @@ def like_comment_follow(device, max_duration=3600 * 2):  # 1 hour = 3600 seconds
     try:
         print(f"Running tasks on device with IP: {device_ip}")
         close_apps(device)
-        # sleep(3)
-        # open_vpn(device)
-        # print(f"Running Twitter script on device with IP: {device_ip}")
-        # twi.main(device)  # Assuming twi.main is the function for running the Twitter script
-        sleep(5)  # Delay between scripts
+        sleep(3)
         open_vpn(device)
-        print(f"Running TikTok script on device with IP: {device_ip}")
-        tik.main(device)  # Assuming tik.main is the function for running the TikTok script hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!!!!!!!!!!!!!!!!!!!!!!!!!!
+        print(f"Running Twitter script on device with IP: {device_ip}")
+        twi.main(device)  # Assuming twi.main is the function for running the Twitter script
         sleep(5)  # Delay between scripts
+        # open_vpn(device)
+        # print(f"Running TikTok script on device with IP: {device_ip}")
+        # tik.main(device)  # Assuming tik.main is the function for running the TikTok script hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # sleep(5)  # Delay between scripts
         print(f"Device with IP {device_ip} completed its tasks.")
         
         elapsed_time = time.time() - start_time
