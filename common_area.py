@@ -4,7 +4,6 @@ from time import sleep
 import cv2
 import easyocr
 from fuzzywuzzy import fuzz
-
 import numpy as np
 import requests
 from selenium import webdriver
@@ -12,6 +11,21 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 import time
 import requests
+import logging
+# Configure logging
+log_file = "common_area_bot_log.txt"  # Log file to capture output
+logging.basicConfig(
+    level=logging.DEBUG,  # Log all messages of level DEBUG and above
+    format="%(asctime)s - %(levelname)s - %(message)s",  # Include timestamp, level, and message
+    handlers=[
+        logging.FileHandler(log_file, mode='w'),  # Write logs to a file
+        logging.StreamHandler()  # Also print logs to the console
+    ]
+)
+
+# Replace all `print` statements with `logging.info` or appropriate log levels
+print = logging.info  # Redirect print to info-level logging
+
 
 
 israel_support_comments = [
@@ -377,7 +391,7 @@ anti_israel_twitter = [
     "raisi_com",
     "TamimBinHamad",
     "MBA_AlThani",
-    "SprinterFamily",
+    "Slogging.infoerFamily",
     "DravenNoctis",
     # -----antiIsrael
     "umyaznemo",
@@ -762,7 +776,7 @@ def tap_keyboard(d, text, keyboard = keyboard_dic):
 
 def search_sentence(d, name, plat, tolerance=20, usegpu=True):
     screen_shot = take_screenshot(d, threading.current_thread().name, plat)
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Searching for name: {name}")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for name: {name}")
     
     # Initialize the OCR reader
     reader = easyocr.Reader(['en'], gpu=usegpu)
@@ -843,10 +857,10 @@ def search_sentence(d, name, plat, tolerance=20, usegpu=True):
         center_x = (top_left_x + bottom_right_x) // 2
         center_y = (top_left_y + bottom_right_y) // 2
 
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Best match found: \"{best_match_sentence}\" with similarity: {best_similarity}%")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Best match found: \"{best_match_sentence}\" with similarity: {best_similarity}%")
         return center_x, center_y
 
-    print(f"{threading.current_thread().name}:{d.wlan_ip} No sufficiently similar text was found.")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No sufficiently similar text was found.")
     return None
 
 
@@ -857,9 +871,9 @@ def search_sentence(d, name, plat, tolerance=20, usegpu=True):
 def take_screenshot(d, thread = threading.current_thread().name, app = "inst"):
     sleep(2)
     filename = f"Screenshots/{thread}-screenshot_{app}.png"
-    print(f"{thread}:{d.wlan_ip} Taking screenshot...")
+    logging.info(f"{thread}:{d.wlan_ip} Taking screenshot...")
     d.screenshot(filename)
-    print(f"Screenshot saved as {filename}.")
+    logging.info(f"Screenshot saved as {filename}.")
     return filename
 
 def find_best_match(image_path, users_template_path, d):
@@ -867,13 +881,13 @@ def find_best_match(image_path, users_template_path, d):
     Finds the best match of a user's button icon in the screenshot using template matching.
     """
     sleep(0.5)
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Starting find_best_match function")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting find_best_match function")
     
     img = cv2.imread(image_path)
     template = cv2.imread(users_template_path)
 
     if img is None or template is None:
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Error loading images.")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Error loading images.")
         return None
 
     h, w = template.shape[:2]
@@ -890,21 +904,21 @@ def find_best_match(image_path, users_template_path, d):
         best_match = max(matches, key=lambda x: x[1])
         best_coordinates = (best_match[0][0] + w // 2, best_match[0][1] + h // 2)
         best_value = best_match[1]
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Best match found with value: {best_value} at {best_coordinates}")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Best match found with value: {best_value} at {best_coordinates}")
     else:
         # If no matches found above threshold, find the closest match
         _, max_val, _, max_loc = cv2.minMaxLoc(result)
         best_coordinates = (max_loc[0] + w // 2, max_loc[1] + h // 2)
         best_value = max_val
-        print(f"{threading.current_thread().name}:{d.wlan_ip} No matches above threshold, closest match found with value: {best_value} at {best_coordinates}")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No matches above threshold, closest match found with value: {best_value} at {best_coordinates}")
         return None
     
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Finished find_best_match function")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished find_best_match function")
     
     return best_coordinates
 
 def handle_user_selection(d,report_dict):
-    print("Select a report reason:")
+    logging.info("Select a report reason:")
     numbered_report_dict = show_tree(report_dict)
 
     # User input for selection
@@ -917,13 +931,13 @@ def handle_user_selection(d,report_dict):
         else:
             execute_action(d,action,report_dict)  # Execute the action for the selected reason
     else:
-        print("Invalid selection. Please enter a valid number.")
+        logging.info("Invalid selection. Please enter a valid number.")
 
 def show_tree(report_dict, level=0):
     numbered_dict = {}
     count = 1
     for key in report_dict.keys():
-        print("  " * level + f"{count}. {key}")
+        logging.info("  " * level + f"{count}. {key}")
         numbered_dict[count] = key  # Store the original key for action retrieval
         count += 1
         if isinstance(report_dict[key], dict):
@@ -937,13 +951,13 @@ def execute_action(d,reason,report_dict):
     if reason in report_dict:
         action = report_dict[reason]
         actions = action.split(':')
-        print(f"Executing action for '{reason}': {actions}")
+        logging.info(f"Executing action for '{reason}': {actions}")
         sleep(1)
         for act in actions:
             exec(act)
             sleep(3)  
     else:
-        print("No action found for this reason.")
+        logging.info("No action found for this reason.")
 
 
 file_lock = threading.Lock()
@@ -1019,12 +1033,12 @@ def startAccount():
         if image_response.status_code == 200:
             with open("generated_image.png", 'wb') as f:
                 f.write(image_response.content)
-            print("Image downloaded successfully.")
+            logging.info("Image downloaded successfully.")
         else:
-            print("Failed to download the image.")
+            logging.info("Failed to download the image.")
 
     except Exception as e:
-        print(f"Error: {e}")
+        logging.info(f"Error: {e}")
 
     # Close the browser if necessary
     driver.quit()

@@ -3,38 +3,53 @@ from time import sleep
 import random
 from common_area import *
 import uiautomator2 as u2
+import logging
+
+# Configure logging
+log_file = "twitter_bot_log.txt"  # Log file to capture output
+logging.basicConfig(
+    level=logging.DEBUG,  # Log all messages of level DEBUG and above
+    format="%(asctime)s - %(levelname)s - %(message)s",  # Include timestamp, level, and message
+    handlers=[
+        logging.FileHandler(log_file, mode='w'),  # Write logs to a file
+        logging.StreamHandler()  # Also print logs to the console
+    ]
+)
+
+# Replace all `print` statements with `logging.info` or appropriate log levels
+print = logging.info  # Redirect print to info-level logging
 
 
 #TODO add pic equlaizer to save from unexpected behavior
 
 
 def tap_like_button(d, like_button_template_path="icons/twitter_icons/like.png"):
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Starting tap_like_button function")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting tap_like_button function")
     
     screenshot_path = take_screenshot(d,threading.current_thread().name,"twi")
     
     best_cordinates = find_best_match(screenshot_path, like_button_template_path,d)    
     
     if best_cordinates:
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Like button found at {best_cordinates}, tapping...")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Like button found at {best_cordinates}, tapping...")
         d.click(int(best_cordinates[0]), int(best_cordinates[1]))
         update_results_file("Actions")
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Tapped best match at {best_cordinates}.")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Tapped best match at {best_cordinates}.")
         update_results_file("Likes")
     else:
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Like button not found on the screen.")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Like button not found on the screen.")
     
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Finished tap_like_button function")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished tap_like_button function")
     
 
 def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png"):
-    # print(f"{threading.current_thread().name}:{d.wlan_ip} Starting comment_text function")
-    # screenshot_path = take_screenshot(d,threading.current_thread().name,"twi")
-    # best_match = find_best_match(screenshot_path, comment_template_path,d)
-    # if best_match:
-        # d.click(int(best_match[0]), int(best_match[1]))  # Unpack directly
-        # update_results_file("Actions")
-        # sleep(10)
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting comment_text function")
+    screenshot_path = take_screenshot(d,threading.current_thread().name,"twi")
+    best_match = find_best_match(screenshot_path, comment_template_path,d)
+    if best_match:
+        d.click(int(best_match[0]), int(best_match[1]))  # Unpack directly
+        update_results_file("Actions")
+        sleep(10)
         result = search_sentence(d,"posts.","twi", tolerance=30) # For post location message
         if result:
             d.click(430,910)
@@ -48,50 +63,50 @@ def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png
             sleep(5)
         tap_keyboard(d,text) 
         sleep(1)
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Searching for: {text}")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for: {text}")
         if search_sentence(d,text,"twi"):
             update_results_file("Comments")
             sleep(1)
             d.click(600, 125)  # Click the post button
             update_results_file("Actions")
-            print(f"{threading.current_thread().name}:{d.wlan_ip} Commented: {text}")
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Commented: {text}")
         else:
-            print(f"{threading.current_thread().name}:{d.wlan_ip} Comment is deprecated, canceling.")
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Comment is deprecated, canceling.")
             d.click(60,130)
             update_results_file("Actions")
             sleep(3)
             d.click(430,920)
             update_results_file("Actions")
-            print(f"{threading.current_thread().name}:{d.wlan_ip} Got out of deprecated comment.")
-    # else:
-    #     print(f"{threading.current_thread().name}:{d.wlan_ip} Comment icon not found on the screen.")
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Got out of deprecated comment.")
+    else:
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Comment icon not found on the screen.")
         
-    # print(f"{threading.current_thread().name}:{d.wlan_ip} Finished comment_text function")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished comment_text function")
         
 
 def tap_repost_button(d, repost_button_template_path="icons/twitter_icons/repost.png"):
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Starting tap_repost_button function")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting tap_repost_button function")
     
     screenshot_path = take_screenshot(d,threading.current_thread().name,"twi")
     
     best_cordinates = find_best_match(screenshot_path, repost_button_template_path,d)    
     
     if best_cordinates:
-        print(f"{threading.current_thread().name}:{d.wlan_ip} repost button found at {best_cordinates}, tapping...")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} repost button found at {best_cordinates}, tapping...")
         d.click(int(best_cordinates[0]), int(best_cordinates[1]))
         update_results_file("Actions")
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Tapped best match at {best_cordinates}.")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Tapped best match at {best_cordinates}.")
         sleep(2)
         d.click(360,1370) # Tap repost button
         update_results_file("Actions")
         update_results_file("Reposts")
     else:
-        print(f"{threading.current_thread().name}:{d.wlan_ip} reposts button not found on the screen.")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} reposts button not found on the screen.")
     
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Finished tap_reposts_button function")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished tap_reposts_button function")
 
 def scroll_like_and_comment(d,posts):
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Starting scroll_like_and_comment function")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting scroll_like_and_comment function")
     actions = ['like', 'comment', 'both', 'none']
     for _ in range(posts):
         if d(scrollable=True).exists:
@@ -101,32 +116,32 @@ def scroll_like_and_comment(d,posts):
             swipe_duration = random.uniform(0.04, 0.06)
             d.swipe(start_x, start_y, start_x, end_y, duration=swipe_duration)
             update_results_file("Actions")
-            print(f"{threading.current_thread().name}:{d.wlan_ip} Scrolled from ({start_x}, {start_y}) to ({start_x}, {end_y}) in {swipe_duration:.2f} seconds.")
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Scrolled from ({start_x}, {start_y}) to ({start_x}, {end_y}) in {swipe_duration:.2f} seconds.")
         else:
-            print(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
             
         sleep(random.uniform(2, 14))
         action = random.choice(actions)
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Action chosen: {action}")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Action chosen: {action}")
         text = random.choice(israel_support_comments)
         if action == 'like':
             tap_like_button(d)
-            print(f"{threading.current_thread().name}:{d.wlan_ip} Liked the post.")
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Liked the post.")
 
         elif action == 'both':
             tap_like_button(d)
-            print(f"{threading.current_thread().name}:{d.wlan_ip} Liked the post.")
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Liked the post.")
             sleep(2)
             sleep(2)
             num = random.choice([1,2,3,4,5])
             if num==3:
                 comment_text(d, text)
-                print(f"{threading.current_thread().name}:{d.wlan_ip} Commented: {text}")
+                logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Commented: {text}")
                 tap_repost_button(d)
-                print(f"{threading.current_thread().name}:{d.wlan_ip} Reposted.")
+                logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Reposted.")
             elif num<=2:
                 comment_text(d, text)
-                print(f"{threading.current_thread().name}:{d.wlan_ip} Commented: {text}")
+                logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Commented: {text}")
         
         sleep(3)
     sleep(2)
@@ -134,7 +149,7 @@ def scroll_like_and_comment(d,posts):
     sleep(0.5)
     d.press("back")
     sleep(2)
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Finished scroll_like_and_comment function")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished scroll_like_and_comment function")
 
 
 def scroll_random_number(d):
@@ -145,11 +160,11 @@ def scroll_random_number(d):
     d (uiautomator2.Device): The connected device object from uiautomator2.
     """
     if d(scrollable=True).exists:
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Found a scrollable view! Swiping down...")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Found a scrollable view! Swiping down...")
 
         # Randomly choose how many times to swipe (between 1 and 6)
         num_swipes = random.randint(1, 6)
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Number of swipes: {num_swipes}")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Number of swipes: {num_swipes}")
 
 
 
@@ -162,14 +177,14 @@ def scroll_random_number(d):
                 swipe_duration = random.uniform(0.04, 0.06)
                 d.swipe(start_x, start_y, start_x, end_y, duration=swipe_duration)
                 update_results_file("Actions")
-                print(f"{threading.current_thread().name}:{d.wlan_ip} Scrolled from ({start_x}, {start_y}) to ({start_x}, {end_y}) in {swipe_duration:.2f} seconds.")
+                logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Scrolled from ({start_x}, {start_y}) to ({start_x}, {end_y}) in {swipe_duration:.2f} seconds.")
             else:
-                print(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
+                logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
                 d.click(40,1340)
                 update_results_file("Actions")
             sleep(random.randint(2, 10))
     else:
-        print(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
         
 
 
@@ -190,7 +205,7 @@ def search_and_go_to_page(d, page_name):
 
     # Start the Twitter app 
     d.app_start("com.twitter.android")
-    print(f"{threading.current_thread().name}:{d.wlan_ip} : Opened Twitter!")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} : Opened Twitter!")
     sleep(10)
 
     # Swipe up to return to the previous content
@@ -201,7 +216,7 @@ def search_and_go_to_page(d, page_name):
     d.click(180, 1500)
     update_results_file("Actions")
     file_name = "bug.txt"
-    print(page_name+" ohhhh")
+    logging.info(page_name+" ohhhh")
     if page_name.strip() == "israel":
         with open(file_name, "w") as file:
             file.write(f"Account: {page_name}\n")
@@ -209,8 +224,8 @@ def search_and_go_to_page(d, page_name):
             file.write("\n")  # Add a newline for better readability
 
 
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Clicked on the search button.")
-    print(f"{threading.current_thread().name}:{d.wlan_ip} serching for {page_name}.")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Clicked on the search button.")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} serching for {page_name}.")
     sleep(3)
     # Click on the search input field
     d.click(360, 140)
@@ -219,7 +234,7 @@ def search_and_go_to_page(d, page_name):
      # Type each character of the search term with a random delay to simulate human typing
     tap_keyboard(d,page_name)
     sleep(15)
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Typed '{page_name}' in the search bar naturally.")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Typed '{page_name}' in the search bar naturally.")
     try:
         x,y = search_sentence(d,"@"+page_name,"twi")
         d.click(int(x),int(y))
@@ -230,13 +245,13 @@ def search_and_go_to_page(d, page_name):
             d.click(int(x),int(y))
             update_results_file("Actions")
         except:
-            print("Didnt find page!")
+            logging.info("Didnt find page!")
     
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Got into the page!")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Got into the page!")
     sleep(5)
 
 def follow_page(d, follow_template_path="icons/twitter_icons/follow.png"):
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Starting follow_page function")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting follow_page function")
     screenshot_path = take_screenshot(d,threading.current_thread().name,"twi")
     best_match = find_best_match(screenshot_path, follow_template_path,d)
     if best_match:
@@ -244,16 +259,16 @@ def follow_page(d, follow_template_path="icons/twitter_icons/follow.png"):
         if  num == 1:
             d.click(int(best_match[0]), int(best_match[1]))
             update_results_file("Actions")
-            print(f"{threading.current_thread().name}:{d.wlan_ip} Followed account!")
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Followed account!")
             update_results_file("Follows")
             sleep(1)
         else:
-            print(f"{threading.current_thread().name}:{d.wlan_ip} didn't followed account!")
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} didn't followed account!")
             
         sleep(2)
     else:
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Follow icon not found on the screen.")
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Finished follow_page function")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Follow icon not found on the screen.")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished follow_page function")
         
 
 def report_twitter_posts(d):
@@ -281,16 +296,16 @@ def report_post(d, link, action=0):
 
     # Start the Twitter app 
     d.app_start("com.twitter.android")
-    print(f"{threading.current_thread().name}:{d.wlan_ip} : Opened Twitter!")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} : Opened Twitter!")
     sleep(10)
 
     if "com.twitter.android" in d.app_list_running():
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Twitter is running!")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Twitter is running!")
         # Open the tweet in the Twitter app
         result = d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
-        print(link)
-        print(f"Resolve activity result: {result}")
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Opened tweet: {link}")
+        logging.info(link)
+        logging.info(f"Resolve activity result: {result}")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Opened tweet: {link}")
         sleep(10)
             
         try:
@@ -299,7 +314,7 @@ def report_post(d, link, action=0):
             update_results_file("Actions")
             sleep(3)
             if search_sentence(d, "you reported this post.","twi") != None:
-                print(f"{threading.current_thread().name}:{d.wlan_ip} already reported this tweet.")
+                logging.info(f"{threading.current_thread().name}:{d.wlan_ip} already reported this tweet.")
                 return 
             # Click on the report button
             x, y = search_sentence(d, "Report post","twi")
@@ -308,7 +323,7 @@ def report_post(d, link, action=0):
             update_results_file("Actions")
             sleep(15)
             while not search_sentence(d,"What type of issue are","twi"):
-                print(f"{threading.current_thread().name}:{d.wlan_ip} Waiting for report page to load...")
+                logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Waiting for report page to load...")
                 sleep(10)
 
             if action == 0: 
@@ -322,7 +337,7 @@ def report_post(d, link, action=0):
             d.app_stop("com.twitter.android")
 
         except Exception as e:
-            print(f"{threading.current_thread().name}:{d.wlan_ip} already reported that post.")
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} already reported that post.")
             # Stop Twitter app
             d.app_stop("com.twitter.android")
 
@@ -337,21 +352,21 @@ def report_account(d, account='',link=''):
 
     # Start the Twitter app 
     d.app_start("com.twitter.android")
-    print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Twitter!")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Twitter!")
     sleep(15)
 
     if "com.twitter.android" in d.app_list_running():
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Twitter is running!")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Twitter is running!")
 
         if link != '':
             # Open the tweet in the Twitter app
             d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
-            print(f"{threading.current_thread().name}:{d.wlan_ip} Opened account: {link}")
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Opened account: {link}")
             sleep(3)
         elif account != '':
             search_and_go_to_page(d, account)
         else:
-            print(f"{threading.current_thread().name}:{d.wlan_ip} didn't get link nor an account name. exiting the function..")
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} didn't get link nor an account name. exiting the function..")
             return
         # Click on the share button
         d.click(667, 120)
@@ -402,7 +417,7 @@ def main(d):
 
     # Start the Twitter app 
     d.app_start("com.twitter.android")
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Opened Twitter!")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Opened Twitter!")
     sleep(12)  # Wait for Twitter to fully load
     d.click(75,1500) # Go to home
     update_results_file("Actions")
@@ -421,19 +436,19 @@ def main(d):
         account = random.choice(twitter_handles)
         # Store the current account in the id_map
         id_map[id(account)] = account
-        print("account is: "+account)
+        logging.info("account is: "+account)
         if account.strip() == "israel" or account.strip() == "Israel":
-            print(account + " idk what happened")
-            print(f"Memory address of the variable: {hex(id(account))}")
+            logging.info(account + " idk what happened")
+            logging.info(f"Memory address of the variable: {hex(id(account))}")
             
-            # Debug: Print the value from the id_map using the memory address
+            # Debug: logging.info the value from the id_map using the memory address
             specific_id = id(account)
-            print(f"Value at memory address {hex(specific_id)}: {id_map.get(specific_id)}")
+            logging.info(f"Value at memory address {hex(specific_id)}: {id_map.get(specific_id)}")
             
             # Change the account
             account = random.choice(twitter_handles)
 
-        print(f"{threading.current_thread().name}:{d.wlan_ip} The account is: {account}!")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} The account is: {account}!")
         search_and_go_to_page(d, account)
         sleep(2)
         follow_page(d)
