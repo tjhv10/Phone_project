@@ -203,13 +203,13 @@ def report_post(d, link, action=0):
     # Start the Twitter app 
     d.app_start("com.zhiliaoapp.musically")
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} : Opened TikTok!")
-    # sleep(15)
+    sleep(15)
 
     if "com.zhiliaoapp.musically" in d.app_list_running():
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} TikTok is running!")
         d.shell(f"am start -a android.intent.action.VIEW -d {link}")
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Opened link: {link}")
-        sleep(2)
+        sleep(10)
             
         try:   
             # Find and click the "Watch only" button
@@ -217,34 +217,32 @@ def report_post(d, link, action=0):
             d.click(int(x), int(y))
             update_results_file("Actions")
             sleep(7)
-            
-            # Click on the share button
-            d.click(660, 1240)
-            update_results_file("Actions")
-            sleep(3)
-
-            # Click on the report button
-            d.click(90, 1400)
-            update_results_file("Actions")
-            sleep(5)
-            
-            if action == 0: 
-                handle_user_selection(d, report_tiktok_clicks)
-            else:
-                logging.info(report_tiktok_clicks[report_tiktok_keys[action - 1]])
-                execute_action(d, report_tiktok_keys[action - 1], report_tiktok_clicks)
-            
-            sleep(4)
-            update_results_file("Posts reported")
+        except:
+           pass
         
-            # Stop TikTok app
-            d.app_stop("com.zhiliaoapp.musically")
+            
+        # Click on the share button
+        d.click(660, 1240)
+        update_results_file("Actions")
+        sleep(3)
 
-        except Exception:
-            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} already reported that post.")
+        # Click on the report button
+        d.click(90, 1400)
+        update_results_file("Actions")
+        sleep(5)
+    
+        if action == 0: 
+            handle_user_selection(d, report_tiktok_clicks)
+        else:
+            logging.info(report_tiktok_clicks[report_tiktok_keys[action - 1]])
+            execute_action(d, report_tiktok_keys[action - 1], report_tiktok_clicks)
+        
+        sleep(4)
+        update_results_file("Posts reported")
+    
+        # Stop TikTok app
+        d.app_stop("com.zhiliaoapp.musically")
 
-            # Stop TikTok app
-            d.app_stop("com.zhiliaoapp.musically")
 
 def report_account(d, link):
     # Open TikTok app
@@ -265,11 +263,11 @@ def report_account(d, link):
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} TikTok is running!")
 
         # Open link with TikTok
-        d.shell(f"am start -n com.zhiliaoapp.musically/.MainActivity -a android.intent.action.VIEW -d {link}")
+        d.shell(f"am start -a android.intent.action.VIEW -d {link}")
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Opened link: {link}")
 
         # Give some time to load the page within TikTok
-        sleep(8)
+        sleep(15)
 
         # Continue with the reporting steps
         try:
@@ -311,6 +309,8 @@ def support_accounts(d,accounts):
         sleep(15)
         search(d,account)
         sleep(2)
+        d.click(100,1000)
+        sleep(2)
         scroll_like_and_comment(d,5)
         d.app_stop("com.zhiliaoapp.musically")
         sleep(4)
@@ -344,9 +344,7 @@ def main(d):
         sleep(3)
         d.app_stop("com.zhiliaoapp.musically")
         sleep(4)
-        # else:
-        #     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} TikTok is not running!")
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} done")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Done with tiktok!")
         
             
         # Sleep for 0.5 hours before the next cycle
@@ -355,8 +353,9 @@ def main(d):
     except:
         logging.error("An error occurred", exc_info=True)  # Log error with stack trace
 
-# d = u2.connect("10.0.0.21")
+# d = u2.connect("10.100.102.195")
 # for handle in tiktok_accounts:
 #     like_a_page(d, handle)
 # d = u2.connect("10.0.0.15")
-# report_post(d,"https://vt.tiktok.com/ZSjFJUTw5/")
+# report_post(d,random.choice(tiktok_posts_to_report)[0])
+# report_account(d,"https://www.tiktok.com/@healwithtati")

@@ -662,6 +662,9 @@ twitter_posts_to_report = [
     ("https://x.com/Amieradjah/status/1837128137148350957",4),
 ]
 
+tiktok_accounts_to_report = [
+    "https://www.tiktok.com/@healwithtati"
+]
 
 report_tiktok_keys = [
     'Exploitation and abuse of people under 18',               # 1
@@ -892,7 +895,7 @@ def find_best_match(image_path, users_template_path, d):
 
     h, w = template.shape[:2]
     result = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
-    threshold = 0.85
+    threshold = 0.8
     loc = np.where(result >= threshold)
 
     matches = []
@@ -952,10 +955,10 @@ def execute_action(d,reason,report_dict):
         action = report_dict[reason]
         actions = action.split(':')
         logging.info(f"Executing action for '{reason}': {actions}")
-        sleep(1)
+        sleep(2)
         for act in actions:
             exec(act)
-            sleep(3)  
+            sleep(5)  
     else:
         logging.info("No action found for this reason.")
 
