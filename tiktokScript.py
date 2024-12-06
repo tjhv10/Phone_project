@@ -6,9 +6,9 @@ import uiautomator2 as u2
 import logging
 
 # Configure logging
-log_file = "tiktok_bot_log.txt"  # Log file to capture output
+log_file = "logs.log"  # Log file to capture output
 logging.basicConfig(
-    level=logging.DEBUG,  # Log all messages of level DEBUG and above
+    level=logging.INFO,  # Log all messages of level DEBUG and above
     format="%(asctime)s - %(levelname)s - %(message)s",  # Include timestamp, level, and message
     handlers=[
         logging.FileHandler(log_file, mode='w'),  # Write logs to a file
@@ -138,6 +138,7 @@ def scroll_random_number(d):
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Swiped down {i + 1} time(s).")
     else:
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
+        reopen_app(d,"com.zhiliaoapp.musically")
 
 
 def scroll_like_and_comment(d):
@@ -161,6 +162,7 @@ def scroll_like_and_comment(d):
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Swiped down {i + 1} time(s).")
         else:
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
+            reopen_app(d,"com.zhiliaoapp.musically")
         num = random.choice([1, 2, 3, 4, 5])
         if  num <= 2:
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} like")

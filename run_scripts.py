@@ -1,3 +1,4 @@
+import glob
 import logging
 from time import sleep
 import tiktokScript as tik
@@ -14,9 +15,9 @@ from queue import Empty
 from start_adb import device_ips
 
 # Set up logging
-log_file = "script_output.log"  # Specify the log file name
+log_file = "logs.log"  # Specify the log file name
 logging.basicConfig(
-    level=logging.DEBUG,  # Log all levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    level=logging.INFO,  # Log all levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
     handlers=[
         logging.FileHandler(log_file, mode='w'),  # Log to a file
@@ -27,6 +28,11 @@ logging.basicConfig(
 # Replace print statements with logging functions
 print = logging.info  # Use logging.info for standard output
 
+def clean_log_files(directory):
+    log_files = glob.glob(os.path.join(directory, "*.log"))  # Find all .log files in the directory
+    for log_file in log_files:
+        with open(log_file, 'w') as _:
+            pass  # Opening in write mode clears the file
 
 def like_comment_follow(device, max_duration=3600 * 2):
     """
@@ -37,11 +43,16 @@ def like_comment_follow(device, max_duration=3600 * 2):
     try:
         logging.info(f"Running tasks on device with IP: {device_ip}")
         close_apps(device)
+        # sleep(3)
+        # open_vpn(device)
+        # logging.info(f"Running Twitter script on device with IP: {device_ip}")
+        # twi.main(device)
+        # close_apps(device)
         sleep(3)
         open_vpn(device)
-        logging.info(f"Running Twitter script on device with IP: {device_ip}")
-        twi.main(device)
         sleep(5)
+        tik.main(device)
+        close_apps(device)
         logging.info(f"Device with IP {device_ip} completed its tasks.")
         
         elapsed_time = time.time() - start_time
@@ -95,6 +106,7 @@ def close_apps(device):
 
 
 def main():
+    clean_log_files(".")
     global worker_queue
     start_and_connect_all_servers()
 
@@ -149,9 +161,9 @@ def open_vpn(d):
     logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!")
     d.app_start("com.nordvpn.android")
     sleep(10)
-    while search_sentence(d, "Disconnect", "twi"):
+    while not search_sentence(d, "Pause Disconnect", "twi"):
         logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Trying to reconnect...")
-        sleep(120)
+        sleep(60)
 
 
 def worker_task():

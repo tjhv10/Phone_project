@@ -13,9 +13,9 @@ import time
 import requests
 import logging
 # Configure logging
-log_file = "common_area_bot_log.txt"  # Log file to capture output
+log_file = "logs.log"  # Log file to capture output
 logging.basicConfig(
-    level=logging.DEBUG,  # Log all messages of level DEBUG and above
+    level=logging.INFO,  # Log all messages of level DEBUG and above
     format="%(asctime)s - %(levelname)s - %(message)s",  # Include timestamp, level, and message
     handlers=[
         logging.FileHandler(log_file, mode='w'),  # Write logs to a file
@@ -135,20 +135,20 @@ israel_support_comments = [
     "Solidarity with Israel 🇮🇱",
     "Peace for Israel always.",
     "Israel has my support!",
-    "Forever pro-Israel 🇮🇱",
+    "Forever pro-Israel",
     "Standing strong with Israel.",
     "Israel’s right to defend!",
     "Supporting Israel’s future.",
     "Am Yisrael Chai!",
-    "Peace for Israel 🙏",
+    "Peace for Israel",
     "Supporting Israel’s security.",
     "Defending Israel’s sovereignty!",
     "Israel deserves peace.",
     "Proudly pro-Israel!",
     "Strength for Israel.",
     "Backing Israel always!",
-    "Unity with Israel 🇮🇱",
-    "Israel forever 💙",
+    "Unity with Israel",
+    "Israel forever",
     "Israel deserves justice!",
     "Always with Israel."
 ]
@@ -799,7 +799,7 @@ def search_sentence(d, name, plat, tolerance=20, usegpu=True):
         y_center = (top_left[1] + bottom_right[1]) // 2
 
         # Skip any text that is outside the vertical range
-        if top_left[1] < 180 or top_left[1] > 1050 and name!="?123":
+        if top_left[1] < 180 or top_left[1] > 1050 and name != "2123":
             continue
 
         # Skip rows with single-character text
@@ -860,12 +860,12 @@ def search_sentence(d, name, plat, tolerance=20, usegpu=True):
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Best match found: \"{best_match_sentence}\" with similarity: {best_similarity}%")
         return center_x, center_y
 
+    # Log the best match even if it doesn't meet the tolerance
+    if best_match_sentence:
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Closest match: \"{best_match_sentence}\" with similarity: {best_similarity}%")
+
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No sufficiently similar text was found.")
     return None
-
-
-
-
 
 
 def take_screenshot(d, thread = threading.current_thread().name, app = "inst"):
@@ -1044,4 +1044,34 @@ def startAccount():
     driver.quit()
 
 
-    
+def reopen_app(d, package_name, wait_time=5):
+    """
+    Stops and reopens an app on the device.
+
+    Parameters:
+    d (uiautomator2.Device): The connected device instance.
+    package_name (str): The package name of the app to be reopened (e.g., "com.twitter.android").
+    wait_time (int): Time in seconds to wait after reopening the app.
+    """
+    try:
+        # Check if the app is running
+        if package_name in d.app_list_running():
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Stopping app: {package_name}")
+            d.app_stop(package_name)  # Stop the app
+            sleep(2)
+
+        # Start the app
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting app: {package_name}")
+        d.app_start(package_name)  # Start the app
+
+        # Wait for the app to fully load
+        sleep(wait_time)
+
+        # Confirm the app is running
+        if package_name in d.app_list_running():
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Successfully reopened app: {package_name}")
+        else:
+            logging.warning(f"{threading.current_thread().name}:{d.wlan_ip} Failed to reopen app: {package_name}")
+
+    except Exception as e:
+        logging.error(f"Error while reopening app {package_name}: {e}")
