@@ -414,68 +414,71 @@ def main(d):
     The main function connects to the Android device and performs various Twitter actions.
     """
     # Start the Twitter app 
-    if "com.twitter.android" in d.app_list_running():
-        # Stop Twitter app
-        d.app_stop("com.twitter.android")
-        sleep(2)
+    try:
+        if "com.twitter.android" in d.app_list_running():
+            # Stop Twitter app
+            d.app_stop("com.twitter.android")
+            sleep(2)
 
-    # Start the Twitter app 
-    d.app_start("com.twitter.android")
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Opened Twitter!")
-    sleep(12)  # Wait for Twitter to fully load
-    d.click(75,1500) # Go to home
-    update_results_file("Actions")
-    for _ in range(random.randint(1,2)):
-        scroll_random_number(d)
-        sleep(4)
-        # tap_like_button(d)   #don't use until fyp is pro israel
-        sleep(2)
-
-    # Stop Twitter app
-    d.app_stop("com.twitter.android")
-    sleep(2)
-    id_map = {}
-
-    for _ in range(5):
-        account = random.choice(twitter_handles)
-        # Store the current account in the id_map
-        id_map[id(account)] = account
-        logging.info("account is: "+account)
-        if account.strip() == "israel" or account.strip() == "Israel":
-            logging.info(account + " idk what happened")
-            logging.info(f"Memory address of the variable: {hex(id(account))}")
-            
-            # Debug: logging.info the value from the id_map using the memory address
-            specific_id = id(account)
-            logging.info(f"Value at memory address {hex(specific_id)}: {id_map.get(specific_id)}")
-            
-            # Change the account
-            account = random.choice(twitter_handles)
-
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} The account is: {account}!")
-        search_and_go_to_page(d, account)
-        sleep(2)
-        follow_page(d)
-        sleep(2)
-        scroll_like_and_comment(d,10)
+        # Start the Twitter app 
+        d.app_start("com.twitter.android")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Opened Twitter!")
+        sleep(12)  # Wait for Twitter to fully load
         d.click(75,1500) # Go to home
         update_results_file("Actions")
-        sleep(4)
-        
         for _ in range(random.randint(1,2)):
             scroll_random_number(d)
+            sleep(4)
+            # tap_like_button(d)   #don't use until fyp is pro israel
             sleep(2)
-            # tap_like_button(d)
-            sleep(2)
-            
+
         # Stop Twitter app
         d.app_stop("com.twitter.android")
-        sleep(5)
-    support_accounts(d,twitter_handles_specials)
-    report_twitter_posts(d)
-    sleep(3)
-    d.app_stop("com.twitter.android")
-    sleep(4)
+        sleep(2)
+        id_map = {}
+
+        for _ in range(5):
+            account = random.choice(twitter_handles)
+            # Store the current account in the id_map
+            id_map[id(account)] = account
+            logging.info("account is: "+account)
+            if account.strip() == "israel" or account.strip() == "Israel":
+                logging.info(account + " idk what happened")
+                logging.info(f"Memory address of the variable: {hex(id(account))}")
+                
+                # Debug: logging.info the value from the id_map using the memory address
+                specific_id = id(account)
+                logging.info(f"Value at memory address {hex(specific_id)}: {id_map.get(specific_id)}")
+                
+                # Change the account
+                account = random.choice(twitter_handles)
+
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} The account is: {account}!")
+            search_and_go_to_page(d, account)
+            sleep(2)
+            follow_page(d)
+            sleep(2)
+            scroll_like_and_comment(d,10)
+            d.click(75,1500) # Go to home
+            update_results_file("Actions")
+            sleep(4)
+            
+            for _ in range(random.randint(1,2)):
+                scroll_random_number(d)
+                sleep(2)
+                # tap_like_button(d)
+                sleep(2)
+                
+            # Stop Twitter app
+            d.app_stop("com.twitter.android")
+            sleep(5)
+        support_accounts(d,twitter_handles_specials)
+        report_twitter_posts(d)
+        sleep(3)
+        d.app_stop("com.twitter.android")
+        sleep(4)
+    except:
+        logging.error("An error occurred", exc_info=True)  # Log error with stack trace
 d = u2.connect("10.100.102.194")
 # search_and_go_to_page(d, "DannyNis")
 

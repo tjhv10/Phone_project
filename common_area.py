@@ -352,7 +352,7 @@ twitter_handles_specials = [
 tiktok_handles_specials = [
     "ariseforisrael",
     "women.of.the.midd",
-    "unapologetic.israeli"
+    "unapologetic.israeli",
 ]
 
 

@@ -51,8 +51,9 @@ def like_comment_follow(device, max_duration=3600 * 2):
         sleep(3)
         open_vpn(device)
         sleep(5)
-        tik.main(device)
+        # tik.main(device)
         close_apps(device)
+        tik.support_accounts(device,tiktok_handles_specials)
         logging.info(f"Device with IP {device_ip} completed its tasks.")
         
         elapsed_time = time.time() - start_time
