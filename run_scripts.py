@@ -16,7 +16,7 @@ from start_adb import device_ips
 
 # Set up logging
 log_file = "logs.log"  # Specify the log file name
-logging.basicConfig(
+logging.basicConfig( 
     level=logging.INFO,  # Log all levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
     handlers=[
@@ -29,10 +29,10 @@ logging.basicConfig(
 print = logging.info  # Use logging.info for standard output
 
 def clean_log_files(directory):
-    log_files = glob.glob(os.path.join(directory, "*.log"))  # Find all .log files in the directory
+    log_files = glob.glob(os.path.join(directory, "*.log"))  # Find all .log files in the directory 
     for log_file in log_files:
         with open(log_file, 'w') as _:
-            pass  # Opening in write mode clears the file
+            pass  # Opening in write mode clears the file   
 
 def like_comment_follow(device, max_duration=3600 * 2):
     """
@@ -46,14 +46,17 @@ def like_comment_follow(device, max_duration=3600 * 2):
         sleep(3)
         open_vpn(device)
         logging.info(f"Running Twitter script on device with IP: {device_ip}")
-        twi.main(device)
+        # twi.main(device)
+        # twi.report_account(device,account=random.choice(anti_israel_twitter))
+        # close_apps(device)
+        # sleep(3)
+        # twi.report_post(device,random.choice(twitter_posts_to_report)[0])
+        # open_vpn(device)
+        # sleep(5)
+        # tik.report_account(device,random.choice(tiktok_accounts_to_report))
         close_apps(device)
-        sleep(3)
-        open_vpn(device)
-        sleep(5)
-        tik.main(device)
+        tik.report_post(device,random.choice(tiktok_posts_to_report)[0])
         close_apps(device)
-        tik.support_accounts(device,tiktok_handles_specials)
         logging.info(f"Device with IP {device_ip} completed its tasks.")
         
         elapsed_time = time.time() - start_time
@@ -63,10 +66,10 @@ def like_comment_follow(device, max_duration=3600 * 2):
             logging.info(f"Device with IP {device_ip} exceeded max duration, switching to next device.")
     except Exception as e:
         logging.error(f"Error while processing device with IP {device_ip}: {e}")
-        time.sleep(60)
+        sleep(60)
 
-    logging.info(f"Device with IP {device_ip} is sleeping for 0.5 hours before restarting tasks...")
-    time.sleep(1 * 3600)
+    logging.info(f"Device with IP {device_ip} is sleeping for 1 hours before restarting tasks...")
+    sleep(1 * 3600)
     worker_queue.put(device)
 
 

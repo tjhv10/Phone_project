@@ -119,7 +119,7 @@ def scroll_like_and_comment(d,posts):
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Scrolled from ({start_x}, {start_y}) to ({start_x}, {end_y}) in {swipe_duration:.2f} seconds.")
         else:
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
-            reopen_app(d,"com.twitter.android")
+            main(d)
 
             
         sleep(random.uniform(2, 14))
@@ -184,11 +184,11 @@ def scroll_random_number(d):
                 logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
                 d.click(40,1340)
                 update_results_file("Actions")
-                reopen_app(d,"com.twitter.android")
+                main(d)
             sleep(random.randint(2, 10))
     else:
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
-        reopen_app(d,"com.twitter.android")
+        main(d)
         
 
 
@@ -297,6 +297,7 @@ def report_post(d, link, action=0):
         # Stop Twitter app
         d.app_stop("com.twitter.android")
         sleep(2)
+        
 
     # Start the Twitter app 
     d.app_start("com.twitter.android")
@@ -306,9 +307,7 @@ def report_post(d, link, action=0):
     if "com.twitter.android" in d.app_list_running():
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Twitter is running!")
         # Open the tweet in the Twitter app
-        result = d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
-        logging.info(link)
-        logging.info(f"Resolve activity result: {result}")
+        d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Opened tweet: {link}")
         sleep(10)
             
@@ -317,7 +316,7 @@ def report_post(d, link, action=0):
             d.click(685, 210)
             update_results_file("Actions")
             sleep(3)
-            if search_sentence(d, "you reported this post.","twi") != None:
+            if search_sentence(d, "you reported this post.","twi"):
                 logging.info(f"{threading.current_thread().name}:{d.wlan_ip} already reported this tweet.")
                 return 
             # Click on the report button
@@ -372,6 +371,7 @@ def report_account(d, account='',link=''):
         else:
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} didn't get link nor an account name. exiting the function..")
             return
+        sleep(5)
         # Click on the share button
         d.click(667, 120)
         update_results_file("Actions")
@@ -435,22 +435,11 @@ def main(d):
         # Stop Twitter app
         d.app_stop("com.twitter.android")
         sleep(2)
-        id_map = {}
 
         for _ in range(5):
             account = random.choice(twitter_handles)
-            # Store the current account in the id_map
-            id_map[id(account)] = account
-            logging.info("account is: "+account)
-            if account.strip() == "israel" or account.strip() == "Israel":
-                logging.info(account + " idk what happened")
-                logging.info(f"Memory address of the variable: {hex(id(account))}")
-                
-                # Debug: logging.info the value from the id_map using the memory address
-                specific_id = id(account)
-                logging.info(f"Value at memory address {hex(specific_id)}: {id_map.get(specific_id)}")
-                
-                # Change the account
+            while account.strip() == "israel" or account.strip() == "Israel":
+                logging.ERROR(f"{threading.current_thread().name}:{d.wlan_ip} israel was choosen somehow!!")
                 account = random.choice(twitter_handles)
 
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} The account is: {account}!")
@@ -479,6 +468,7 @@ def main(d):
         sleep(4)
     except:
         logging.error("An error occurred", exc_info=True)  # Log error with stack trace
+        d.app_stop("com.twitter.android")
 d = u2.connect("10.100.102.194")
 # search_and_go_to_page(d, "DannyNis")
 

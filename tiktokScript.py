@@ -119,7 +119,7 @@ def scroll_random_number(d):
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Swiped down {i + 1} time(s).")
     else:
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
-        reopen_app(d, "com.zhiliaoapp.musically")
+        main(d)
 
 
 def scroll_like_and_comment(d,postsToLike):
@@ -143,7 +143,7 @@ def scroll_like_and_comment(d,postsToLike):
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Swiped down {i + 1} time(s).")
         else:
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
-            reopen_app(d,"com.zhiliaoapp.musically")
+            main(d)
         num = random.choice([1, 2, 3, 4, 5])
         if  num <= 2:
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} like")
@@ -321,7 +321,7 @@ def main(d):
     Main function to connect to the device and perform actions on TikTok.
     # """
     try:
-        for _ in range(10):
+        for _ in range(5):
             if "com.zhiliaoapp.musically" in d.app_list_running():
                 # Stop Tiktok app
                 d.app_stop("com.zhiliaoapp.musically")
