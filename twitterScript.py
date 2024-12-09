@@ -469,7 +469,7 @@ def main(d):
     except:
         logging.error("An error occurred", exc_info=True)  # Log error with stack trace
         d.app_stop("com.twitter.android")
-d = u2.connect("10.100.102.194")
+# d = u2.connect("10.100.102.194")
 # search_and_go_to_page(d, "DannyNis")
 
 # for handle in twitter_handles:
