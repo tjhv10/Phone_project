@@ -469,5 +469,5 @@ def main(d):
     except:
         logging.error("An error occurred", exc_info=True)  # Log error with stack trace
         d.app_stop("com.twitter.android")
-d = u2.connect("10.0.0.11")
-report_account(d,anti_israel_twitter[0],7)
+# d = u2.connect("10.0.0.11")
+# report_account(d,anti_israel_twitter[0],7)
