@@ -777,10 +777,14 @@ def tap_keyboard(d, text, keyboard = keyboard_dic):
             sleep(random.uniform(0.04, 0.07))  # Add a small delay between taps
                 
 
-def search_sentence(d, name, plat, tolerance=20, usegpu=True):
+def search_sentence(d, name:str, plat, tolerance=20, usegpu=True):
     screen_shot = take_screenshot(d, threading.current_thread().name, plat)
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for name: {name}")
     
+
+    while name.lower().strip() =="israel":
+        name = random.choice(twitter_handles)
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for name: {name}")
     # Initialize the OCR reader
     reader = easyocr.Reader(['en'], gpu=usegpu)
 

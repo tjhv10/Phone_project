@@ -320,9 +320,9 @@ def report_post(d, link, action=0):
                 logging.info(f"{threading.current_thread().name}:{d.wlan_ip} already reported this tweet.")
                 return 
             # Click on the report button
-            x, y = search_sentence(d, "Report post","twi")
-            sleep(3)
-            d.click(int(x), int(y))
+            # x, y = search_sentence(d, "Report post","twi")
+            # sleep(3)
+            d.click(int(515), int(815))
             update_results_file("Actions")
             sleep(15)
             while not search_sentence(d,"What type of issue are","twi"):
