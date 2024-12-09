@@ -572,6 +572,25 @@ report_tiktok_account = {
     'Defamation':'d.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1213):d.click(350,970):d.click(350,1500):d.click(350,1380)',
     'Other': 'd.swipe(500, 1200, 500, 300, duration=0.05):d.click(350,1500):d.click(350,1500):d.click(350,1380)'
 }
+report_tiktok_account_keys = [
+    "Physical violence and violent threats",
+    "Sexual exploitation and abuse",
+    "Human exploitation",
+    "Other criminal activities",
+    "Dangerous activities and challenges",
+    "Shocking and graphic content",
+    "Hate speech and hateful behaviors",
+    "Harassment and bullying",
+    "Harmful misinformation",
+    "Deepfakes, synthetic media, and manipulated media",
+    "Child sexual exploitation",
+    "Illegal hate speech",
+    "Content relating to violent or organized crime",
+    "Harrassment or threats",
+    "Defamation",
+    "Other"
+]
+
 
 report_twitter_clicks = {
     "Slurs & Tropes":"d.click(370,670):d.click(370,1450):d.click(370,670):d.click(370,1450):d.click(370,1450)",

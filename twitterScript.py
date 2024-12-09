@@ -346,7 +346,7 @@ def report_post(d, link, action=0):
 
 
 
-def report_account(d, account='',link=''):
+def report_account(d, account,action=0):
     # Open Twitter app
     if "com.twitter.android" in d.app_list_running():
         # Stop Twitter app
@@ -361,12 +361,8 @@ def report_account(d, account='',link=''):
     if "com.twitter.android" in d.app_list_running():
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Twitter is running!")
 
-        if link != '':
-            # Open the tweet in the Twitter app
-            d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
-            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Opened account: {link}")
-            sleep(3)
-        elif account != '':
+        
+        if account != '':
             search_and_go_to_page(d, account)
         else:
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} didn't get link nor an account name. exiting the function..")
@@ -382,8 +378,11 @@ def report_account(d, account='',link=''):
         d.click(int(x), int(y))
         update_results_file("Actions")
         sleep(8)
-        handle_user_selection(d,report_twitter_clicks)
-        sleep(4)
+        if action == 0: 
+                handle_user_selection(d, report_twitter_clicks)
+        else:
+            execute_action(d,report_tiktok_account_keys[action-1], report_tiktok_account)
+        sleep(20)
         update_results_file("Accounts reported")
         d.app_stop("com.twitter.android")
 
@@ -463,20 +462,12 @@ def main(d):
             sleep(5)
         support_accounts(d,twitter_handles_specials)
         report_twitter_posts(d)
+        # report_account(d,random.choice(anti_israel_twitter)) #TODO fix
         sleep(3)
         d.app_stop("com.twitter.android")
         sleep(4)
     except:
         logging.error("An error occurred", exc_info=True)  # Log error with stack trace
         d.app_stop("com.twitter.android")
-# d = u2.connect("10.100.102.194")
-# search_and_go_to_page(d, "DannyNis")
-
-# for handle in twitter_handles:
-# search_and_go_to_page(d,"Ostrov_A")
-
-# report_twitter_posts(d)
-# tap_repost_button(d)
-# report_post(d,"https://x.com/MannieMighty1/status/1853460648673300801", 5)
-# report_account(d,"https://x.com/marwanbishara?t=Ut7owo1yPl0b9VSvGGI4cQ&s=08")
-# comment_text(d,random.choice(israel_support_comments))
+d = u2.connect("10.0.0.11")
+report_account(d,anti_israel_twitter[0],7)
