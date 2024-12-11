@@ -213,21 +213,12 @@ def search_and_go_to_page(d, page_name):
     sleep(10)
 
     # Swipe up to return to the previous content
-    d.swipe(500, 300, 500, 1000, duration = 0.05)
+    # d.swipe(500, 300, 500, 1000, duration = 0.05)
     update_results_file("Actions")
     sleep(3)
     # Perform the search
     d.click(180, 1500)
     update_results_file("Actions")
-    file_name = "bug.txt"
-    logging.info(page_name+" ohhhh")
-    if page_name.strip() == "israel":
-        with open(file_name, "w") as file:
-            file.write(f"Account: {page_name}\n")
-            file.write(f"Memory address: {hex(id(page_name))}\n")
-            file.write("\n")  # Add a newline for better readability
-
-
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Clicked on the search button.")
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} serching for {page_name}.")
     sleep(3)
@@ -425,7 +416,7 @@ def main(d):
         sleep(12)  # Wait for Twitter to fully load
         d.click(75,1500) # Go to home
         update_results_file("Actions")
-        for _ in range(random.randint(1,2)):
+        for _ in range(random.randint(1,6)):
             scroll_random_number(d)
             sleep(4)
             # tap_like_button(d)   #don't use until fyp is pro israel
@@ -469,5 +460,9 @@ def main(d):
     except:
         logging.error("An error occurred", exc_info=True)  # Log error with stack trace
         d.app_stop("com.twitter.android")
-# d = u2.connect("10.0.0.11")
+# d1 = u2.connect("192.168.26.103")
+# d2 = u2.connect("192.168.26.104")
+
 # report_account(d,anti_israel_twitter[0],7)
+# main(d1)
+# main(d2)
