@@ -44,7 +44,7 @@ def like_comment_follow(device, max_duration=3600 * 2):
         logging.info(f"Running tasks on device with IP: {device_ip}")
         close_apps(device)
         sleep(3)
-        open_vpn(device)
+        # open_vpn(device)
         logging.info(f"Running Twitter script on device with IP: {device_ip}")
         twi.main(device)
         # close_apps(device)

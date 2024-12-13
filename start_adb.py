@@ -1,3 +1,4 @@
+import logging
 import os
 import subprocess
 import uiautomator2 as u2
@@ -17,7 +18,9 @@ def get_connected_devices():
             if "device" in line and not line.startswith("List of devices attached"):
                 device_id = line.split()[0]
                 # Connect to the device using uiautomator2 and append the device object to the list
+                logging.info(f"Trying to connect to: {device_id}")
                 device = u2.connect(device_id)
+                logging.info(f"Connected to: {device_id}")
                 devices.append(device)
                 
         return devices if devices else []  # Return an empty list if no devices found
