@@ -793,7 +793,7 @@ def tap_keyboard(d, text, keyboard = keyboard_dic):
             x, y = keyboard[char][i]
             d.click(x, y)  # Simulate a tap on the screen at the corresponding coordinates
             update_results_file("Actions")
-            sleep(random.uniform(0.04, 0.07))  # Add a small delay between taps
+            sleep(random.uniform(0.1, 0.2))  # Add a small delay between taps
                 
 
 def search_sentence(d, name:str, plat, tolerance=20, usegpu=True):
@@ -894,7 +894,7 @@ def search_sentence(d, name:str, plat, tolerance=20, usegpu=True):
     return None
 
 
-def take_screenshot(d, thread = threading.current_thread().name, app = "inst"):
+def take_screenshot(d, thread = threading.current_thread().name, app = "twi"):
     sleep(2)
     filename = f"Screenshots/{thread}-screenshot_{app}.png"
     logging.info(f"{thread}:{d.wlan_ip} Taking screenshot...")
