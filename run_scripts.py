@@ -59,7 +59,7 @@ def like_comment_follow(device):
         sleep(60)
 
     logging.info(f"Device with IP {device_ip} is sleeping for 1 hours before restarting tasks...")
-    sleep(1 * 3600)
+    sleep(0.5 * 3600)
     worker_queue.put(device)
 
 

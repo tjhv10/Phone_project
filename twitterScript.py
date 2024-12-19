@@ -57,7 +57,7 @@ def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png
             x,y = search_sentence(d,"Post your replay","twi", tolerance=20) # For post location message
             d.click(int(x),int(y))
             sleep(5)
-        result = search_sentence(d,"2123","twi", tolerance=20) # For post location message
+        result = search_sentence(d,"2123","twi", tolerance=26) # For post location message
         if not result:
             d.click(int(350),int(350))
             sleep(5)
@@ -411,7 +411,7 @@ def support_accounts(d,accounts):
         sleep(2)
 
 
-def main(d, duration=0, max_duration=3600):  # max_duration in seconds (default: 1 hour)
+def main(d, duration=0, max_duration=1800):  # max_duration in seconds (default: 1 hour)
     """
     The main function connects to the Android device and performs various Twitter actions.
     
