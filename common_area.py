@@ -796,112 +796,30 @@ def tap_keyboard(d, text, keyboard = keyboard_dic):
             sleep(random.uniform(0.1, 0.2))  # Add a small delay between taps
                 
 
-def search_sentence(d, name:str, plat, tolerance=20, usegpu=True):
-    screen_shot = take_screenshot(d, threading.current_thread().name, plat)
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for name: {name}")
+def search_sentence(d, name: str, plat, tolerance=20, usegpu=True):
+    """
+    Searches for a word or sentence in the screenshot using OCR.
+
+    Args:
+        d: Device object.
+        name (str): The text to search for (word or sentence).
+        plat: Platform identifier.
+        tolerance (int): Allowed similarity percentage (default=20).
+        usegpu (bool): Whether to use GPU for OCR (default=True).
     
-
-    while name.lower().strip() =="israel" and plat=="twi":
-        name = random.choice(twitter_handles)
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for name: {name}")
-    # Initialize the OCR reader
-    reader = easyocr.Reader(['en'], gpu=usegpu)
-
-    # Perform OCR
-    result = reader.readtext(screen_shot, detail=1)
-
-    best_similarity = 0  # Initialize with the lowest possible score (0%)
-    best_match_sentence = ""  # To store the closest matching sentence
-    best_match_bboxes = []  # To store bounding boxes for the best match
-
-    # Process the name for matching
-    processed_name = name.strip()
-
-    # Group detected text into rows by their y-coordinates
-    rows = {}
-    for detection in result:
-        bbox, text, _ = detection
-        top_left, _, bottom_right, _ = bbox
-        y_center = (top_left[1] + bottom_right[1]) // 2
-
-        # Skip any text that is outside the vertical range
-        if top_left[1] < 180 or top_left[1] > 1050 and name != "2123" and name!="Report post":
-            continue
-
-        # Skip rows with single-character text
-        if len(text.strip()) == 1:
-            continue
-
-        # Round y_center to group similar rows together
-        row_key = round(y_center, -1)  # Group rows by tens
-        if row_key not in rows:
-            rows[row_key] = []
-        rows[row_key].append((bbox, text.strip()))
-
-    # Combine rows to create multi-line text blocks (up to 3 rows)
-    combined_blocks = []
-    sorted_row_keys = sorted(rows.keys())  # Process rows in vertical order
-    for i, row_key in enumerate(sorted_row_keys):
-        current_block = " ".join(text for _, text in rows[row_key])
-        combined_bboxes = [bbox for bbox, _ in rows[row_key]]
-
-        # Try to merge with the next two rows if they are close vertically
-        for offset in range(1, 3):  # Allow up to 3 rows total
-            if i + offset < len(sorted_row_keys):
-                next_row_key = sorted_row_keys[i + offset]
-                if abs(next_row_key - row_key) <= 0:  # Merge if rows are close
-                    next_row_text = " ".join(text for _, text in rows[next_row_key])
-                    current_block += " " + next_row_text
-                    combined_bboxes.extend(bbox for bbox, _ in rows[next_row_key])
-                else:
-                    break  # Stop merging if rows are too far apart
-
-        combined_blocks.append((current_block, combined_bboxes))
-
-    # Search for the best match across all combined blocks
-    for combined_text, bboxes in combined_blocks:
-        if "Go to" in combined_text:
-            combined_text = combined_text.replace("Go to", '')
-
-        similarity_score = fuzz.ratio(processed_name, combined_text)
-
-        if similarity_score > best_similarity:
-            best_similarity = similarity_score
-            best_match_sentence = combined_text
-            best_match_bboxes = bboxes
-
-    if best_similarity >= (100 - tolerance) and best_match_bboxes:
-        # Calculate the center of the bounding box for the best match
-        all_top_lefts = [bbox[0] for bbox in best_match_bboxes]
-        all_bottom_rights = [bbox[2] for bbox in best_match_bboxes]
-
-        top_left_x = min(coord[0] for coord in all_top_lefts)
-        top_left_y = min(coord[1] for coord in all_top_lefts)
-        bottom_right_x = max(coord[0] for coord in all_bottom_rights)
-        bottom_right_y = max(coord[1] for coord in all_bottom_rights)
-
-        center_x = (top_left_x + bottom_right_x) // 2
-        center_y = (top_left_y + bottom_right_y) // 2
-
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Best match found: \"{best_match_sentence}\" with similarity: {best_similarity}%")
-        return center_x, center_y
-
-    # Log the best match even if it doesn't meet the tolerance
-    if best_match_sentence:
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Closest match: \"{best_match_sentence}\" with similarity: {best_similarity}%")
-
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No sufficiently similar text was found.")
-    return None
-
-
-def search_word(d, name: str, plat, tolerance=20, usegpu=True):
+    Returns:
+        tuple: Coordinates of the match center (x, y) or None if no match found.
+    """
     screen_shot = take_screenshot(d, threading.current_thread().name, plat)
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for word: {name}")
-    
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for text: {name}")
+
     while name.lower().strip() == "israel" and plat == "twi":
         name = random.choice(twitter_handles)
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for word: {name}")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for text: {name}")
     
+    # Determine if we're searching for a word or a sentence
+    is_word_search = len(name.split()) == 1
+
     # Initialize the OCR reader
     reader = easyocr.Reader(['en'], gpu=usegpu)
 
@@ -909,49 +827,113 @@ def search_word(d, name: str, plat, tolerance=20, usegpu=True):
     result = reader.readtext(screen_shot, detail=1)
 
     best_similarity = 0  # Initialize with the lowest possible score (0%)
-    best_match_word = ""  # To store the closest matching word
+    best_match_text = ""  # To store the closest matching text (word or sentence)
     best_match_bbox = []  # To store the bounding box for the best match
 
     # Process the name for matching
     processed_name = name.strip()
 
-    # Iterate over each detected text element
-    for detection in result:
-        bbox, text, _ = detection
-        top_left, _, bottom_right, _ = bbox
+    if is_word_search:
+        # Word search logic
+        for detection in result:
+            bbox, text, _ = detection
+            top_left, _, bottom_right, _ = bbox
 
-        # Skip text outside the vertical range
-        if top_left[1] < 180 or top_left[1] > 1050 and name != "2123" and name != "Report post":
-            continue
+            # Skip text outside the vertical range
+            if top_left[1] < 180 or top_left[1] > 1050 and name != "2123" and name != "Report post":
+                continue
 
-        # Split the detected text into words
-        words = text.strip().split()
+            # Split the detected text into words
+            words = text.strip().split()
 
-        for word in words:
-            similarity_score = fuzz.ratio(processed_name.lower(), word.lower())
-            
+            for word in words:
+                similarity_score = fuzz.ratio(processed_name.lower(), word.lower())
+                
+                if similarity_score > best_similarity:
+                    best_similarity = similarity_score
+                    best_match_text = word
+                    best_match_bbox = bbox
+    else:
+        # Sentence search logic
+        # Group detected text into rows by their y-coordinates
+        rows = {}
+        for detection in result:
+            bbox, text, _ = detection
+            top_left, _, bottom_right, _ = bbox
+            y_center = (top_left[1] + bottom_right[1]) // 2
+
+            # Skip text outside the vertical range
+            if top_left[1] < 180 or top_left[1] > 1050 and name != "2123" and name != "Report post":
+                continue
+
+            # Skip rows with single-character text
+            if len(text.strip()) == 1:
+                continue
+
+            # Group rows by y-coordinate
+            row_key = round(y_center, -1)
+            if row_key not in rows:
+                rows[row_key] = []
+            rows[row_key].append((bbox, text.strip()))
+
+        # Combine rows into multi-line text blocks
+        combined_blocks = []
+        sorted_row_keys = sorted(rows.keys())
+        for i, row_key in enumerate(sorted_row_keys):
+            current_block = " ".join(text for _, text in rows[row_key])
+            combined_bboxes = [bbox for bbox, _ in rows[row_key]]
+
+            for offset in range(1, 3):
+                if i + offset < len(sorted_row_keys):
+                    next_row_key = sorted_row_keys[i + offset]
+                    if abs(next_row_key - row_key) <= 0:
+                        next_row_text = " ".join(text for _, text in rows[next_row_key])
+                        current_block += " " + next_row_text
+                        combined_bboxes.extend(bbox for bbox, _ in rows[next_row_key])
+                    else:
+                        break
+
+            combined_blocks.append((current_block, combined_bboxes))
+
+        # Search for the best match across all combined blocks
+        for combined_text, bboxes in combined_blocks:
+            if "Go to" in combined_text:
+                combined_text = combined_text.replace("Go to", '')
+
+            similarity_score = fuzz.ratio(processed_name, combined_text)
+
             if similarity_score > best_similarity:
                 best_similarity = similarity_score
-                best_match_word = word
-                best_match_bbox = bbox
+                best_match_text = combined_text
+                best_match_bbox = bboxes
 
     if best_similarity >= (100 - tolerance) and best_match_bbox:
         # Calculate the center of the bounding box for the best match
-        top_left_x, top_left_y = best_match_bbox[0]
-        bottom_right_x, bottom_right_y = best_match_bbox[2]
+        if is_word_search:
+            top_left_x, top_left_y = best_match_bbox[0]
+            bottom_right_x, bottom_right_y = best_match_bbox[2]
+        else:
+            all_top_lefts = [bbox[0] for bbox in best_match_bbox]
+            all_bottom_rights = [bbox[2] for bbox in best_match_bbox]
+
+            top_left_x = min(coord[0] for coord in all_top_lefts)
+            top_left_y = min(coord[1] for coord in all_top_lefts)
+            bottom_right_x = max(coord[0] for coord in all_bottom_rights)
+            bottom_right_y = max(coord[1] for coord in all_bottom_rights)
 
         center_x = (top_left_x + bottom_right_x) // 2
         center_y = (top_left_y + bottom_right_y) // 2
 
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Best match found: \"{best_match_word}\" with similarity: {best_similarity}%")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Best match found: \"{best_match_text}\" with similarity: {best_similarity}%")
         return center_x, center_y
 
     # Log the best match even if it doesn't meet the tolerance
-    if best_match_word:
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Closest match: \"{best_match_word}\" with similarity: {best_similarity}%")
+    if best_match_text:
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Closest match: \"{best_match_text}\" with similarity: {best_similarity}%")
 
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No sufficiently similar text was found.")
     return None
+
 
 
 

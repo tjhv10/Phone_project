@@ -367,18 +367,22 @@ def report_account(d, account,action=0):
         update_results_file("Actions")
         sleep(3)
         # Click on the report button
-        x,y = search_word(d,"Report","twi")
-        sleep(3)
-        d.click(int(x), int(y))
-        update_results_file("Actions")
-        sleep(8)
-        if action == 0: 
-                handle_user_selection(d, report_twitter_clicks)
-        else:
-            execute_action(d,twitter_report_keys[action-1], report_twitter_clicks)
-        sleep(20)
-        update_results_file("Accounts reported")
-        d.app_stop("com.twitter.android")
+        try:
+            x,y = search_sentence(d,"Report","twi")
+            sleep(3)
+            d.click(int(x), int(y))
+            update_results_file("Actions")
+            sleep(8)
+            if action == 0: 
+                    handle_user_selection(d, report_twitter_clicks)
+            else:
+                execute_action(d,twitter_report_keys[action-1], report_twitter_clicks)
+            sleep(20)
+            update_results_file("Accounts reported")
+            d.app_stop("com.twitter.android")
+        except:
+            logging.error(f"{threading.current_thread().name}:{d.wlan_ip} Report button not found!!")
+            return
 
 
 
@@ -501,4 +505,4 @@ def main(d, duration=0, max_duration=3600):  # max_duration in seconds (default:
         d.app_stop("com.twitter.android")
 
 
-main(u2.connect("127.0.0.1:6555"))
+# main(u2.connect("127.0.0.1:6555"))
