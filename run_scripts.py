@@ -40,19 +40,19 @@ def like_comment_follow(device):
         logging.info(f"Running tasks on device with IP: {device_ip}")
         close_apps(device)
         sleep(3)
-        # open_vpn(device)
+        open_vpn(device)
         logging.info(f"Running Twitter script on device with IP: {device_ip}")
         twi.main(device)
         close_apps(device)
         sleep(3)
         # open_vpn(device)
-        sleep(5)
-        tik.main(device)
-        sleep(5)
-        tik.report_account(device,random.choice(tiktok_accounts_to_report))
-        close_apps(device)
-        tik.report_post(device,random.choice(tiktok_posts_to_report)[0])
-        close_apps(device)
+        # sleep(5)
+        # tik.main(device)
+        # sleep(5)
+        # tik.report_account(device,random.choice(tiktok_accounts_to_report))
+        # close_apps(device)
+        # tik.report_post(device,random.choice(tiktok_posts_to_report)[0])
+        # close_apps(device)
         logging.info(f"Device with IP {device_ip} completed its tasks.")
     except Exception as e:
         logging.error(f"Error while processing device with IP {device_ip}: {e}")
@@ -106,11 +106,13 @@ def main():
 
     max_threads = 15
     worker_queue = Queue()
+
+    random.shuffle(device_ips)  # Shuffle the devices list
     for device in device_ips:
         worker_queue.put(device)
 
     threads = []
-    for i in range(max_threads):
+    for _ in range(max_threads):
         t = threading.Thread(target=worker_task)
         t.start()
         threads.append(t)
