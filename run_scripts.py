@@ -93,10 +93,6 @@ def report_tiktok(device_id):
         logging.error(f"Could not connect to device: {device_id}")
 
 
-def close_apps(device):
-    device.app_stop("com.twitter.android")
-    device.app_stop("com.zhiliaoapp.musically")
-    logging.info(f"{device.wlan_ip} closed apps.")
 
 
 def main():
@@ -104,7 +100,7 @@ def main():
     global worker_queue
     start_and_connect_all_servers()
 
-    max_threads = 15
+    max_threads = 13
     worker_queue = Queue()
 
     random.shuffle(device_ips)  # Shuffle the devices list

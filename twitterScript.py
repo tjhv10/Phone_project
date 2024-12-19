@@ -243,7 +243,9 @@ def search_and_go_to_page(d, page_name):
             d.click(int(x),int(y))
             update_results_file("Actions")
         except:
-            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Didnt find '{page_name}' checking vpn and restarting.")
+            logging.error(f"{threading.current_thread().name}:{d.wlan_ip} Didnt find '{page_name}' checking vpn and restarting.")
+            close_apps(d)
+            sleep(5)
             open_vpn(d)
             sleep(5)
             search_and_go_to_page(d,page_name)
@@ -485,7 +487,7 @@ def main(d, duration=0, max_duration=3600):  # max_duration in seconds (default:
             sleep(4)
 
             for _ in range(random.randint(1, 6)):
-                scroll_random_number(d,scroll_random_number(d,duration+time.time()-start_time))
+                scroll_random_number(d,duration+time.time()-start_time)
                 sleep(2)
 
             # Stop Twitter

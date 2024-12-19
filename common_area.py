@@ -245,7 +245,7 @@ twitter_handles = [
     "NiohBerg",
     "kyg_best",
     "veguigui",
-    "israelifihther",
+    # "israelifihther", #check this account
     "Seeingidoc",
     "EYakoby",
     "AzatAlsalim",
@@ -1148,7 +1148,14 @@ def reopen_app(d, package_name, wait_time=5):
 def open_vpn(d):
     logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!")
     d.app_start("com.nordvpn.android")
-    sleep(10)
+    sleep(20)
     while not search_sentence(d, "Pause Disconnect", "twi"):
         logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Trying to reconnect...")
-        sleep(60)
+        sleep(120)
+
+        
+def close_apps(device):
+    device.app_stop("com.twitter.android")
+    device.app_stop("com.zhiliaoapp.musically")
+    device.app_stop("com.nordvpn.android")
+    logging.info(f"{device.wlan_ip} closed apps.")
