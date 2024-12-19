@@ -153,15 +153,6 @@ def run_on_multiple_devices():
 stop_event = threading.Event()
 
 
-def open_vpn(d):
-    logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!")
-    d.app_start("com.nordvpn.android")
-    sleep(10)
-    while not search_sentence(d, "Pause Disconnect", "twi"):
-        logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Trying to reconnect...")
-        sleep(60)
-
-
 def worker_task():
     while not stop_event.is_set():
         try:

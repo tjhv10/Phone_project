@@ -1144,3 +1144,11 @@ def reopen_app(d, package_name, wait_time=5):
 
     except Exception as e:
         logging.error(f"Error while reopening app {package_name}: {e}")
+
+def open_vpn(d):
+    logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!")
+    d.app_start("com.nordvpn.android")
+    sleep(10)
+    while not search_sentence(d, "Pause Disconnect", "twi"):
+        logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Trying to reconnect...")
+        sleep(60)

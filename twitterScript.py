@@ -4,7 +4,6 @@ import random
 from common_area import *
 import uiautomator2 as u2
 import logging
-from run_scripts import open_vpn
 
 # Configure logging
 log_file = "logs.log" # Log file to capture output
