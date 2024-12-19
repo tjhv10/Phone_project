@@ -25,21 +25,17 @@ logging.basicConfig(
     ]
 )
 
-# Replace print statements with logging functions
-print = logging.info  # Use logging.info for standard output
-
 def clean_log_files(directory):
     log_files = glob.glob(os.path.join(directory, "*.log"))  # Find all .log files in the directory 
     for log_file in log_files:
         with open(log_file, 'w') as _:
             pass  # Opening in write mode clears the file   
 
-def like_comment_follow(device, max_duration=3600 * 2):
+def like_comment_follow(device):
     """
     Function to run Twitter and TikTok scripts on a specific phone.
     """
     device_ip = device.wlan_ip  # Fetch the device's IP address dynamically
-    start_time = time.time()
     try:
         logging.info(f"Running tasks on device with IP: {device_ip}")
         close_apps(device)
@@ -58,12 +54,6 @@ def like_comment_follow(device, max_duration=3600 * 2):
         # tik.report_post(device,random.choice(tiktok_posts_to_report)[0])
         # close_apps(device)
         logging.info(f"Device with IP {device_ip} completed its tasks.")
-        
-        elapsed_time = time.time() - start_time
-        logging.info(f"Total time taken for device {device_ip}: {elapsed_time:.2f} seconds")
-
-        if elapsed_time > max_duration:
-            logging.info(f"Device with IP {device_ip} exceeded max duration, switching to next device.")
     except Exception as e:
         logging.error(f"Error while processing device with IP {device_ip}: {e}")
         sleep(60)

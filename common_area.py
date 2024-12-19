@@ -801,7 +801,7 @@ def search_sentence(d, name:str, plat, tolerance=20, usegpu=True):
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for name: {name}")
     
 
-    while name.lower().strip() =="israel":
+    while name.lower().strip() =="israel" and plat=="twi":
         name = random.choice(twitter_handles)
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for name: {name}")
     # Initialize the OCR reader
@@ -892,6 +892,67 @@ def search_sentence(d, name:str, plat, tolerance=20, usegpu=True):
 
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No sufficiently similar text was found.")
     return None
+
+
+def search_word(d, name: str, plat, tolerance=20, usegpu=True):
+    screen_shot = take_screenshot(d, threading.current_thread().name, plat)
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for word: {name}")
+    
+    while name.lower().strip() == "israel" and plat == "twi":
+        name = random.choice(twitter_handles)
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for word: {name}")
+    
+    # Initialize the OCR reader
+    reader = easyocr.Reader(['en'], gpu=usegpu)
+
+    # Perform OCR
+    result = reader.readtext(screen_shot, detail=1)
+
+    best_similarity = 0  # Initialize with the lowest possible score (0%)
+    best_match_word = ""  # To store the closest matching word
+    best_match_bbox = []  # To store the bounding box for the best match
+
+    # Process the name for matching
+    processed_name = name.strip()
+
+    # Iterate over each detected text element
+    for detection in result:
+        bbox, text, _ = detection
+        top_left, _, bottom_right, _ = bbox
+
+        # Skip text outside the vertical range
+        if top_left[1] < 180 or top_left[1] > 1050 and name != "2123" and name != "Report post":
+            continue
+
+        # Split the detected text into words
+        words = text.strip().split()
+
+        for word in words:
+            similarity_score = fuzz.ratio(processed_name.lower(), word.lower())
+            
+            if similarity_score > best_similarity:
+                best_similarity = similarity_score
+                best_match_word = word
+                best_match_bbox = bbox
+
+    if best_similarity >= (100 - tolerance) and best_match_bbox:
+        # Calculate the center of the bounding box for the best match
+        top_left_x, top_left_y = best_match_bbox[0]
+        bottom_right_x, bottom_right_y = best_match_bbox[2]
+
+        center_x = (top_left_x + bottom_right_x) // 2
+        center_y = (top_left_y + bottom_right_y) // 2
+
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Best match found: \"{best_match_word}\" with similarity: {best_similarity}%")
+        return center_x, center_y
+
+    # Log the best match even if it doesn't meet the tolerance
+    if best_match_word:
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Closest match: \"{best_match_word}\" with similarity: {best_similarity}%")
+
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No sufficiently similar text was found.")
+    return None
+
 
 
 def take_screenshot(d, thread = threading.current_thread().name, app = "twi"):
