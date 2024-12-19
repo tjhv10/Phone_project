@@ -107,7 +107,7 @@ def tap_repost_button(d, repost_button_template_path="icons/twitter_icons/repost
 
 def scroll_like_and_comment(d,posts,duration):
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting scroll_like_and_comment function")
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} duration in main:"+str(duration))
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} duration in main :"+str(duration))
     start_time = time.time()
     actions = ['like', 'comment', 'both', 'none']
     for _ in range(posts):
@@ -402,8 +402,6 @@ def support_accounts(d,accounts):
         sleep(2)
 
 
-# start_time = time.time()# Record the start time
-
 def main(d, duration=0, max_duration=3600):  # max_duration in seconds (default: 1 hour)
     """
     The main function connects to the Android device and performs various Twitter actions.
@@ -413,7 +411,7 @@ def main(d, duration=0, max_duration=3600):  # max_duration in seconds (default:
     max_duration (int): Maximum duration (in seconds) to allow the function to run.
     """
     try:
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} duration in main:"+str(duration))
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} duration in main: "+str(duration))
         start_time = time.time()
         # Check if Twitter is running and stop it
         if "com.twitter.android" in d.app_list_running():
@@ -429,7 +427,7 @@ def main(d, duration=0, max_duration=3600):  # max_duration in seconds (default:
         update_results_file("Actions")
         sleep(2)
         duration = duration+time.time()-start_time
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} duration in main:"+str(duration))
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} duration in main:" +str(duration))
         # Perform random scrolling actions
         for _ in range(random.randint(1, 6)):
             
