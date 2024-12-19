@@ -4,6 +4,7 @@ import random
 from common_area import *
 import uiautomator2 as u2
 import logging
+from run_scripts import open_vpn
 
 # Configure logging
 log_file = "logs.log" # Log file to capture output
@@ -243,7 +244,10 @@ def search_and_go_to_page(d, page_name):
             d.click(int(x),int(y))
             update_results_file("Actions")
         except:
-            logging.info("Didnt find page!")
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Didnt find '{page_name}' checking vpn and restarting.")
+            open_vpn(d)
+            sleep(5)
+            search_and_go_to_page(d,page_name)
     
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Got into the page!")
     sleep(5)
