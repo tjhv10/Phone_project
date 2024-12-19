@@ -367,7 +367,7 @@ def report_account(d, account,action=0):
         update_results_file("Actions")
         sleep(3)
         # Click on the report button
-        x,y = search_sentence(d,"Report","twi")
+        x,y = search_word(d,"Report","twi")
         sleep(3)
         d.click(int(x), int(y))
         update_results_file("Actions")
@@ -375,7 +375,7 @@ def report_account(d, account,action=0):
         if action == 0: 
                 handle_user_selection(d, report_twitter_clicks)
         else:
-            execute_action(d,twitter_report_keys[action-1], twitter_report_keys)
+            execute_action(d,twitter_report_keys[action-1], report_twitter_clicks)
         sleep(20)
         update_results_file("Accounts reported")
         d.app_stop("com.twitter.android")
@@ -431,70 +431,70 @@ def main(d, duration=0, max_duration=3600):  # max_duration in seconds (default:
         duration = duration+time.time()-start_time
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} duration in main:"+str(duration))
         # Perform random scrolling actions
-        # for _ in range(random.randint(1, 6)):
+        for _ in range(random.randint(1, 6)):
             
-        #     if duration> max_duration:  # Check duration
-        #         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
-        #         return
-        #     scroll_random_number(d,duration+time.time()-start_time)
-        #     sleep(4)
+            if duration> max_duration:  # Check duration
+                logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
+                return
+            scroll_random_number(d,duration+time.time()-start_time)
+            sleep(4)
 
-        # # Stop Twitter
-        # d.app_stop("com.twitter.android")
-        # sleep(2)
+        # Stop Twitter
+        d.app_stop("com.twitter.android")
+        sleep(2)
         
-        # # Interact with accounts
-        # for _ in range(5):
-        #     duration = duration+time.time()-start_time
-        #     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} duration in main:"+str(duration))
-        #     if duration > max_duration:  # Check duration
-        #         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
-        #         d.app_stop("com.twitter.android")
-        #         return
+        # Interact with accounts
+        for _ in range(5):
+            duration = duration+time.time()-start_time
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} duration in main:"+str(duration))
+            if duration > max_duration:  # Check duration
+                logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
+                d.app_stop("com.twitter.android")
+                return
 
-        #     account = random.choice(twitter_handles)
-        #     while account.strip().lower() == "israel":
-        #         logging.error(f"{threading.current_thread().name}:{d.wlan_ip} 'israel' was chosen somehow!")
-        #         account = random.choice(twitter_handles)
+            account = random.choice(twitter_handles)
+            while account.strip().lower() == "israel":
+                logging.error(f"{threading.current_thread().name}:{d.wlan_ip} 'israel' was chosen somehow!")
+                account = random.choice(twitter_handles)
 
-        #     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} The account is: {account}!")
-        #     search_and_go_to_page(d, account)
-        #     if duration > max_duration:  # Check duration
-        #         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
-        #         d.app_stop("com.twitter.android")
-        #         return
-        #     sleep(2)
-        #     follow_page(d)
-        #     if duration > max_duration:  # Check duration
-        #         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
-        #         d.app_stop("com.twitter.android")
-        #         return
-        #     sleep(2)
-        #     scroll_like_and_comment(d, 10,duration=duration+time.time()-start_time)
-        #     if duration > max_duration:  # Check duration
-        #         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
-        #         d.app_stop("com.twitter.android")
-        #         return
-        #     d.click(75, 1500)  # Go to home
-        #     update_results_file("Actions")
-        #     sleep(4)
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} The account is: {account}!")
+            search_and_go_to_page(d, account)
+            if duration > max_duration:  # Check duration
+                logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
+                d.app_stop("com.twitter.android")
+                return
+            sleep(2)
+            follow_page(d)
+            if duration > max_duration:  # Check duration
+                logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
+                d.app_stop("com.twitter.android")
+                return
+            sleep(2)
+            scroll_like_and_comment(d, 10,duration=duration+time.time()-start_time)
+            if duration > max_duration:  # Check duration
+                logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
+                d.app_stop("com.twitter.android")
+                return
+            d.click(75, 1500)  # Go to home
+            update_results_file("Actions")
+            sleep(4)
 
-        #     for _ in range(random.randint(1, 6)):
-        #         scroll_random_number(d,scroll_random_number(d,duration+time.time()-start_time))
-        #         sleep(2)
+            for _ in range(random.randint(1, 6)):
+                scroll_random_number(d,scroll_random_number(d,duration+time.time()-start_time))
+                sleep(2)
 
-        #     # Stop Twitter
-        #     d.app_stop("com.twitter.android")
-        #     sleep(5)
+            # Stop Twitter
+            d.app_stop("com.twitter.android")
+            sleep(5)
 
-        # # Support special accounts
-        # support_accounts(d, twitter_handles_specials)
+        # Support special accounts
+        support_accounts(d, twitter_handles_specials)
 
-        # # Report posts and accounts
-        # report_twitter_posts(d)
-        # sleep(3)
+        # Report posts and accounts
+        report_twitter_posts(d)
+        sleep(3)
         account_to_report = random.choice(anti_israel_twitter)
-        report_account(d,account_to_report,5) #TODO fix function
+        report_account(d,account_to_report,5)
         d.app_stop("com.twitter.android")
         sleep(4)
 
@@ -503,7 +503,4 @@ def main(d, duration=0, max_duration=3600):  # max_duration in seconds (default:
         d.app_stop("com.twitter.android")
 
 
-# main(u2.connect("127.0.0.1:6555"))
-
-x,y = search_word(u2.connect("127.0.0.1:6555"),"Report","twi")
-print(f"{str(x)}  {str(y)}")
+main(u2.connect("127.0.0.1:6555"))
