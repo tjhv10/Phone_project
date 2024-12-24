@@ -50,47 +50,6 @@ def scroll_random_number(d):
     else:
         print("No scrollable view found!")
 
-def search_name(d, name, tolerance=20):
-    screen_shot = take_screenshot(d, threading.current_thread().name, "inst")
-    print(f"Searching for name: {name}")
-    
-    # Initialize the OCR reader
-    reader = easyocr.Reader(['en'])  # You can add more languages if needed
-
-    # Perform OCR
-    result = reader.readtext(screen_shot, detail=1)  # detail=1 provides bounding box and text
-
-    best_match = None
-    best_similarity = 0  # Initialize with the lowest possible score (0%)
-
-    # Ensure both name and detected text retain special characters like '@'
-    processed_name = name.strip()  # Keep special characters, but strip unnecessary spaces
-
-    # Iterate over detected texts
-    for detection in result:
-        bbox, text, _ = detection
-        top_left, _, bottom_right, _ = bbox
-        # Skip any detected text that is above y=200
-        if top_left[1] < 180:
-            continue  # Ignore this text since it's above the desired y position
-        # Compare using fuzzy matching
-        similarity_score = fuzz.ratio(processed_name, text)
-        # Check if the similarity score is the highest and within tolerance
-        if similarity_score > best_similarity and similarity_score >= (100 - tolerance):
-            best_similarity = similarity_score
-            best_match = bbox
-
-    if best_match:
-        # Bounding box gives four points (top-left, top-right, bottom-right, bottom-left)
-        top_left, _, bottom_right, _ = best_match
-
-        # Calculate the center position of the bounding box
-        center_x = (top_left[0] + bottom_right[0]) // 2
-        center_y = (top_left[1] + bottom_right[1]) // 2
-        return (center_x, center_y)
-
-    print("No sufficiently similar text was found.")
-    return None
 
 def search_and_go_to_account(d, name):
     """
@@ -122,7 +81,7 @@ def search_and_go_to_account(d, name):
     d.click(245, 225) # Press the accounts button
     sleep(5)
     try:
-        x,y = search_name(d,name) 
+        x,y = search_sentence(d,name,"inst") 
         print("Found account!")
     except:
         search_and_go_to_account(d,random.choice(instagram_accounts))
@@ -135,7 +94,6 @@ def search_and_go_to_account(d, name):
     d.swipe(500, 1400, 500, 100, duration = 0.02)
     sleep(4)
     d.click(120,500)
-
 
 
 def tap_like_button(d, like_button_template_path="icons\instagram_icons\like.png"):

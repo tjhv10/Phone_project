@@ -818,7 +818,7 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True):
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for text: {name}")
     
     # Determine if we're searching for a word or a sentence
-    is_word_search = len(name.split()) == 1
+    is_word_search = len(name.split()) == 1 and name.__len__()<10
 
     # Initialize the OCR reader
     reader = easyocr.Reader(['en'], gpu=usegpu)
@@ -925,7 +925,7 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True):
         center_y = (top_left_y + bottom_right_y) // 2
 
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Best match found: \"{best_match_text}\" with similarity: {best_similarity}%")
-        return center_x, center_y
+        return int(center_x), int(center_y)
 
     # Log the best match even if it doesn't meet the tolerance
     if best_match_text:
