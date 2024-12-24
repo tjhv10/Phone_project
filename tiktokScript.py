@@ -1,7 +1,8 @@
 from time import sleep
 import random
 import threading
-from common_area import *
+from common_area_items import *
+from common_area_functions import *
 import uiautomator2 as u2
 import logging
 

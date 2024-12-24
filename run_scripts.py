@@ -7,12 +7,14 @@ import instegramScript as inst
 import uiautomator2 as u2
 from start_adb import *
 from concurrent.futures import ThreadPoolExecutor
-from common_area import *
+from common_area_items import *
 from queue import Queue
 import time
 import threading
 from queue import Empty
 from start_adb import device_ips
+from common_area_functions import *
+
 
 # Set up logging
 log_file = "logs.log"  # Specify the log file name
