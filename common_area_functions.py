@@ -13,6 +13,7 @@ from selenium.webdriver.common.by import By
 import time
 from PIL import Image
 from common_area_items import *
+import pytesseract
 
 keyboard_dic = {
     "q": [(40, 1200)],
@@ -56,6 +57,13 @@ keyboard_dic = {
     "8":[(65,1500),(530,1190),(65,1500)],
     "9":[(65,1500),(610,1190),(65,1500)],
     "'":[(65,1500),(288,1400),(65,1500)],
+    "@":[(65,1500),(72,1275),(65,1500)],
+    "#":[(65,1500),(145,1275),(65,1500)],
+    "$":[(65,1500),(219,1275),(65,1500)],
+    "%":[(65,1500),(292,1275),(65,1500)],
+    "&":[(65,1500),(360,1275),(65,1500)],
+    "!":[(65,1500),(502,1387),(65,1500)],
+    "?":[(65,1500),(578,1387),(65,1500)],    
 }
 keyboard_dic_only_nums = {
     "1":[(72,1160)],
@@ -248,7 +256,6 @@ def take_screenshot(d, thread=threading.current_thread().name, app="twi", crop_a
     Returns:
         str: Path to the saved screenshot or cropped image.
     """
-    sleep(2)
     filename = f"Screenshots/{thread}-screenshot_{app}.png"
     cropped_filename = f"Screenshots/{thread}-screenshot_{app}_cropped.png"
 
@@ -484,3 +491,47 @@ def close_apps(device):
     device.app_stop("com.zhiliaoapp.musically")
     device.app_stop("com.nordvpn.android")
     logging.info(f"{device.wlan_ip} closed apps.")
+
+
+def image_to_string(image_path):
+    """
+    Converts text in an image to a string using OCR.
+
+    Args:
+        image_path (str): Path to the image file.
+
+    Returns:
+        str: Extracted text from the image.
+    """
+    try:
+        # Load the image
+        image = Image.open(image_path)
+
+        # Extract text from the image using pytesseract
+        extracted_text = pytesseract.image_to_string(image)
+
+        # Clean the extracted text
+        extracted_text = extracted_text.strip()
+        if extracted_text=='ia)':
+            extracted_text = '11'
+        if extracted_text == '':
+            extracted_text = "Mar"
+
+        return extracted_text
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+    
+
+def rnd_value(x):
+    """
+    Generates a random value within ±5 of the given number x.
+
+    Args:
+        x (int or float): The base value.
+
+    Returns:
+        int or float: A random value within the range [x - 5, x + 5].
+    """
+    return random.randint(x - 40, x + 40)

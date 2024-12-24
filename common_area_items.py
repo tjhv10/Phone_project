@@ -724,3 +724,36 @@ report_instagram_account_clicks = {
     "Hate speech or symbols":"d.click(370,1150):d.click(370,1381)",
     "False information":"d.swipe(500, 1200, 500, 300, duration=0.05):d.click(370,1533):d.click(370,1440)",
 }
+
+month_dict_month_to_number = {
+    "Jan": "1",
+    "Feb": "2",
+    "Mar": "3",
+    "Apr": "4",
+    "May": "5",
+    "Jun": "6",
+    "Jul": "7",
+    "Aug": "8",
+    "Sep": "9",
+    "Oct": "10",
+    "Nov": "11",
+    "Dec": "12"
+}
+month_dict_number_to_month = {
+    "1": "Jan",
+    "2": "Feb",
+    "3": "Mar",
+    "4": "Apr",
+    "5": "May",
+    "6": "Jun",
+    "7": "Jul",
+    "8": "Aug",
+    "9": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dec"
+}
+
+YEAR_CROP = (447,1304,568,1382)
+MONTH_CROP = (313,1304,405,1382)
+DAY_CROP = (152,1304,238,1382)
