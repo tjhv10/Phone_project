@@ -420,7 +420,7 @@ def support_accounts(d,accounts):
         sleep(2)
 
 
-def main(d, duration=0):  # MAX_DURATION in seconds (default: 1 hour)
+def main(d, duration=0):  
     """
     The main function connects to the Android device and performs various Twitter actions.
     
