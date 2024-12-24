@@ -18,7 +18,7 @@ logging.basicConfig(
 
 # Replace all `print` statements with `logging.info` or appropriate log levels
 print = logging.info  # Redirect print to info-level logging
-
+MAX_DURATION = 1800
 
 #TODO add pic equlaizer to save from unexpected behavior
 
@@ -57,7 +57,7 @@ def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png
             x,y = search_sentence(d,"Post your replay","twi", tolerance=20) # For post location message
             d.click(int(x),int(y))
             sleep(5)
-        result = search_sentence(d,"2123","twi", tolerance=20) # For post location message
+        result = search_sentence(d,"2123","twi", tolerance=26) # For post location message
         if not result:
             d.click(int(350),int(350))
             sleep(5)
@@ -111,6 +111,10 @@ def scroll_like_and_comment(d,posts,duration):
     start_time = time.time()
     actions = ['like', 'comment', 'both', 'none']
     for _ in range(posts):
+        if duration > MAX_DURATION:  # Check duration
+                logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
+                d.app_stop("com.twitter.android")
+                return
         if d(scrollable=True).exists:
             start_x = random.randint(400, 600)
             start_y = random.randint(900, 1200)
@@ -195,7 +199,7 @@ def scroll_random_number(d,duration):
         
 
 
-def search_and_go_to_page(d, page_name):
+def search_and_go_to_page(d, page_name,duration=0):
     """ 
     Searches for the specified text in Twitter and navigates to the desired page.
 
@@ -214,6 +218,7 @@ def search_and_go_to_page(d, page_name):
     d.app_start("com.twitter.android")
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} : Opened Twitter!")
     sleep(10)
+    
 
     # Swipe up to return to the previous content
     # d.swipe(500, 300, 500, 1000, duration = 0.05)
@@ -243,7 +248,16 @@ def search_and_go_to_page(d, page_name):
             d.click(int(x),int(y))
             update_results_file("Actions")
         except:
-            logging.info("Didnt find page!")
+
+            if duration> MAX_DURATION:  # Check duration
+                logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
+                return
+            logging.error(f"{threading.current_thread().name}:{d.wlan_ip} Didnt find '{page_name}' checking vpn and restarting.")
+            close_apps(d)
+            sleep(5)
+            open_vpn(d,duration)
+            sleep(5)
+            search_and_go_to_page(d,page_name,duration)
     
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Got into the page!")
     sleep(5)
@@ -406,13 +420,13 @@ def support_accounts(d,accounts):
         sleep(2)
 
 
-def main(d, duration=0, max_duration=3600):  # max_duration in seconds (default: 1 hour)
+def main(d, duration=0):  # MAX_DURATION in seconds (default: 1 hour)
     """
     The main function connects to the Android device and performs various Twitter actions.
     
     Parameters:
     d (uiautomator2.Device): The connected Android device object.
-    max_duration (int): Maximum duration (in seconds) to allow the function to run.
+    MAX_DURATION (int): Maximum duration (in seconds) to allow the function to run.
     """
     try:
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} duration in main: "+str(duration))
@@ -434,8 +448,8 @@ def main(d, duration=0, max_duration=3600):  # max_duration in seconds (default:
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} duration in main:" +str(duration))
         # Perform random scrolling actions
         for _ in range(random.randint(1, 6)):
-            
-            if duration> max_duration:  # Check duration
+            duration = duration+time.time()-start_time
+            if duration> MAX_DURATION:  # Check duration
                 logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
                 return
             scroll_random_number(d,duration+time.time()-start_time)
@@ -449,7 +463,7 @@ def main(d, duration=0, max_duration=3600):  # max_duration in seconds (default:
         for _ in range(5):
             duration = duration+time.time()-start_time
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} duration in main:"+str(duration))
-            if duration > max_duration:  # Check duration
+            if duration > MAX_DURATION:  # Check duration
                 logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
                 d.app_stop("com.twitter.android")
                 return
@@ -460,20 +474,20 @@ def main(d, duration=0, max_duration=3600):  # max_duration in seconds (default:
                 account = random.choice(twitter_handles)
 
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} The account is: {account}!")
-            search_and_go_to_page(d, account)
-            if duration > max_duration:  # Check duration
+            search_and_go_to_page(d, account,duration)
+            if duration > MAX_DURATION:  # Check duration
                 logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
                 d.app_stop("com.twitter.android")
                 return
             sleep(2)
             follow_page(d)
-            if duration > max_duration:  # Check duration
+            if duration > MAX_DURATION:  # Check duration
                 logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
                 d.app_stop("com.twitter.android")
                 return
             sleep(2)
             scroll_like_and_comment(d, 10,duration=duration+time.time()-start_time)
-            if duration > max_duration:  # Check duration
+            if duration > MAX_DURATION:  # Check duration
                 logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
                 d.app_stop("com.twitter.android")
                 return
@@ -482,7 +496,7 @@ def main(d, duration=0, max_duration=3600):  # max_duration in seconds (default:
             sleep(4)
 
             for _ in range(random.randint(1, 6)):
-                scroll_random_number(d,scroll_random_number(d,duration+time.time()-start_time))
+                scroll_random_number(d,duration+time.time()-start_time)
                 sleep(2)
 
             # Stop Twitter

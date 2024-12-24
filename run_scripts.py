@@ -40,26 +40,26 @@ def like_comment_follow(device):
         logging.info(f"Running tasks on device with IP: {device_ip}")
         close_apps(device)
         sleep(3)
-        # open_vpn(device)
+        open_vpn(device,0)
         logging.info(f"Running Twitter script on device with IP: {device_ip}")
         twi.main(device)
         close_apps(device)
         sleep(3)
         # open_vpn(device)
-        sleep(5)
-        tik.main(device)
-        sleep(5)
-        tik.report_account(device,random.choice(tiktok_accounts_to_report))
-        close_apps(device)
-        tik.report_post(device,random.choice(tiktok_posts_to_report)[0])
-        close_apps(device)
+        # sleep(5)
+        # tik.main(device)
+        # sleep(5)
+        # tik.report_account(device,random.choice(tiktok_accounts_to_report))
+        # close_apps(device)
+        # tik.report_post(device,random.choice(tiktok_posts_to_report)[0])
+        # close_apps(device)
         logging.info(f"Device with IP {device_ip} completed its tasks.")
     except Exception as e:
         logging.error(f"Error while processing device with IP {device_ip}: {e}")
         sleep(60)
 
     logging.info(f"Device with IP {device_ip} is sleeping for 1 hours before restarting tasks...")
-    sleep(1 * 3600)
+    sleep(0.5 * 3600)
     worker_queue.put(device)
 
 
@@ -93,10 +93,6 @@ def report_tiktok(device_id):
         logging.error(f"Could not connect to device: {device_id}")
 
 
-def close_apps(device):
-    device.app_stop("com.twitter.android")
-    device.app_stop("com.zhiliaoapp.musically")
-    logging.info(f"{device.wlan_ip} closed apps.")
 
 
 def main():
@@ -104,13 +100,15 @@ def main():
     global worker_queue
     start_and_connect_all_servers()
 
-    max_threads = 15
+    max_threads = 13
     worker_queue = Queue()
+
+    random.shuffle(device_ips)  # Shuffle the devices list
     for device in device_ips:
         worker_queue.put(device)
 
     threads = []
-    for i in range(max_threads):
+    for _ in range(max_threads):
         t = threading.Thread(target=worker_task)
         t.start()
         threads.append(t)
@@ -149,15 +147,6 @@ def run_on_multiple_devices():
 
 
 stop_event = threading.Event()
-
-
-def open_vpn(d):
-    logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!")
-    d.app_start("com.nordvpn.android")
-    sleep(10)
-    while not search_sentence(d, "Pause Disconnect", "twi"):
-        logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Trying to reconnect...")
-        sleep(60)
 
 
 def worker_task():
