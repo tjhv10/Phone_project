@@ -726,18 +726,18 @@ report_instagram_account_clicks = {
 }
 
 month_dict_month_to_number = {
-    "Jan": "1",
-    "Feb": "2",
-    "Mar": "3",
-    "Apr": "4",
-    "May": "5",
-    "Jun": "6",
-    "Jul": "7",
-    "Aug": "8",
-    "Sep": "9",
-    "Oct": "10",
-    "Nov": "11",
-    "Dec": "12"
+    "jan": "1",
+    "feb": "2",
+    "mar": "3",
+    "apr": "4",
+    "may": "5",
+    "jun": "6",
+    "jul": "7",
+    "aug": "8",
+    "sep": "9",
+    "oct": "10",
+    "nov": "11",
+    "dec": "12"
 }
 month_dict_number_to_month = {
     "1": "Jan",
@@ -753,7 +753,18 @@ month_dict_number_to_month = {
     "11": "Nov",
     "12": "Dec"
 }
-
-YEAR_CROP = (447,1304,568,1382)
-MONTH_CROP = (313,1304,405,1382)
-DAY_CROP = (152,1304,238,1382)
+y_start = 1304
+y_end = 1382
+YEAR_CROP_TWI = (447,y_start,568,y_end)
+MONTH_CROP_TWI = (313,y_start,405,y_end)
+DAY_CROP_TWI = (152,y_start,238,y_end)
+y_start = 1056
+y_end = 1412
+YEAR_CROP_INST = (530,y_start,660,y_end)
+MONTH_CROP_INST = (313,y_start,405,y_end)
+DAY_CROP_INST = (37,y_start,186,y_end)
+y_start = 1138
+y_end = 1200
+YEAR_CROP_TIK = (490,y_start,630,y_end)
+MONTH_CROP_TIK = (102,y_start,200,y_end)
+DAY_CROP_TIK = (300,y_start,400,y_end)

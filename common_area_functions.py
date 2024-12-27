@@ -1,5 +1,6 @@
 import logging
 import random
+import re
 import threading
 from time import sleep
 import cv2
@@ -14,6 +15,11 @@ import time
 from PIL import Image
 from common_area_items import *
 import pytesseract
+from PIL import ImageEnhance
+from PIL import ImageFilter
+
+
+
 
 keyboard_dic = {
     "q": [(40, 1200)],
@@ -45,7 +51,7 @@ keyboard_dic = {
     ".": [(570,1500)],
     ",": [(150,1500)],
     " ": [(400,1500)],
-    "_": [(65,1500),(250,1300),(65,1500)],
+    "_": [(65,1500),(250,1500),(65,1500)],
     "0":[(65,1500),(680,1190),(65,1500)],
     "1":[(65,1500),(40,1190),(65,1500)],
     "2":[(65,1500),(110,1190),(65,1500)],
@@ -118,7 +124,7 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True):
     screen_shot = take_screenshot(d, threading.current_thread().name, plat)
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for text: {name}")
 
-    while name.lower().strip() == "israel" and plat == "twi":
+    while plat == "twi" and name.lower().strip() == "israel"  :
         name = random.choice(twitter_handles)
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for text: {name}")
     
@@ -145,8 +151,8 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True):
             top_left, _, bottom_right, _ = bbox
 
             # Skip text outside the vertical range
-            if top_left[1] < 180 or (top_left[1] > 1050 and name != "2123" and name != "Tagree"):
-                continue
+            # if top_left[1] < 180 or (top_left[1] > 1050 and name != "2123" and name != "Tagree"):
+            #     continue
 
             # Split the detected text into words
             words = text.strip().split()
@@ -168,8 +174,8 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True):
             y_center = (top_left[1] + bottom_right[1]) // 2
 
             # Skip text outside the vertical range
-            if top_left[1] < 180 or (top_left[1] > 1050 and name != "2123" and name != "Report post" and name!= "Tagree"):
-                continue
+            # if top_left[1] < 180 or (top_left[1] > 1050 and name != "2123" and name != "Report post" and name!= "Tagree"):
+            #     continue
 
             # Skip rows with single-character text
             if len(text.strip()) == 1:
@@ -493,7 +499,41 @@ def close_apps(device):
     logging.info(f"{device.wlan_ip} closed apps.")
 
 
-def image_to_string(image_path):
+def advanced_preprocess_image_inplace(image_path):
+    """
+    Advanced preprocessing to enhance OCR performance and saves it in the same path.
+
+    Args:
+        image_path (str): Path to the input image.
+
+    Returns:
+        None
+    """
+    # Load the image
+    image = Image.open(image_path)
+
+    # Convert to grayscale
+    image = image.convert("L")
+
+    # Enhance sharpness
+    enhancer = ImageEnhance.Sharpness(image)
+    image = enhancer.enhance(2.0)  # Increase sharpness
+
+    # Apply binarization (adaptive thresholding for better contrast)
+    image = image.point(lambda x: 0 if x < 150 else 255)
+
+    # Resize the image to improve OCR accuracy
+    image = image.resize((image.width * 3, image.height * 3), Image.Resampling.LANCZOS)
+
+    # Apply more aggressive noise reduction
+    image = image.filter(ImageFilter.MedianFilter(size=5))
+
+    # Save the preprocessed image back to the same path
+    image.save(image_path)
+    print(f"Advanced preprocessed image saved in place at {image_path}")
+
+
+def image_to_string(image_path,number = True):
     """
     Converts text in an image to a string using OCR.
 
@@ -501,27 +541,35 @@ def image_to_string(image_path):
         image_path (str): Path to the image file.
 
     Returns:
-        str: Extracted text from the image.
+        str: Cleaned and processed extracted text from the image.
     """
     try:
-        # Load the image
-        image = Image.open(image_path)
+        # Preprocess the image in place for better OCR performance
+        advanced_preprocess_image_inplace(image_path)
+        
+        # Extract text using pytesseract
+        if number:
+            extracted_text = pytesseract.image_to_string(Image.open(image_path), config='--psm 6 -c tessedit_char_whitelist=0123456789Ss').strip()  # Restrict to numbers only
+            if extracted_text == 'S' or extracted_text == 's':
+                extracted_text = '5'
 
-        # Extract text from the image using pytesseract
-        extracted_text = pytesseract.image_to_string(image)
-
-        # Clean the extracted text
-        extracted_text = extracted_text.strip()
-        if extracted_text=='ia)':
+        else:
+            extracted_text = pytesseract.image_to_string(Image.open(image_path)).strip() 
+        print(f"Extracted Text (Raw): {extracted_text}")
+        
+        # Handle specific edge cases
+        if extracted_text.lower() in ['ia)', '11']:
             extracted_text = '11'
-        if extracted_text == '':
-            extracted_text = "Mar"
+        elif extracted_text == '':
+            print("No text found or an error occurred. Returning default value.")
+            extracted_text = "Mar"  # Default fallback text
 
         return extracted_text
 
     except Exception as e:
-        print(f"Error: {e}")
-        return None
+        print(f"Error during OCR: {e}")
+        return "Error"
+
     
 
 def rnd_value(x):
@@ -532,6 +580,98 @@ def rnd_value(x):
         x (int or float): The base value.
 
     Returns:
-        int or float: A random value within the range [x - 5, x + 5].
+        int or float: A random value within the range [x - 10, x + 10].
     """
-    return random.randint(x - 40, x + 40)
+    return random.randint(x - 10, x + 10)
+
+def print_running_apps(d):
+    print(d.app_list_running())
+
+
+def return_code_inst(text, target_string):
+    """
+    Finds the first line in a text containing a specific substring and a 6-digit number.
+
+    Args:
+        text (str): The multi-line text to search.
+        target_string (str): The substring to look for.
+
+    Returns:
+        str or None: The first matching line, or None if no match is found.
+    """
+    for line in text.splitlines():
+        # Check if the line contains the target string and a 6-digit number
+        if target_string in line and re.search(r'\b\d{6}\b', line):
+            return line[-6:]
+    return None
+
+
+def format_with_leading_zero(number: int) -> str:
+    """
+    Converts an integer to a string and ensures it has at least two digits.
+    Adds a leading zero if the number has only one digit.
+
+    :param number: An integer to format
+    :return: A string with at least two digits
+    """
+    # Convert the number to a string
+    num_str = str(number)
+    
+    # Check if it has one digit and prepend '0' if necessary
+    if len(num_str) == 1:
+        num_str = '0' + num_str
+
+    return num_str
+
+def strip_newlines_and_spaces(input_string):
+    """
+    Removes all newline characters (\n) and spaces from the input string.
+
+    Args:
+        input_string (str): The string to process.
+
+    Returns:
+        str: The processed string without newline characters and spaces.
+    """
+    return input_string.replace(" ", "").replace("\n\n", "/").replace("\n", "/")
+
+def transform_list(months, month_dict):
+    """
+    Transforms each object in the input list using a mapping dictionary.
+
+    Args:
+        input_list (list): The list of objects to transform.
+        mapping_dict (dict): The dictionary for mapping values.
+
+    Returns:
+        list: A new list with transformed objects.
+    """
+    return convert_strings_to_ints([month_dict[month] for month in months if month in month_dict])
+    
+def convert_strings_to_ints(string_list):
+    """
+    Converts a list of strings to a list of integers, removing any items that cannot be converted.
+
+    Args:
+        string_list (list): List of strings to convert.
+
+    Returns:
+        list: A list of integers, excluding invalid strings.
+    """
+    return [int(item) for item in string_list if is_convertible_to_int(item)]
+
+def is_convertible_to_int(value):
+    """
+    Checks if a value can be converted to an integer.
+
+    Args:
+        value: The value to check.
+
+    Returns:
+        bool: True if the value can be converted to an integer, False otherwise.
+    """
+    try:
+        int(value)
+        return True
+    except ValueError:
+        return False
