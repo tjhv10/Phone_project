@@ -171,7 +171,7 @@ def insert_date(d, date: str):
         adjust_date_component(d, int(image_to_string(take_screenshot(d, crop_area=YEAR_CROP_TIK))), year, YEAR_CROP_TIK, x=550,y = y)
 
 
-def setup_tiktok(d,gmail,date,username):
+def setup_tiktok(d,gmail,date):
     d.app_start("com.zhiliaoapp.musically")
     sleep(10)
     d.click(314,199) # go to sign up google

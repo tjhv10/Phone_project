@@ -107,7 +107,7 @@ def tap_keyboard(d, text:str, keyboard = keyboard_dic):
             sleep(random.uniform(0.1, 0.2))  # Add a small delay between taps
                 
 
-def search_sentence(d, name: str, plat, tolerance=20, usegpu=True):
+def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_max=1650):
     """
     Searches for a word or sentence in the screenshot using OCR.
 
@@ -117,6 +117,8 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True):
         plat: Platform identifier.
         tolerance (int): Allowed similarity percentage (default=20).
         usegpu (bool): Whether to use GPU for OCR (default=True).
+        y_min (int): Minimum Y-coordinate boundary (default=0).
+        y_max (int): Maximum Y-coordinate boundary (default=infinity).
     
     Returns:
         tuple: Coordinates of the match center (x, y) or None if no match found.
@@ -124,12 +126,12 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True):
     screen_shot = take_screenshot(d, threading.current_thread().name, plat)
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for text: {name}")
 
-    while plat == "twi" and name.lower().strip() == "israel"  :
+    while plat == "twi" and name.lower().strip() == "israel":
         name = random.choice(twitter_handles)
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for text: {name}")
     
     # Determine if we're searching for a word or a sentence
-    is_word_search = len(name.split()) == 1 and name.__len__()<10
+    is_word_search = len(name.split()) == 1 and name.__len__() < 20
 
     # Initialize the OCR reader
     reader = easyocr.Reader(['en'], gpu=usegpu)
@@ -150,9 +152,9 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True):
             bbox, text, _ = detection
             top_left, _, bottom_right, _ = bbox
 
-            # Skip text outside the vertical range
-            # if top_left[1] < 180 or (top_left[1] > 1050 and name != "2123" and name != "Tagree"):
-            #     continue
+            # Filter out text outside the vertical boundaries
+            if top_left[1] < y_min or bottom_right[1] > y_max:
+                continue
 
             # Split the detected text into words
             words = text.strip().split()
@@ -173,9 +175,9 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True):
             top_left, _, bottom_right, _ = bbox
             y_center = (top_left[1] + bottom_right[1]) // 2
 
-            # Skip text outside the vertical range
-            # if top_left[1] < 180 or (top_left[1] > 1050 and name != "2123" and name != "Report post" and name!= "Tagree"):
-            #     continue
+            # Filter out text outside the vertical boundaries
+            if top_left[1] < y_min or bottom_right[1] > y_max:
+                continue
 
             # Skip rows with single-character text
             if len(text.strip()) == 1:
@@ -235,7 +237,7 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True):
         center_x = (top_left_x + bottom_right_x) // 2
         center_y = (top_left_y + bottom_right_y) // 2
 
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Best match found: \"{best_match_text}\" with similarity: {best_similarity}%")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Best match found: \"{best_match_text}\" with similarity: {best_similarity}% in {center_x,center_y}")
         return int(center_x), int(center_y)
 
     # Log the best match even if it doesn't meet the tolerance
@@ -244,6 +246,7 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True):
 
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No sufficiently similar text was found.")
     return None
+
 
 
 
@@ -496,6 +499,7 @@ def close_apps(device):
     device.app_stop("com.twitter.android")
     device.app_stop("com.zhiliaoapp.musically")
     device.app_stop("com.nordvpn.android")
+    device.app_stop("com.instagram.lite")
     logging.info(f"{device.wlan_ip} closed apps.")
 
 

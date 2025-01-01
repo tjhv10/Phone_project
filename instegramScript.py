@@ -2,8 +2,6 @@ import uiautomator2 as u2
 from time import sleep
 from common_area_items import *
 from common_area_functions import *
-from fuzzywuzzy import fuzz
-import easyocr
 
 def scroll_once(d):
     """
@@ -12,44 +10,53 @@ def scroll_once(d):
     Parameters:
     d (uiautomator2.Device): The connected device object from uiautomator2.
     """
-    if d(scrollable=True).exists:
-        # Generate a random starting point for the swipe within a range of 1000 to 1200 on the Y-axis
-        rnd_swipe = random.randint(1000, 1200)
-        # Swipe down by dragging from the point (500, rnd_swipe) to (500, rnd_swipe-500)
-        d.swipe(500, rnd_swipe, 500, rnd_swipe - 500, duration = 0.05)
-        # Wait for a random number of seconds between 1 and 6
-        random_time = random.randint(1, 6)
-        update_results_file("Scroll", 1)
-        print(f"Waiting {random_time} seconds...")  # Display the wait time
-    else:
-        print("No scrollable view found!")  # If the screen is not scrollable, display a message
-
-def scroll_random_number(d):
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting scroll_once function")
     """
-    Scrolls down a random number of times between 1 and 3 and then scrolls up.
+    Scrolls down once on a scrollable view in the app if it exists.
 
     Parameters:
     d (uiautomator2.Device): The connected device object from uiautomator2.
     """
+    logging.info("Starting scroll_once function")
     if d(scrollable=True).exists:
-        print("Found a scrollable view! Swiping down...")
+        rnd_swipe = random.randint(1000, 1200)
+        d.swipe(rnd_value(500), rnd_swipe, rnd_value(500), rnd_swipe - 500, duration=0.05)
+        random_time = random.randint(1, 6)
+        update_results_file("Scroll", 1)
+        logging.info(f"Swiped once. Waiting {random_time} seconds.")
+        sleep(random_time)
+    else:
+        logging.warning("No scrollable view found!")
 
-        # Randomly choose how many times to swipe (between 1 and 3)
-        num_swipes = random.randint(3,8)
-        print(f"Number of swipes: {num_swipes}")
+def scroll_random_number(d):
+    """
+    Scrolls down a random number of times between 3 and 8.
 
+    Parameters:
+    d (uiautomator2.Device): The connected device object from uiautomator2.
+    """
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting scroll_random_number function")
+    """
+    Scrolls down a random number of times between 3 and 8.
+
+    Parameters:
+    d (uiautomator2.Device): The connected device object from uiautomator2.
+    """
+    logging.info("Starting scroll_random_number function")
+    if d(scrollable=True).exists:
+        num_swipes = random.randint(3, 8)
+        logging.info(f"Number of swipes: {num_swipes}")
         update_results_file("Scroll", num_swipes)
 
-        # Perform the swipe action for the chosen number of times
         for i in range(num_swipes):
-            rnd_swipe = random.randint(1000, 1200)  # Pick a random Y-coordinate for the swipe
-            d.swipe(500, rnd_swipe, 500, rnd_swipe - 900, duration = 0.05)  # Swipe down
-            random_time = random.randint(2, 15)  # Wait for a random number of seconds
-            print(f"Waiting {random_time} seconds...")
-            sleep(random_time)  # Pause between swipes
-            print(f"Swiped down {i + 1} time(s).")
+            rnd_swipe = random.randint(1000, 1200)
+            d.swipe(rnd_value(500), rnd_swipe, rnd_value(500), rnd_swipe - 500, duration=0.05)
+            random_time = random.randint(2, 15)
+            logging.info(f"Swipe {i + 1}/{num_swipes}. Waiting {random_time} seconds.")
+            sleep(random_time)
     else:
-        print("No scrollable view found!")
+        logging.warning("No scrollable view found!")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished scroll_random_number function")
 
 
 def search_and_go_to_account(d, name):
@@ -60,29 +67,24 @@ def search_and_go_to_account(d, name):
     d (uiautomator2.Device): The connected device object from uiautomator2.
     text (str): The text to search for.
     """
-    screen_width = d.info['displayWidth']
-    screen_height = d.info['displayHeight']
-    
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting search_and_go_to_account function")
     # Calculate the coordinates as percentages of the screen resolution
     d.click(215, 1515)  # Click on the search button
     sleep(1)
     d.click(215, 1515)  # Click on the search button
+    sleep(3)    
+    d.click(352,100)  # Click on the search bar
     sleep(3)
-    # Calculate the coordinates as percentages of the screen resolution
-    x = screen_width / 2  # Approximate X coordinate for the search bar
-    y = screen_height * (300 / 3168)  # Approximate Y coordinate for the search bar
-    d.click(x, y)  # Click on the search bar
-      # Click on the search bar
-    sleep(3)
-    # Type each character of the search term with a random delay
+    d.click(661,109)
+    sleep(1)
     tap_keyboard(d,name)
-    sleep(1)
-    d.press(66)  # Press the search button
+    sleep(6)
+    d.click(357,221) # Press the search button
     sleep(5)
-    d.click(245, 225) # Press the accounts button
+    d.click(*search_sentence(d,"Accounts","inst")) # Press the accounts button
     sleep(5)
     try:
-        x,y = search_sentence(d,name,"inst") 
+        x,y = search_sentence(d,name,"inst",y_min=180) 
         print("Found account!")
     except:
         search_and_go_to_account(d,random.choice(instagram_accounts))
@@ -92,12 +94,13 @@ def search_and_go_to_account(d, name):
     if num >=2:
         follow_page(d)
     sleep(4)
-    d.swipe(500, 1400, 500, 100, duration = 0.02)
+    d.swipe(rnd_value(500), rnd_value(1400), rnd_value(500), rnd_value(800), duration = 0.05)
     sleep(4)
-    d.click(120,500)
+    d.click(120,600)
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished search_and_go_to_account function")
 
 
-def tap_like_button(d, like_button_template_path="icons\instagram_icons\like.png"):
+def tap_like_button(d, like_button_template_path="icons/instagram_icons/like.png"):
     """
     Takes a screenshot and tries to tap on the like button if found.
 
@@ -105,6 +108,7 @@ def tap_like_button(d, like_button_template_path="icons\instagram_icons\like.png
     d (uiautomator2.Device): The connected device object from uiautomator2.
     like_button_template_path (str): Path to the like button template image.
     """
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting tap_like_button function")
     screenshot_path = take_screenshot(d,threading.current_thread().name,'inst')
     best_match = find_best_match(screenshot_path, like_button_template_path,d)
 
@@ -115,9 +119,10 @@ def tap_like_button(d, like_button_template_path="icons\instagram_icons\like.png
         update_results_file("Likes")
     else:
         print("Like button not found on the screen.")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished tap_like_button function")
 
 
-def comment_text(d,text, comment_template_path="icons\instagram_icons\comment.png"):
+def comment_text(d,text, comment_template_path="icons/instagram_icons/comment.png"):
     """
     Takes a screenshot and tries to tap on the comment icon if found.
 
@@ -125,6 +130,7 @@ def comment_text(d,text, comment_template_path="icons\instagram_icons\comment.pn
     d (uiautomator2.Device): The connected device object from uiautomator2.
     comment_template_path (str): Path to the comment icon template image.
     """
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting comment_text function")
     # Take a screenshot of the current screen
     screenshot_path = take_screenshot(d,threading.current_thread().name,"inst")
     
@@ -155,6 +161,7 @@ def comment_text(d,text, comment_template_path="icons\instagram_icons\comment.pn
         d.press("back")
         sleep(2)
     sleep(2)
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished comment_text function")
 
 def scroll_like_and_comment(d):
     """
@@ -163,6 +170,7 @@ def scroll_like_and_comment(d):
     Parameters:
     d (uiautomator2.Device): The connected device object from uiautomator2.
     """
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting scroll_like_and_comment function")
     for _ in range(2):
         scroll_once(d)  # Scroll down once
         sleep(3)  # Wait 1 second between actions
@@ -181,8 +189,13 @@ def scroll_like_and_comment(d):
     sleep(1)
     d.press("back")
     sleep(1)
+    d.press("back")
+    sleep(1)
+    d.click(73,1508) # press home
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished scroll_like_and_comment function")
 
 def report_post(d, link,action = 0):
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting report_post function")
     # Open Twitter app
     d.app_start("com.instagram.android")
     print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Instagram!")
@@ -213,8 +226,10 @@ def report_post(d, link,action = 0):
         update_results_file("Posts reported")
         sleep(4)
         d.app_stop("com.twitter.android")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished report_post function")
 
 def report_account(d, link):
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting report_account function")
     # Open Twitter app
     d.app_start("com.instagram.android")
     print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Instagram!")
@@ -238,6 +253,48 @@ def report_account(d, link):
         update_results_file("Accounts reported")
         sleep(4)
         d.app_stop("com.twitter.android")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished report_account function")
+
+def comment_text(d,text, comment_template_path="icons/instagram_icons/comment.png"):
+    """
+    Takes a screenshot and tries to tap on the comment icon if found.
+
+    Parameters:
+    d (uiautomator2.Device): The connected device object from uiautomator2.
+    comment_template_path (str): Path to the comment icon template image.
+    """
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting comment_text function")
+    # Take a screenshot of the current screen
+    screenshot_path = take_screenshot(d,threading.current_thread().name,"inst")
+    
+    # Find the best match for the comment icon in the screenshot
+    coordinates = find_best_match(screenshot_path, comment_template_path,d)
+    sleep(2)
+    # If the comment icon was found, tap on it
+    if coordinates:
+        d.click(int(coordinates[0]), int(coordinates[1]))  # Tap the comment button
+    else:
+        print("Comment not found on the screen.")
+    sleep(2)
+    screenshot_path = take_screenshot(d,threading.current_thread().name,"inst")
+    
+    # Find the best match for the comment icon in the screenshot
+    num_coordinates = find_best_match(screenshot_path, "icons/instagram_icons/num.png",d)
+    if num_coordinates != None:
+        sleep(2)
+        tap_keyboard(d,text)
+        sleep(1)
+        d.press(66)
+        sleep(1)
+        update_results_file("Comments")
+        sleep(1)
+        d.press("back")
+        sleep(1)
+    if coordinates !=  None:
+        d.press("back")
+        sleep(2)
+    sleep(2)
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting comment_text function")
 
 def follow_page(d, follow_template_path="icons/instagram_icons/follow.png"):
     print(f"{threading.current_thread().name}:{d.wlan_ip} Starting follow_page function")
@@ -255,11 +312,14 @@ def follow_page(d, follow_template_path="icons/instagram_icons/follow.png"):
     print(f"{threading.current_thread().name}:{d.wlan_ip} Finished follow_page function")
 
 def support_accounts(d,accounts):
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting support_accounts function")
     accounts = random.shuffle(accounts)
     for account in accounts:
         search_and_go_to_account(d,account)
         sleep(2)
         scroll_like_and_comment(d,5)
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting support_accounts function")
+        
 
 
 def main(d):
@@ -267,10 +327,14 @@ def main(d):
     The main function connects to the Android device and performs various Instagram actions.
     """
     # Connect to the Android device using its IP address (make sure your device is connected via ADB over Wi-Fi)
-    d.app_start("com.instagram.android")
+    d.app_start("com.instagram.lite")
     print("Opened Instagram!")
-    for _ in range(1):
-        sleep(7)  # Wait for Instagram to fully load
+    sleep(10)
+    d.click(73,1508) # press home
+    sleep(1)
+    d.click(73,1508) # press home
+    sleep(3)
+    for _ in range(5):
         scroll_random_number(d)
         sleep(2)
         tap_like_button(d)
@@ -282,10 +346,11 @@ def main(d):
         scroll_random_number(d)
         tap_like_button(d)
         scroll_random_number(d)
+        sleep(2)
     support_accounts(d,instagram_handles_special)
     sleep(3)
-    d.app_stop("com.instagram.android")
+    d.app_stop("com.instagram.lite")
 
 
-# main(u2.connect("10.100.102.178"))
+main(u2.connect("127.0.0.1:6555"))
 # report_account(u2.connect("10.0.0.15"),"")
