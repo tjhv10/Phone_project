@@ -3,6 +3,7 @@ import logging
 from time import sleep
 from common_area_items import *
 from common_area_functions import *
+import pandas as pd
 
 
 # Configure logging
@@ -18,6 +19,21 @@ logging.basicConfig(
 
 # Replace all `print` statements with `logging.info` or appropriate log levels
 print = logging.info  # Redirect print to info-level logging
+
+
+def extract_data_from_range(file_path="Profiles _ BFJ.xlsx", range_file_path="range.txt"):
+    with open(range_file_path, 'r') as file:
+        range_str = file.read().strip()
+    start_id, end_id = map(int, range_str.split('-'))
+    sheet_data = pd.read_excel(file_path, sheet_name='Sheet1')
+    sheet_data['Phone ID #'] = pd.to_numeric(sheet_data['Phone ID #'], errors='coerce')
+    filtered_data = sheet_data[(sheet_data['Phone ID #'] >= start_id) & (sheet_data['Phone ID #'] <= end_id)]
+    result = filtered_data[
+        ['Email Address (recommended)', 'Password for All', 'Date of Birth', 'TikTok Handle']
+    ].dropna()
+    result.columns = ['Email', 'Password', 'Date', 'Username']
+    result['Date'] = pd.to_datetime(result['Date'], errors='coerce').dt.strftime('%d/%m/%Y')
+    return result.to_dict('records')
 
 
 def setup_google(d,gmail:str,password):
@@ -308,10 +324,9 @@ def setup_instagram(d,gmail,full_name,password,date,username):
     sleep(3)
     d.app_stop("com.instagram.lite")
 
-gmail = "riley.jackson1010@gmail.com"
-password = "Whatthehe12"
-date = "06/12/1988"
-d = u2.connect("127.0.0.1:6555")
+
+# d = u2.connect("127.0.0.1:6555")
+
 # setup_google(d,gmail,password)
 # print_running_apps(d)
 # sleep(5)
@@ -320,4 +335,5 @@ d = u2.connect("127.0.0.1:6555")
 # print(d.app_current()["package"])
 # setup_twitter(d,gmail,date,"riley_foodyyyy")
 # setup_tiktok(d,gmail,date,"riley_foodyyyy")
-insert_date(d,date)
+# insert_date(d,date)
+print(extract_data_from_range())

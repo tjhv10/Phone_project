@@ -102,18 +102,17 @@ def comment_text(d, text, send_button_template_path="icons/tiktok_icons/send.png
 
 def scroll_random_number(d):
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting scroll_random_number function")
-    screen_width = d.info['displayWidth']
-    screen_height = d.info['displayHeight']
+    
     if d(scrollable=True).exists:
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Found a scrollable view! Swiping down...")
         num_swipes = random.randint(1, 2)
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Number of swipes: {num_swipes}")
         for i in range(num_swipes):
-            x_start = screen_width * (500 / 720)
-            y_start = screen_height * (1200 / 1560)
-            x_end = screen_width * (500 / 720)
-            y_end = screen_height * (300 / 1560)
-            d.swipe(x_start, y_start, x_end, y_end, duration=0.05)
+            start_x = random.randint(400, 600)
+            start_y = random.randint(900, 1200)
+            end_y = start_y - random.randint(400, 600)
+            swipe_duration = random.uniform(0.04, 0.06)
+            d.swipe(start_x, start_y, start_x, end_y, duration=swipe_duration)
             update_results_file("Actions")
             random_time = random.randint(2, 15)
             sleep(random_time)
@@ -127,17 +126,16 @@ def scroll_like_and_comment(d,postsToLike):
     """
     Scrolls the view and likes posts.
     """
+
     tap_like_button(d)
-    screen_width = d.info['displayWidth']
-    screen_height = d.info['displayHeight']
 
     for i in range(postsToLike):
         if d(scrollable=True).exists:
-            x_start = screen_width * (500 / 720)
-            y_start = screen_height * (1200 / 1560)
-            x_end = screen_width * (500 / 720)
-            y_end = screen_height * (300 / 1560)
-            d.swipe(x_start, y_start, x_end, y_end, duration=0.05)
+            start_x = random.randint(400, 600)
+            start_y = random.randint(900, 1200)
+            end_y = start_y - random.randint(400, 600)
+            swipe_duration = random.uniform(0.04, 0.06)
+            d.swipe(start_x, start_y, start_x, end_y, duration=swipe_duration)
             update_results_file("Actions")
             random_time = random.randint(2, 15)
             sleep(random_time)
@@ -180,10 +178,16 @@ def like_a_page(d, page):
     sleep(12)
     search(d, page)
     sleep(5)
+    try:
+        x,y = search_sentence(d,"Follow")
+        d.click(x,y)
+    except:
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} : Allready following!")
+    sleep(10)
     d.click(120, 1450) # Get in the first page
     update_results_file("Actions")
     sleep(5)
-    scroll_like_and_comment(d,15)
+    scroll_like_and_comment(d,10)
 
 
 def report_tiktok_posts(d):
@@ -354,9 +358,9 @@ def main(d):
     except:
         logging.error("An error occurred", exc_info=True)  # Log error with stack trace
 
-# d = u2.connect("10.100.102.195")
-# for handle in tiktok_accounts:
-#     like_a_page(d, handle)
-# d = u2.connect("10.0.0.15")
+d = u2.connect("127.0.0.1:6555")
+# main(d)
+x,y = search_sentence(d,"Follow","tik")
+d.click(x,y)
 # report_post(d,random.choice(tiktok_posts_to_report)[0])
 # report_account(d,"https://www.tiktok.com/@healwithtati")
