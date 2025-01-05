@@ -1,6 +1,5 @@
-
 import logging
-
+from type import TYPE 
 # Configure logging
 log_file = "logs.log"  # Log file to capture output
 logging.basicConfig(
@@ -142,55 +141,55 @@ print = logging.info  # Redirect print to info-level logging
 #     "Always with Israel."
 # ]
 israel_support_comments = [
-    "wow, this really made me stop and think. thank you for sharing.",
-    "such a great post, really apprciate you putting this out there.",
-    "this is so intrasting, i always enjoy seeing posts like this.",
-    "this is really something special. thanks for sharing.",
-    "so much thought went into this—well done!",
-    "i didnt expect to come across this, but im so glad i did.",
-    "this is so well done. really makes you reflect.",
-    "such a great reminder of the things that matter most.",
-    "thanks for sharing this, its so important.",
-    "this is truely fascinating, appriciate you posting it.",
-    "what a thoughtful post, really resonates with me.",
-    "this made my day. thanks for putting it out there.",
-    "such an insightful take, really makes you think.",
-    "this is such an intrasting perspective. thank you for this.",
+    "wow, this really made me stop and think. thank you for sharing",
+    "such a great post, really apprciate you putting this out there",
+    "this is so intrasting, i always enjoy seeing posts like this",
+    "this is really something special. thanks for sharing",
+    "so much thought went into this well done!",
+    "i didnt expect to come across this, but im so glad i did",
+    "this is so well done. really makes you reflect",
+    "such a great reminder of the things that matter most",
+    "thanks for sharing this, its so important",
+    "this is truely fascinating, appriciate you posting it",
+    "what a thoughtful post, really resonates with me",
+    "this made my day. thanks for putting it out there",
+    "such an insightful take, really makes you think",
+    "this is such an intrasting perspective. thank you for this",
     "such a simple yet powerful post. well done!",
-    "i always enjoy seeing posts like this—thoughtful and meaningful.",
-    "this really stayed with me. great post.",
+    "i always enjoy seeing posts like this—thoughtful and meaningful",
+    "this really stayed with me. great post",
     "such an important thing to share. thank you!",
-    "this really made me smile, so uplifting.",
-    "wow, such a great reminder. thanks for posting this.",
-    "this is the kind of content that really connects with people.",
-    "such a meaningful post, really apprciate this perspective.",
-    "this is so thoughtful and well done.",
-    "i love seeing posts like this. so much to think about.",
-    "this is so intrasting, thank you for sharing.",
-    "this really moved me, so important to share.",
-    "thank you for this, it really stays with you.",
-    "this is so powerful in its simplicity.",
-    "such a great example of what makes content meaningful.",
-    "this is really something everyone should see. thank you.",
-    "wow, what a beautifully put-together post. so well done.",
-    "i cant get this post out of my head, its so impactful.",
-    "this is really uplifting. thank you for sharing it.",
-    "such a thought-provoking and reflective post.",
+    "this really made me smile, so uplifting",
+    "wow, such a great reminder. thanks for posting this",
+    "this is the kind of content that really connects with people",
+    "such a meaningful post, really apprciate this perspective",
+    "this is so thoughtful and well done",
+    "i love seeing posts like this. so much to think about",
+    "this is so intrasting, thank you for sharing",
+    "this really moved me, so important to share",
+    "thank you for this, it really stays with you",
+    "this is so powerful in its simplicity",
+    "such a great example of what makes content meaningful",
+    "this is really something everyone should see. thank you",
+    "wow, what a beautifully put-together post. so well done",
+    "i cant get this post out of my head, its so impactful",
+    "this is really uplifting. thank you for sharing it",
+    "such a thought-provoking and reflective post",
     "this post has such a positive energy. love it!",
     "this really makes you stop and think. great job!",
-    "such a unique take, really appriciate you sharing it.",
+    "such a unique take, really appriciate you sharing it",
     "this is so simple yet so meaningful. well done!",
-    "really enjoyed this post. it has such a great message.",
-    "this is the kind of content that brings people together.",
-    "what a strong and important post. thank you for this.",
-    "this is so heartfelt and meaningful. thanks for sharing.",
-    "this really highlights something important. appriciate it.",
-    "such a well-done post, really made me reflect.",
+    "really enjoyed this post. it has such a great message",
+    "this is the kind of content that brings people together",
+    "what a strong and important post. thank you for this",
+    "this is so heartfelt and meaningful. thanks for sharing",
+    "this really highlights something important. appriciate it",
+    "such a well-done post, really made me reflect",
     "this is so versatile and thoughtful. love it!",
-    "this really brings a fresh perspective. thank you for posting.",
+    "this really brings a fresh perspective. thank you for posting",
     "what a strong and powerful message. thank you!",
-    "this is truely one of the most thoughtful posts ive seen.",
-    "thank you for sharing this, its really inspiring."
+    "this is truely one of the most thoughtful posts ive seen",
+    "thank you for sharing this, its really inspiring"
 ]
 
 
@@ -372,10 +371,10 @@ instagram_accounts = [
     "fleurhassann",
     "standwithus",
     "israel",
-    "israeltodaymag", 
+    # "israeltodaymag", TODO fix username
     "jewishagency", 
     "honestreporting", 
-    "beyondtheheadline", 
+    "beyondtheheadlines",
     "simonwiesenthalcenter", 
     "maccabiusa", 
     "aipac", 
@@ -820,3 +819,4 @@ y_end = 1200
 YEAR_CROP_TIK = (490,y_start,630,y_end)
 MONTH_CROP_TIK = (102,y_start,200,y_end)
 DAY_CROP_TIK = (300,y_start,400,y_end)
+MAX_DURATION = 1800

@@ -323,44 +323,51 @@ def support_accounts(d,accounts):
 
 def main(d):
     """
-    Main function to connect to the device and perform actions on TikTok.
-    # """
+    The main function connects to the Android device and performs various TikTok actions.
+
+    Args:
+        d: The connected Android device object.
+
+    Returns:
+        None
+    """
+    start_time = time.time()
     try:
         for _ in range(5):
             if "com.zhiliaoapp.musically" in d.app_list_running():
-                # Stop Tiktok app
                 d.app_stop("com.zhiliaoapp.musically")
-                sleep(4)
+                time.sleep(4)
 
-            # Start the Twitter app 
             d.app_start("com.zhiliaoapp.musically")  # Open TikTok app
-            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} :Opened TikTok!")
-            sleep(15)
-            scroll_random_number(d)
-            # sleep(1)
-            # tap_like_button(d)
-            sleep(4)
-            like_a_page(d,random.choice(tiktok_accounts))
-            scroll_random_number(d)
-            sleep(10)
+            logging.info("Opened TikTok!")
+            time.sleep(15)
 
-        support_accounts(d,tiktok_handles_specials)
+            if time.time() - start_time > MAX_DURATION:
+                logging.info("Exceeded max duration. Exiting main.")
+                break
+
+            scroll_random_number(d)
+            time.sleep(4)
+            like_a_page(d, random.choice(tiktok_accounts))
+            scroll_random_number(d)
+            time.sleep(10)
+
+        support_accounts(d, tiktok_handles_specials)
         report_tiktok_posts(d)
-        sleep(3)
+        time.sleep(3)
         d.app_stop("com.zhiliaoapp.musically")
-        sleep(4)
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Done with tiktok!")
-        
-            
-        # Sleep for 0.5 hours before the next cycle
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} completed its tasks. Sleeping for 0.5 hours...")
-        sleep(.5 * 3600)  # 0.5 hours break for this worker
-    except:
-        logging.error("An error occurred", exc_info=True)  # Log error with stack trace
+        logging.info("Done with TikTok!")
 
-d = u2.connect("127.0.0.1:6555")
+        logging.info("Sleeping for 0.5 hours...")
+        time.sleep(0.5 * 3600)  # Sleep for 0.5 hours
+
+    except Exception as e:
+        logging.error("An error occurred", exc_info=True)
+        d.app_stop("com.zhiliaoapp.musically")
+
+# d = u2.connect("127.0.0.1:6555")
 # main(d)
-x,y = search_sentence(d,"Follow","tik")
-d.click(x,y)
+# x,y = search_sentence(d,"Follow","tik")
+# d.click(x,y)
 # report_post(d,random.choice(tiktok_posts_to_report)[0])
 # report_account(d,"https://www.tiktok.com/@healwithtati")

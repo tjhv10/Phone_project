@@ -484,13 +484,11 @@ def reopen_app(d, package_name, wait_time=5):
     except Exception as e:
         logging.error(f"Error while reopening app {package_name}: {e}")
 
-def open_vpn(d,duration):
+def open_vpn(d):
     logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!")
     d.app_start("com.nordvpn.android")
-    start_time = time.time()
     sleep(20)
-    while not search_sentence(d, "Pause Disconnect", "twi"):
-        duration = duration+time.time()-start_time
+    while not search_sentence(d, "Pause", "twi"):
         logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Trying to reconnect...")
         sleep(120)
 
@@ -576,7 +574,7 @@ def image_to_string(image_path,number = True):
 
     
 
-def rnd_value(x):
+def rnd_value(x,range=10):
     """
     Generates a random value within ±5 of the given number x.
 
@@ -584,9 +582,9 @@ def rnd_value(x):
         x (int or float): The base value.
 
     Returns:
-        int or float: A random value within the range [x - 10, x + 10].
+        int or float: A random value within the range [x - range, x + range].
     """
-    return random.randint(x - 10, x + 10)
+    return random.randint(x - range, x + range)
 
 def print_running_apps(d):
     print(d.app_list_running())
@@ -679,3 +677,38 @@ def is_convertible_to_int(value):
         return True
     except ValueError:
         return False
+
+
+def is_region_completely_white(image_path, region):
+    """
+    Check if a specific region of an image is completely white.
+
+    Args:
+        image_path (str): Path to the image file.
+        region (tuple): Region to check in the format (left, top, right, bottom).
+
+    Returns:
+        bool: True if the region is completely white, False otherwise.
+    """
+    try:
+        return np.all(np.array(Image.open(image_path).convert("RGB").crop(region)) == [255, 255, 255])
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+    
+
+def start_random_function(functions,d):
+    """
+    Selects and starts a random function from a list of functions.
+
+    Args:
+        functions (list): A list of callable functions.
+
+    Returns:
+        Any: The result of the executed function.
+    """
+    if not functions:
+        raise ValueError("The function list is empty.")
+    sleep(rnd_value(10))
+    return random.choice(functions)(d)

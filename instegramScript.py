@@ -171,9 +171,9 @@ def scroll_like_and_comment(d):
     d (uiautomator2.Device): The connected device object from uiautomator2.
     """
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting scroll_like_and_comment function")
-    for _ in range(2):
+    for _ in range(rnd_value(10)):
         scroll_once(d)  # Scroll down once
-        sleep(3)  # Wait 1 second between actions
+        sleep(3)  # Wait 3 second between actions
         num = random.choice([1,2,3,4,5]) 
         if num<=4:
             tap_like_button(d)
@@ -182,26 +182,26 @@ def scroll_like_and_comment(d):
                 comment_text(d,random.choice(israel_support_comments))  # Try to tap the like button to like the post
         sleep(1)  # Wait 2 seconds after tapping
     d.press("back")
-    sleep(1)
+    sleep(0.8)
     d.press("back")
-    sleep(1)
+    sleep(0.89)
     d.press("back")
-    sleep(1)
+    sleep(0.95)
     d.press("back")
-    sleep(1)
+    sleep(0.78)
     d.press("back")
-    sleep(1)
+    sleep(0.99)
     d.click(73,1508) # press home
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished scroll_like_and_comment function")
 
 def report_post(d, link,action = 0):
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting report_post function")
     # Open Twitter app
-    d.app_start("com.instagram.android")
+    d.app_start("com.instagram.lite")
     print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Instagram!")
     # sleep(15)
 
-    if "com.instagram.android" in d.app_list_running():
+    if "com.instagram.lite" in d.app_list_running():
         print(f"{threading.current_thread().name}:{d.wlan_ip} Instagram is running!")
 
         # Open the tweet in the Twitter app
@@ -228,32 +228,39 @@ def report_post(d, link,action = 0):
         d.app_stop("com.twitter.android")
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished report_post function")
 
-def report_account(d, link):
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting report_account function")
-    # Open Twitter app
-    d.app_start("com.instagram.android")
-    print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Instagram!")
-    # sleep(15)
 
-    if "com.instagram.android" in d.app_list_running():
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Instagram is running!")
+# TODO fix function
+# def report_account(d, link): 
+#     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting report_account function")
+#     # Open Twitter app
+#     d.app_start("com.instagram.lite")
+#     print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Instagram!")
+#     # sleep(15)
 
-        # Open the tweet in the Twitter app
-        d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Opened: {link}")
-        sleep(3)
-        # Click on the share button
-        d.click(660, 135)
-        sleep(3)
-        # # Click on the report button
-        d.click(300, 820)
-        sleep(8)
-        handle_user_selection(d,report_instagram_post_clicks)
-        sleep(2)
-        update_results_file("Accounts reported")
-        sleep(4)
-        d.app_stop("com.twitter.android")
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished report_account function")
+#     if "com.instagram.lite" in d.app_list_running():
+#         print(f"{threading.current_thread().name}:{d.wlan_ip} Instagram is running!")
+
+#         # Open the tweet in the Twitter app
+#         d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
+#         print(f"{threading.current_thread().name}:{d.wlan_ip} Opened: {link}")
+#         sleep(3)
+#         # Click on the share button
+#         d.click(660, 135)
+#         sleep(3)
+#         d.click(*search_sentence(d,"Report_","inst"))
+#         sleep(3)
+#         d.click(*search_sentence(d,"Report Account","inst"))
+#         sleep(3)
+#         d.click(*search_sentence(d,"it's posting content that shoulden't be on","inst"))
+#         sleep(8)
+#         handle_user_selection(d,report_instagram_account_clicks)
+#         sleep(2)
+#         update_results_file("Accounts reported")
+#         sleep(4)
+#         d.app_stop("com.twitter.android")
+#     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished report_account function")
+
+
 
 def comment_text(d,text, comment_template_path="icons/instagram_icons/comment.png"):
     """
@@ -313,7 +320,7 @@ def follow_page(d, follow_template_path="icons/instagram_icons/follow.png"):
 
 def support_accounts(d,accounts):
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting support_accounts function")
-    accounts = random.shuffle(accounts)
+    random.shuffle(accounts)
     for account in accounts:
         search_and_go_to_account(d,account)
         sleep(2)
@@ -325,32 +332,48 @@ def support_accounts(d,accounts):
 def main(d):
     """
     The main function connects to the Android device and performs various Instagram actions.
+
+    Args:
+        d: The connected Android device object.
+
+    Returns:
+        None
     """
-    # Connect to the Android device using its IP address (make sure your device is connected via ADB over Wi-Fi)
-    d.app_start("com.instagram.lite")
-    print("Opened Instagram!")
-    sleep(10)
-    d.click(73,1508) # press home
-    sleep(1)
-    d.click(73,1508) # press home
-    sleep(3)
-    for _ in range(5):
-        scroll_random_number(d)
-        sleep(2)
-        tap_like_button(d)
-        sleep(7)
-        search_and_go_to_account(d,random.choice(instagram_accounts))
-        sleep(3)
-        scroll_like_and_comment(d)
-        sleep(3)
-        scroll_random_number(d)
-        tap_like_button(d)
-        scroll_random_number(d)
-        sleep(2)
-    support_accounts(d,instagram_handles_special)
-    sleep(3)
-    d.app_stop("com.instagram.lite")
+    start_time = time.time()
+    logging.info(f"Starting main with duration limit: {MAX_DURATION}")
 
+    try:
+        d.app_start("com.instagram.lite")
+        logging.info("Opened Instagram!")
+        time.sleep(10)
 
-main(u2.connect("127.0.0.1:6555"))
-# report_account(u2.connect("10.0.0.15"),"")
+        for _ in range(5):
+            if time.time() - start_time > MAX_DURATION:
+                logging.info("Exceeded max duration. Exiting main.")
+                break
+
+            scroll_random_number(d)
+            time.sleep(2)
+            tap_like_button(d)
+            time.sleep(7)
+            search_and_go_to_account(d, random.choice(instagram_accounts))
+            time.sleep(3)
+            scroll_like_and_comment(d)
+            time.sleep(3)
+            scroll_random_number(d)
+            tap_like_button(d)
+            scroll_random_number(d)
+            time.sleep(2)
+
+        support_accounts(d, instagram_handles_special)
+        time.sleep(3)
+        d.app_stop("com.instagram.lite")
+
+    except Exception as e:
+        logging.error("An error occurred", exc_info=True)
+        d.app_stop("com.instagram.lite")
+
+d = u2.connect("127.0.0.1:6555")
+# main(d)
+# report_account(d,"https://www.instagram.com/freepalestineland?igsh=YzljYTk1ODg3Zg==") #TODO fix  func
+report_post(d,"https://www.instagram.com/p/DEXwklSKeW5/?igsh=YzljYTk1ODg3Zg==")

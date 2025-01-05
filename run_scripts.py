@@ -33,28 +33,22 @@ def clean_log_files(directory):
         with open(log_file, 'w') as _:
             pass  # Opening in write mode clears the file   
 
-def like_comment_follow(device):
+def like_comment_follow(d):
     """
     Function to run Twitter and TikTok scripts on a specific phone.
     """
-    device_ip = device.wlan_ip  # Fetch the device's IP address dynamically
+    device_ip = d.wlan_ip  # Fetch the device's IP address dynamically
     try:
         logging.info(f"Running tasks on device with IP: {device_ip}")
-        close_apps(device)
+        close_apps(d)
         sleep(3)
-        open_vpn(device,0)
-        logging.info(f"Running Twitter script on device with IP: {device_ip}")
-        twi.main(device)
-        close_apps(device)
-        sleep(3)
-        # open_vpn(device)
-        # sleep(5)
-        # tik.main(device)
-        # sleep(5)
-        # tik.report_account(device,random.choice(tiktok_accounts_to_report))
-        # close_apps(device)
-        # tik.report_post(device,random.choice(tiktok_posts_to_report)[0])
-        # close_apps(device)
+        for _ in range(2):
+            if TYPE == 'p':
+                open_vpn(d)
+            logging.info(f"Running script on device with IP: {device_ip}")
+            start_random_function([twi.main,inst.main],d)
+            close_apps(d)
+            sleep(3)
         logging.info(f"Device with IP {device_ip} completed its tasks.")
     except Exception as e:
         logging.error(f"Error while processing device with IP {device_ip}: {e}")
@@ -62,7 +56,7 @@ def like_comment_follow(device):
 
     logging.info(f"Device with IP {device_ip} is sleeping for 1 hours before restarting tasks...")
     sleep(0.5 * 3600)
-    worker_queue.put(device)
+    worker_queue.put(d)
 
 
 def report_twitter(device_id):
