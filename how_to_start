@@ -7,7 +7,7 @@ pip install opencv-python
 pip install uiautomator2
 pip install easyocr
 pip install numpy
-pip install pil
+pip install pillow
 pip install selenium
 pip install pytesseract
 pip install requests
