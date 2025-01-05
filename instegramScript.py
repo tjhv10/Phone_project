@@ -373,7 +373,7 @@ def main(d):
         logging.error("An error occurred", exc_info=True)
         d.app_stop("com.instagram.lite")
 
-d = u2.connect("127.0.0.1:6555")
+# d = u2.connect("127.0.0.1:6555")
 # main(d)
 # report_account(d,"https://www.instagram.com/freepalestineland?igsh=YzljYTk1ODg3Zg==") #TODO fix  func
-report_post(d,"https://www.instagram.com/p/DEXwklSKeW5/?igsh=YzljYTk1ODg3Zg==")
+# report_post(d,"https://www.instagram.com/p/DEXwklSKeW5/?igsh=YzljYTk1ODg3Zg==")

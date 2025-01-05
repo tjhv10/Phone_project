@@ -358,8 +358,6 @@ def main(d):
         d.app_stop("com.zhiliaoapp.musically")
         logging.info("Done with TikTok!")
 
-        logging.info("Sleeping for 0.5 hours...")
-        time.sleep(0.5 * 3600)  # Sleep for 0.5 hours
 
     except Exception as e:
         logging.error("An error occurred", exc_info=True)

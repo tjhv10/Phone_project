@@ -46,7 +46,7 @@ def like_comment_follow(d):
             if TYPE == 'p':
                 open_vpn(d)
             logging.info(f"Running script on device with IP: {device_ip}")
-            start_random_function([twi.main,inst.main],d)
+            start_random_function([twi.main],d)
             close_apps(d)
             sleep(3)
         logging.info(f"Device with IP {device_ip} completed its tasks.")
@@ -55,7 +55,8 @@ def like_comment_follow(d):
         sleep(60)
 
     logging.info(f"Device with IP {device_ip} is sleeping for 1 hours before restarting tasks...")
-    sleep(0.5 * 3600)
+    if TYPE=='v':
+        sleep(0.5 * 3600)
     worker_queue.put(d)
 
 
