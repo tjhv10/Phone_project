@@ -3,5 +3,6 @@ Screenshots/
 __pycache__/
 logs.log
 myenv/
+.venv/
 range.txt
 type.py

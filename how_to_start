@@ -1,10 +1,13 @@
-sudo apt install python3-pip
+create logs.log, result.txt, Screenshots dir, type.py file
+
+sudo apt install python3 python3-venv python3-pip
+python3 -m venv .venv
 source .venv/bin/activate
 pip install opencv-python
 pip install uiautomator2
 pip install easyocr
 pip install numpy
-pip install pil
+pip install pillow
 pip install selenium
 pip install pytesseract
 pip install requests
