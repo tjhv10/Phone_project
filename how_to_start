@@ -1,0 +1,14 @@
+sudo apt install python3-pip
+source .venv/bin/activate
+pip install opencv-python
+pip install uiautomator2
+pip install easyocr
+pip install numpy
+pip install pil
+pip install selenium
+pip install pytesseract
+pip install requests
+pip install fuzzywuzzy
+pip install pandas
+git config --global user.email "achiyabennatan@gmail.com"
+git config --global user.name "tjhv10"
