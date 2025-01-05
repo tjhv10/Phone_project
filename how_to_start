@@ -1,4 +1,4 @@
-create logs.log, result.txt, Screenshots dir
+create logs.log, result.txt, Screenshots dir, type.py file
 
 sudo apt install python3 python3-venv python3-pip
 python3 -m venv .venv
