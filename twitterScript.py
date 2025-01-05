@@ -19,9 +19,6 @@ logging.basicConfig(
 
 # Replace all `print` statements with `logging.info` or appropriate log levels
 print = logging.info  # Redirect print to info-level logging
-MAX_DURATION = 1800
-
-#TODO add pic equlaizer to save from unexpected behavior
 
 
 def tap_like_button(d, like_button_template_path="icons/twitter_icons/like.png"):
@@ -125,7 +122,7 @@ def scroll_like_and_comment(d,posts,duration):
             main(d,duration+time.time()-start_time)
 
             
-        sleep(random.uniform(2, 14))
+        sleep(random.uniform(5, 30))
         action = random.choice(actions)
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Action chosen: {action}")
         text = random.choice(israel_support_comments)
@@ -215,10 +212,6 @@ def search_and_go_to_page(d, page_name,duration=0):
     d.app_start("com.twitter.android")
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} : Opened Twitter!")
     sleep(10)
-    
-
-    # Swipe up to return to the previous content
-    # d.swipe(500, 300, 500, 1000, duration = 0.05)
     update_results_file("Actions")
     sleep(3)
     # Perform the search
@@ -252,7 +245,7 @@ def search_and_go_to_page(d, page_name,duration=0):
             logging.error(f"{threading.current_thread().name}:{d.wlan_ip} Didnt find '{page_name}' checking vpn and restarting.")
             close_apps(d)
             sleep(5)
-            open_vpn(d,duration)
+            open_vpn(d)
             sleep(5)
             search_and_go_to_page(d,page_name,duration)
     
