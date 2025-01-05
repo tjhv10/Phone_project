@@ -10,3 +10,5 @@ pip install pytesseract
 pip install requests
 pip install fuzzywuzzy
 pip install pandas
+git config --global user.email "achiyabennatan@gmail.com"
+git config --global user.name "tjhv10"
