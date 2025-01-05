@@ -242,7 +242,7 @@ def search_and_go_to_page(d, page_name,duration=0):
             if duration > MAX_DURATION:  # Check duration
                 logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
                 return
-            logging.error(f"{threading.current_thread().name}:{d.wlan_ip} Didnt find '{page_name}' checking vpn and restarting.")
+            logging.warning(f"{threading.current_thread().name}:{d.wlan_ip} Didnt find '{page_name}' checking vpn and restarting.")
             close_apps(d)
             sleep(5)
             open_vpn(d)
@@ -462,18 +462,21 @@ def main(d, duration=0):
 
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} The account is: {account}!")
             search_and_go_to_page(d, account,duration)
+            duration = duration+time.time()-start_time
             if duration > MAX_DURATION:  # Check duration
                 logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
                 d.app_stop("com.twitter.android")
                 return
             sleep(2)
             follow_page(d)
+            duration = duration+time.time()-start_time
             if duration > MAX_DURATION:  # Check duration
                 logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
                 d.app_stop("com.twitter.android")
                 return
             sleep(2)
             scroll_like_and_comment(d, 15,duration=duration+time.time()-start_time)
+            duration = duration+time.time()-start_time
             if duration > MAX_DURATION:  # Check duration
                 logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
                 d.app_stop("com.twitter.android")
