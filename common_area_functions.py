@@ -20,6 +20,7 @@ from PIL import ImageFilter
 import uiautomator2 as u2
 import glob
 import os
+import subprocess
 
 
 keyboard_dic = {
@@ -526,27 +527,26 @@ def advanced_preprocess_image_inplace(image_path):
         None
     """
     # Load the image
-    # image = Image.open(image_path)
+    image = Image.open(image_path)
 
-    # # Convert to grayscale
-    # image = image.convert("L")
+    # Convert to grayscale
+    image = image.convert("L")
 
-    # # Enhance sharpness
-    # enhancer = ImageEnhance.Sharpness(image)
-    # image = enhancer.enhance(2.0)  # Increase sharpness
+    # Enhance sharpness
+    enhancer = ImageEnhance.Sharpness(image)
+    image = enhancer.enhance(2.0)  # Increase sharpness
 
-    # # Apply binarization (adaptive thresholding for better contrast)
-    # image = image.point(lambda x: 0 if x < 150 else 255)
+    # Apply binarization (adaptive thresholding for better contrast)
+    image = image.point(lambda x: 0 if x < 150 else 255)
 
-    # # Resize the image to improve OCR accuracy
-    # image = image.resize((image.width * 3, image.height * 3), Image.Resampling.LANCZOS)
+    # Resize the image to improve OCR accuracy
+    image = image.resize((image.width * 3, image.height * 3), Image.Resampling.LANCZOS)
 
-    # # Apply more aggressive noise reduction
-    # image = image.filter(ImageFilter.MedianFilter(size=5))
+    # Apply more aggressive noise reduction
+    image = image.filter(ImageFilter.MedianFilter(size=5))
 
-    # # Save the preprocessed image back to the same path
-    # image.save(image_path)
-    ImageEnhance.Sharpness(Image.open(image_path).convert("L")).enhance(2.0).point(lambda x: 0 if x < 150 else 255).resize((lambda img: (img.width * 3, img.height * 3))(Image.open(image_path).convert("L")), Image.Resampling.LANCZOS).filter(ImageFilter.MedianFilter(size=5)).save(image_path)
+    # Save the preprocessed image back to the same path
+    image.save(image_path)
     print(f"Advanced preprocessed image saved in place at {image_path}")
 
 
@@ -789,3 +789,18 @@ def clear_screenshots(directory="Screenshots"):
         print(f"All files in '{directory}' have been cleared.")
     except Exception as e:
         print(f"Error clearing files in {directory}: {e}")
+
+
+def turn_off_pointer_location(device_id):
+    """
+    Turns off pointer location on the specified device using its serial number.
+    """
+    try:
+        print(device_id)
+        # Send ADB command to turn off pointer location for the specific device
+        subprocess.run(["adb", "-s", device_id[0], "shell", "settings", "put", "system", "pointer_location", "0"], check=True)
+        print(f"Pointer location turned off on device {device_id}.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error turning off pointer location on device {device_id}: {e}")
+    except FileNotFoundError:
+        print("ADB is not found. Please ensure ADB is installed and added to the system PATH.")

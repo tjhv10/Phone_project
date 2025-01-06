@@ -27,6 +27,45 @@ def get_connected_devices():
     except Exception as e:
         print(f"Error getting connected devices: {e}")
         return []  # Return an empty list in case of error
+    
+
+def get_connected_devices_ip():
+    """
+    Returns a list of connected device serial numbers along with their IP and port.
+    """
+    try:
+        # Run 'adb devices -l' command to get the list of connected devices with more details
+        result = subprocess.run(["adb", "devices", "-l"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        # Split the output and ignore the first line (which is the header)
+        devices = result.stdout.decode().splitlines()[1:]
+        
+        # Parse each device info line
+        device_info = []
+        for device in devices:
+            if device:
+                device_id = device.split()[0]
+                details = device.split()[1:]
+                ip = None
+                port = None
+                
+                # Look for the IP and port in the details
+                for detail in details:
+                    if "device" in detail:
+                        continue  # Ignore the 'device' status
+                    if "tcp" in detail:
+                        # Example: "tcp:6555"
+                        port = detail.split(":")[1]
+                    elif "ip" in detail:
+                        # Example: "ip=192.168.1.100"
+                        ip = detail.split("=")[1]
+                
+                device_info.append(device_id)
+        
+        return device_info
+
+    except subprocess.CalledProcessError as e:
+        print(f"Error listing connected devices: {e}")
+        return []
 
 # List of device IPs to connect to (you need to populate this list with actual IPs)
 device_ips = get_connected_devices()

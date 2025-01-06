@@ -169,6 +169,7 @@ def insert_date(d, date: str):
         d.click(x,y)
     elif d.app_current()["package"] == "com.twitter.android":
         # Adjust day
+        
         adjust_date_component(d, int(image_to_string(take_screenshot(d, crop_area=DAY_CROP_TWI))), day, DAY_CROP_TWI, x=200)
         # Adjust month
         adjust_date_component(d, int(month_dict_month_to_number[image_to_string(take_screenshot(d, crop_area=MONTH_CROP_TWI),number=False).lower()]), month, MONTH_CROP_TWI, x=355)
@@ -184,46 +185,36 @@ def insert_date(d, date: str):
         adjust_date_component(d, int(image_to_string(take_screenshot(d, crop_area=YEAR_CROP_TIK))), year, YEAR_CROP_TIK, x=550,y = y)
 
 
-def setup_tiktok(d,gmail,date):
-    d.app_start("com.zhiliaoapp.musically")
-    sleep(10)
-    d.click(314,199) # go to sign up google
-    sleep(1)
-    d.click(314,669) #sign up google
-    sleep(1)
+# def setup_tiktok(d,gmail,date):
+#     d.app_start("com.zhiliaoapp.musically")
+#     sleep(10)
+#     d.click(314,199) # go to sign up google
+#     sleep(1)
+#     d.click(314,669) #sign up google
+#     sleep(1)
+#     try:
+#         x,y = search_sentence(d,gmail,"twi")
+#         d.click(x,y)
+#     except:
+#         print("Didnt find mail")
+#         return
+#     insert_date(d,date)print(image_to_string(take_screenshot(d, crop_area=DAY_CROP_TWI)))
+
+
+def setup_twitter(d,date,username):
+    d.app_start("com.twitter.android")
+    sleep(5)
+    
+    d.click(300,500)
+    sleep(2)
+    d.click(360,1057) # Tap create account with google
+    sleep(5)
     try:
-        x,y = search_sentence(d,gmail,"twi")
+        x,y = search_sentence(d,"@gmail.com","twi",60)
         d.click(x,y)
     except:
         print("Didnt find mail")
         return
-    insert_date(d,date)
-    sleep(2)
-    d.click(356,584) # next
-    sleep(5)
-    x,y = search_sentence(d,"Continue","twi",30)
-    d.click(x,y)
-    sleep(10)
-    d.app_stop("com.zhiliaoapp.musically")
-
-
-def setup_twitter(d,gmail,date,username):
-    d.app_start("com.twitter.android")
-    sleep(5)
-    try:
-        x,y = search_sentence(d,gmail,"twi")
-        d.click(x,y)
-    except:
-        d.click(300,500)
-        sleep(2)
-        d.click(360,1057) # Tap create account with google
-        sleep(5)
-        try:
-            x,y = search_sentence(d,gmail,"twi")
-            d.click(x,y)
-        except:
-            print("Didnt find mail")
-            return
     try: 
         x,y = search_sentence(d,"Allow Google to sign you in","twi")
         x,y = search_sentence(d,"Agree","twi")
@@ -262,13 +253,7 @@ def setup_instagram(d,gmail,full_name,password,date,username):
     sleep(2)
     tap_keyboard(d,gmail)
     sleep(2)
-    d.click(360,500) # next
-    sleep(5)
-    d.app_start("com.google.android.gm")
-    sleep(1)
-    d.click(90,120)
-    sleep(1)
-    x,y = search_sentence(d,"Social","inst")
+    d.click(360,500) # nextprint(image_to_string(take_screenshot(d, crop_area=DAY_CROP_TWI)))
     d.click(x,y)
     sleep(3)
     d.swipe(500, 1000, 500, 1000 + 500, duration = 0.1)
@@ -333,15 +318,16 @@ def setup_instagram(d,gmail,full_name,password,date,username):
 # setup_twitter(d,gmail,date,"riley_foodyyyy")
 # setup_tiktok(d,gmail,date,"riley_foodyyyy")
 # insert_date(d,date)
+# result.columns = ['Email', 'Password', 'Date', 'Username']
 def main():
+    i=2
+    
     accounts = extract_data_from_range()
-    devices = [u2.connect(ip) for ip in device_ips]
-    print(devices)
-    for device in devices:
-        for account in accounts:
-            gmail = account["Email"]
-            password = account["Password"]
-            print(f"Setting up Google for device {device.device_info['serial']}, Account: {gmail}")
-            setup_google(device, gmail, password)
-            print(f"Google setup complete for {gmail} on device {device.device_info['serial']}")
+    for device in get_connected_devices():
+        gmail = accounts[i]["Email"]
+        password = accounts[i]["Password"]
+        date = accounts[i]["Date"]
+        username = accounts[i]["Username"]
+        setup_twitter(device,date,username)
+        i+=1
 main()
