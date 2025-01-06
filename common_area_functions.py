@@ -17,8 +17,7 @@ from common_area_items import *
 import pytesseract
 from PIL import ImageEnhance
 from PIL import ImageFilter
-
-
+import uiautomator2 as u2
 
 
 keyboard_dic = {
@@ -512,26 +511,27 @@ def advanced_preprocess_image_inplace(image_path):
         None
     """
     # Load the image
-    image = Image.open(image_path)
+    # image = Image.open(image_path)
 
-    # Convert to grayscale
-    image = image.convert("L")
+    # # Convert to grayscale
+    # image = image.convert("L")
 
-    # Enhance sharpness
-    enhancer = ImageEnhance.Sharpness(image)
-    image = enhancer.enhance(2.0)  # Increase sharpness
+    # # Enhance sharpness
+    # enhancer = ImageEnhance.Sharpness(image)
+    # image = enhancer.enhance(2.0)  # Increase sharpness
 
-    # Apply binarization (adaptive thresholding for better contrast)
-    image = image.point(lambda x: 0 if x < 150 else 255)
+    # # Apply binarization (adaptive thresholding for better contrast)
+    # image = image.point(lambda x: 0 if x < 150 else 255)
 
-    # Resize the image to improve OCR accuracy
-    image = image.resize((image.width * 3, image.height * 3), Image.Resampling.LANCZOS)
+    # # Resize the image to improve OCR accuracy
+    # image = image.resize((image.width * 3, image.height * 3), Image.Resampling.LANCZOS)
 
-    # Apply more aggressive noise reduction
-    image = image.filter(ImageFilter.MedianFilter(size=5))
+    # # Apply more aggressive noise reduction
+    # image = image.filter(ImageFilter.MedianFilter(size=5))
 
-    # Save the preprocessed image back to the same path
-    image.save(image_path)
+    # # Save the preprocessed image back to the same path
+    # image.save(image_path)
+    ImageEnhance.Sharpness(Image.open(image_path).convert("L")).enhance(2.0).point(lambda x: 0 if x < 150 else 255).resize((lambda img: (img.width * 3, img.height * 3))(Image.open(image_path).convert("L")), Image.Resampling.LANCZOS).filter(ImageFilter.MedianFilter(size=5)).save(image_path)
     print(f"Advanced preprocessed image saved in place at {image_path}")
 
 
@@ -712,3 +712,38 @@ def start_random_function(functions,d):
         raise ValueError("The function list is empty.")
     sleep(rnd_value(10))
     return random.choice(functions)(d)
+
+
+def arch_swipe(d, start_x_range, start_y_range, end_x_delta_range, end_y_delta_range, steps=30):
+    """
+    Perform an arch-shaped swipe using a quadratic Bézier curve.
+
+    Parameters:
+        d: Device instance for swipe.
+        start_x_range: Tuple (min, max) for the start X-coordinate.
+        start_y_range: Tuple (min, max) for the start Y-coordinate.
+        end_x_delta_range: Tuple (min, max) for the delta X offset for the end point.
+        end_y_delta_range: Tuple (min, max) for the delta Y offset for the end point.
+        steps: Number of steps for the swipe (smoothness of the curve).
+    """
+    # Define start and end coordinates with randomness
+    start_x = random.randint(*start_x_range)
+    start_y = random.randint(*start_y_range)
+    end_x = start_x + random.randint(*end_x_delta_range)
+    end_y = start_y - random.randint(*end_y_delta_range)
+    # Calculate the mid-point for the arch
+    mid_x = (start_x + end_x) // 2 + random.randint(-50, 50)  # Add randomness to the arch
+    mid_y = (start_y + end_y) // 2 - random.randint(50, 150)  # Curve upwards
+
+    # Generate points along the arch (quadratic Bézier curve)
+    path = []
+    for t in range(steps + 1):
+        t = t / steps  # Normalize t between 0 and 1
+        x = int((1 - t) ** 2 * start_x + 2 * (1 - t) * t * mid_x + t ** 2 * end_x)
+        y = int((1 - t) ** 2 * start_y + 2 * (1 - t) * t * mid_y + t ** 2 * end_y)
+        path.append((x, y))
+
+    # Swipe through the points with small delays
+    for i in range(len(path) - 1):
+        d.swipe(path[i][0], path[i][1], path[i + 1][0], path[i + 1][1], duration=0.01)
+

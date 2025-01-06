@@ -114,7 +114,7 @@ def scroll_like_and_comment(d,posts,duration):
             start_y = random.randint(900, 1200)
             end_y = start_y - random.randint(400, 600)
             swipe_duration = random.uniform(0.04, 0.06)
-            d.swipe(start_x, start_y, start_x, end_y, duration=swipe_duration)
+            arch_swipe(d, (400, 500), (1200, 1400), (-180, 180), (800, 900), steps=10)
             update_results_file("Actions")
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Scrolled from ({start_x}, {start_y}) to ({start_x}, {end_y}) in {swipe_duration:.2f} seconds.")
         else:
@@ -178,7 +178,7 @@ def scroll_random_number(d,duration):
                 start_y = random.randint(900, 1200)
                 end_y = start_y - random.randint(400, 600)
                 swipe_duration = random.uniform(0.04, 0.06)
-                d.swipe(start_x, start_y, start_x, end_y, duration=swipe_duration)
+                arch_swipe(d, (400, 500), (1200, 1400), (-180, 180), (800, 900), steps=10)
                 update_results_file("Actions")
                 logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Scrolled from ({start_x}, {start_y}) to ({start_x}, {end_y}) in {swipe_duration:.2f} seconds.")
             else:
@@ -508,7 +508,9 @@ def main(d, duration=0):
         logging.error("An error occurred", exc_info=True)  # Log error with stack trace
         d.app_stop("com.twitter.android")
 
-# d = u2.connect("10.0.0.19:5555")
+d = u2.connect("127.0.0.1:6555")
 # main(d)
 # report_account(d,random.choice(anti_israel_twitter))
 # report_post(d,random.choice(twitter_posts_to_report))
+
+# for i in range(10):
