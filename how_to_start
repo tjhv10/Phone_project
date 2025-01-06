@@ -15,5 +15,6 @@ pip install fuzzywuzzy
 pip install pandas
 pip install adb
 pip install python-Levenshtein
+pip install openpyxl
 git config --global user.email "achiyabennatan@gmail.com"
 git config --global user.name "tjhv10"

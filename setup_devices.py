@@ -4,6 +4,7 @@ from time import sleep
 from common_area_items import *
 from common_area_functions import *
 import pandas as pd
+from start_adb import *
 
 
 # Configure logging
@@ -164,10 +165,6 @@ def insert_date(d, date: str):
         adjust_date_component_with_list(d, transform_list(strip_newlines_and_spaces(image_to_string(take_screenshot(d, crop_area=MONTH_CROP_INST),number=False)).split("/"),month_dict_month_to_number), month, MONTH_CROP_INST, x=355)
         x,y = search_sentence(d,month_dict_number_to_month[str(month)],"inst")
         d.click(x,y)
-        sleep(1)
-        # Adjust year
-        adjust_date_component_with_list(d, convert_strings_to_ints(strip_newlines_and_spaces(image_to_string(take_screenshot(d, crop_area=YEAR_CROP_INST))).split("/")), year, YEAR_CROP_INST, x=600)
-        sleep(2)
         x,y = search_sentence(d,str(year),"inst")
         d.click(x,y)
     elif d.app_current()["package"] == "com.twitter.android":
@@ -336,4 +333,15 @@ def setup_instagram(d,gmail,full_name,password,date,username):
 # setup_twitter(d,gmail,date,"riley_foodyyyy")
 # setup_tiktok(d,gmail,date,"riley_foodyyyy")
 # insert_date(d,date)
-print(extract_data_from_range())
+def main():
+    accounts = extract_data_from_range()
+    devices = [u2.connect(ip) for ip in device_ips]
+    print(devices)
+    for device in devices:
+        for account in accounts:
+            gmail = account["Email"]
+            password = account["Password"]
+            print(f"Setting up Google for device {device.device_info['serial']}, Account: {gmail}")
+            setup_google(device, gmail, password)
+            print(f"Google setup complete for {gmail} on device {device.device_info['serial']}")
+main()
