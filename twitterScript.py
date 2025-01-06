@@ -240,7 +240,6 @@ def search_and_go_to_page(d, page_name,duration=0):
         except:
 
             if duration > MAX_DURATION:  # Check duration
-                logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
                 return
             logging.warning(f"{threading.current_thread().name}:{d.wlan_ip} Didnt find '{page_name}' checking vpn and restarting.")
             close_apps(d)
@@ -355,13 +354,6 @@ def report_account(d, account,action=0):
 
     if "com.twitter.android" in d.app_list_running():
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Twitter is running!")
-
-        
-        if account != '':
-            search_and_go_to_page(d, account)
-        else:
-            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} didn't get link nor an account name. exiting the function..")
-            return
         sleep(5)
         # Click on the share button
         d.click(667, 120)
@@ -418,6 +410,10 @@ def main(d, duration=0):
     try:
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} duration in main: "+str(duration))
         start_time = time.time()
+        duration = duration+time.time()-start_time
+        if duration > MAX_DURATION:  # Check duration
+            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Exceeded max duration. Exiting...")
+            return  
         # Check if Twitter is running and stop it
         if "com.twitter.android" in d.app_list_running():
             d.app_stop("com.twitter.android")
@@ -427,7 +423,6 @@ def main(d, duration=0):
         d.app_start("com.twitter.android")
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Opened Twitter!")
         sleep(12)  # Wait for Twitter to fully load
-
         d.click(75, 1500)  # Go to home
         update_results_file("Actions")
         sleep(2)
@@ -508,7 +503,7 @@ def main(d, duration=0):
         logging.error("An error occurred", exc_info=True)  # Log error with stack trace
         d.app_stop("com.twitter.android")
 
-d = u2.connect("127.0.0.1:6555")
+# d = u2.connect("127.0.0.1:6555")
 # main(d)
 # report_account(d,random.choice(anti_israel_twitter))
 # report_post(d,random.choice(twitter_posts_to_report))

@@ -18,6 +18,8 @@ import pytesseract
 from PIL import ImageEnhance
 from PIL import ImageFilter
 import uiautomator2 as u2
+import glob
+import os
 
 
 keyboard_dic = {
@@ -747,3 +749,8 @@ def arch_swipe(d, start_x_range, start_y_range, end_x_delta_range, end_y_delta_r
     for i in range(len(path) - 1):
         d.swipe(path[i][0], path[i][1], path[i + 1][0], path[i + 1][1], duration=0.01)
 
+def clean_log_files(directory):
+    log_files = glob.glob(os.path.join(directory, "*.log"))  # Find all .log files in the directory 
+    for log_file in log_files:
+        with open(log_file, 'w') as _:
+            pass  # Opening in write mode clears the file 
