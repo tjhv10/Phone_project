@@ -114,7 +114,7 @@ def scroll_like_and_comment(d,posts,duration):
             start_y = random.randint(900, 1200)
             end_y = start_y - random.randint(400, 600)
             swipe_duration = random.uniform(0.04, 0.06)
-            arch_swipe(d, (400, 500), (1200, 1400), (-180, 180), (800, 900), steps=10)
+            arch_swipe(d, *swipe_function_param)
             update_results_file("Actions")
             logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Scrolled from ({start_x}, {start_y}) to ({start_x}, {end_y}) in {swipe_duration:.2f} seconds.")
         else:
@@ -178,7 +178,7 @@ def scroll_random_number(d,duration):
                 start_y = random.randint(900, 1200)
                 end_y = start_y - random.randint(400, 600)
                 swipe_duration = random.uniform(0.04, 0.06)
-                arch_swipe(d, (400, 500), (1200, 1400), (-180, 180), (800, 900), steps=10)
+                arch_swipe(d, *swipe_function_param)
                 update_results_file("Actions")
                 logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Scrolled from ({start_x}, {start_y}) to ({start_x}, {end_y}) in {swipe_duration:.2f} seconds.")
             else:
@@ -488,16 +488,20 @@ def main(d, duration=0):
             d.app_stop("com.twitter.android")
             sleep(5)
 
-        # Support special accounts
-        support_accounts(d, twitter_handles_specials)
+    except Exception:
+        logging.error("An error occurred", exc_info=True)  # Log error with stack trace
+        d.app_stop("com.twitter.android")
 
+
+def extraFunctions(d):
+    try:
         # Report posts and accounts
+        support_accounts(d, twitter_handles_specials)
         report_twitter_posts(d)
         sleep(3)
         account_to_report = random.choice(anti_israel_twitter)
         report_account(d,account_to_report,5)
-        d.app_stop("com.twitter.android")
-        sleep(4)
+        
 
     except Exception as e:
         logging.error("An error occurred", exc_info=True)  # Log error with stack trace

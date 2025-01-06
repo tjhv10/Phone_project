@@ -496,8 +496,11 @@ def open_vpn(d):
 
 def close_apps(device):
     device.app_stop("com.twitter.android")
+    sleep(0.5)
     device.app_stop("com.zhiliaoapp.musically")
+    sleep(0.5)
     device.app_stop("com.nordvpn.android")
+    sleep(0.5)
     device.app_stop("com.instagram.lite")
     logging.info(f"{device.wlan_ip} closed apps.")
 
@@ -716,7 +719,7 @@ def start_random_function(functions,d):
     return random.choice(functions)(d)
 
 
-def arch_swipe(d, start_x_range, start_y_range, end_x_delta_range, end_y_delta_range, steps=30):
+def arch_swipe(d, start_x_range, start_y_range, end_x_delta_range, end_y_delta_range, steps,duration):
     """
     Perform an arch-shaped swipe using a quadratic Bézier curve.
 
@@ -747,7 +750,7 @@ def arch_swipe(d, start_x_range, start_y_range, end_x_delta_range, end_y_delta_r
 
     # Swipe through the points with small delays
     for i in range(len(path) - 1):
-        d.swipe(path[i][0], path[i][1], path[i + 1][0], path[i + 1][1], duration=0.01)
+        d.swipe(path[i][0], path[i][1], path[i + 1][0], path[i + 1][1], duration)
 
 def clean_log_files(directory):
     log_files = glob.glob(os.path.join(directory, "*.log"))  # Find all .log files in the directory 

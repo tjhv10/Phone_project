@@ -108,7 +108,7 @@ def scroll_random_number(d):
         num_swipes = random.randint(1, 2)
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Number of swipes: {num_swipes}")
         for i in range(num_swipes):
-            arch_swipe(d, (400, 500), (1200, 1400), (-180, 180), (800, 900), steps=10)
+            arch_swipe(d, *swipe_function_param)
             update_results_file("Actions")
             random_time = random.randint(2, 15)
             sleep(random_time)
@@ -127,7 +127,7 @@ def scroll_like_and_comment(d,postsToLike):
 
     for i in range(postsToLike):
         if d(scrollable=True).exists:
-            arch_swipe(d, (400, 500), (1200, 1400), (-180, 180), (800, 900), steps=10)
+            arch_swipe(d, *swipe_function_param)
             update_results_file("Actions")
             random_time = random.randint(2, 15)
             sleep(random_time)

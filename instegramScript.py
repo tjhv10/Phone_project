@@ -19,7 +19,7 @@ def scroll_once(d):
     """
     logging.info("Starting scroll_once function")
     if d(scrollable=True).exists:
-        arch_swipe(d, (400, 500), (1200, 1400), (-180, 180), (800, 900), steps=10)
+        arch_swipe(d, *swipe_function_param)
         random_time = random.randint(1, 6)
         update_results_file("Scroll")
         logging.info(f"Swiped once. Waiting {random_time} seconds.")
@@ -48,7 +48,7 @@ def scroll_random_number(d):
         update_results_file("Scroll", num_swipes)
 
         for i in range(num_swipes):
-            arch_swipe(d, (400, 500), (1200, 1400), (-180, 180), (800, 900), steps=10)
+            arch_swipe(d, *swipe_function_param)
             random_time = random.randint(2, 15)
             logging.info(f"Swipe {i + 1}/{num_swipes}. Waiting {random_time} seconds.")
             sleep(random_time)
@@ -92,7 +92,7 @@ def search_and_go_to_account(d, name):
     if num >=2:
         follow_page(d)
     sleep(4)
-    arch_swipe(d, (400, 500), (1200, 1400), (-180, 180), (800, 900), steps=10)
+    arch_swipe(d, *swipe_function_param)
     sleep(4)
     d.click(120,600)
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished search_and_go_to_account function")
