@@ -52,12 +52,6 @@ def get_connected_devices_ip():
                 for detail in details:
                     if "device" in detail:
                         continue  # Ignore the 'device' status
-                    if "tcp" in detail:
-                        # Example: "tcp:6555"
-                        port = detail.split(":")[1]
-                    elif "ip" in detail:
-                        # Example: "ip=192.168.1.100"
-                        ip = detail.split("=")[1]
                 
                 device_info.append(device_id)
         
