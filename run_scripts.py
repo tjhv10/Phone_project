@@ -51,6 +51,7 @@ def like_comment_follow(d):
         sleep(60)
 
     logging.info(f"Device with IP {device_ip} is sleeping for 1 hours before restarting tasks...")
+    close_apps(d)
     # if TYPE=='v':
     sleep(0.5 * 3600)
     worker_queue.put(d)
@@ -90,6 +91,7 @@ def report_tiktok(device_id):
 
 def main():
     clean_log_files(".")
+    clear_screenshots()
     global worker_queue
     start_and_connect_all_servers()
 

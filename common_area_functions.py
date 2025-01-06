@@ -488,10 +488,20 @@ def reopen_app(d, package_name, wait_time=5):
 def open_vpn(d):
     logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!")
     d.app_start("com.nordvpn.android")
-    sleep(20)
+    sleep(30)
+    count = 0
     while not search_sentence(d, "Pause", "twi"):
+        if count == 3:
+            logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Couldn't find the pause button.")
+            d.app_stop("com.nordvpn.android")
+            sleep(5)
+            open_vpn(d)
+        count += 1
         logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Trying to reconnect...")
-        sleep(120)
+        sleep(100)
+        if not d.info['screenOn']:
+            d.shell("input keyevent KEYCODE_POWER")
+        sleep(10)
 
 
 def close_apps(device):
@@ -757,3 +767,25 @@ def clean_log_files(directory):
     for log_file in log_files:
         with open(log_file, 'w') as _:
             pass  # Opening in write mode clears the file 
+
+
+def clear_screenshots(directory="Screenshots"):
+    """
+    Clears all files in the specified directory.
+
+    Parameters:
+    directory (str): The directory to clear. Defaults to 'Screenshots'.
+    """
+    try:
+        # Get a list of all files in the directory
+        files = glob.glob(os.path.join(directory, "*"))
+        
+        # Loop through and delete each file
+        for file in files:
+            if os.path.isfile(file):  # Ensure it's a file
+                os.remove(file)
+                print(f"Deleted: {file}")
+        
+        print(f"All files in '{directory}' have been cleared.")
+    except Exception as e:
+        print(f"Error clearing files in {directory}: {e}")
