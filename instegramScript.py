@@ -21,7 +21,7 @@ def scroll_once(d):
     if d(scrollable=True).exists:
         arch_swipe(d, (400, 500), (1200, 1400), (-180, 180), (800, 900), steps=10)
         random_time = random.randint(1, 6)
-        update_results_file("Scroll", 1)
+        update_results_file("Scroll")
         logging.info(f"Swiped once. Waiting {random_time} seconds.")
         sleep(random_time)
     else:
