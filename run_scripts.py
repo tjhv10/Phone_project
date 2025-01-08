@@ -12,7 +12,6 @@ from queue import Queue
 import time
 import threading
 from queue import Empty
-from start_adb import device_ips
 from common_area_functions import *
 
 

@@ -18,9 +18,6 @@ import pytesseract
 from PIL import ImageEnhance
 from PIL import ImageFilter
 import uiautomator2 as u2
-import glob
-import os
-import subprocess
 
 
 keyboard_dic = {
@@ -760,47 +757,5 @@ def arch_swipe(d, start_x_range, start_y_range, end_x_delta_range, end_y_delta_r
 
     # Swipe through the points with small delays
     for i in range(len(path) - 1):
-        d.swipe(path[i][0], path[i][1], path[i + 1][0], path[i + 1][1], duration)
+        d.swipe(path[i][0], path[i][1], path[i + 1][0], path[i + 1][1], duration=0.01)
 
-def clean_log_files(directory):
-    log_files = glob.glob(os.path.join(directory, "*.log"))  # Find all .log files in the directory 
-    for log_file in log_files:
-        with open(log_file, 'w') as _:
-            pass  # Opening in write mode clears the file 
-
-
-def clear_screenshots(directory="Screenshots"):
-    """
-    Clears all files in the specified directory.
-
-    Parameters:
-    directory (str): The directory to clear. Defaults to 'Screenshots'.
-    """
-    try:
-        # Get a list of all files in the directory
-        files = glob.glob(os.path.join(directory, "*"))
-        
-        # Loop through and delete each file
-        for file in files:
-            if os.path.isfile(file):  # Ensure it's a file
-                os.remove(file)
-                print(f"Deleted: {file}")
-        
-        print(f"All files in '{directory}' have been cleared.")
-    except Exception as e:
-        print(f"Error clearing files in {directory}: {e}")
-
-
-def turn_off_pointer_location(device_id):
-    """
-    Turns off pointer location on the specified device using its serial number.
-    """
-    try:
-        print(device_id)
-        # Send ADB command to turn off pointer location for the specific device
-        subprocess.run(["adb", "-s", device_id[0], "shell", "settings", "put", "system", "pointer_location", "0"], check=True)
-        print(f"Pointer location turned off on device {device_id}.")
-    except subprocess.CalledProcessError as e:
-        print(f"Error turning off pointer location on device {device_id}: {e}")
-    except FileNotFoundError:
-        print("ADB is not found. Please ensure ADB is installed and added to the system PATH.")
