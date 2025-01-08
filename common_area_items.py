@@ -817,5 +817,5 @@ y_end = 1200
 YEAR_CROP_TIK = (490,y_start,630,y_end)
 MONTH_CROP_TIK = (102,y_start,200,y_end)
 DAY_CROP_TIK = (300,y_start,400,y_end)
-MAX_DURATION = 1800
+MAX_DURATION = 180
 swipe_function_param = ((400, 500), (1200, 1400), (-180, 180), (800, 900), 5, 0.05)

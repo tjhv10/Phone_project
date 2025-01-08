@@ -36,59 +36,26 @@ def like_comment_follow(d):
     """
     Function to run Twitter and TikTok scripts on a specific phone.
     """
-    device_ip = d.wlan_ip  # Fetch the device's IP address dynamically
     try:
-        logging.info(f"Running tasks on device with IP: {device_ip}")
+        logging.info(f"Running tasks on device with thread: {threading.current_thread().name}")
         close_apps(d)
         sleep(3)
-        for _ in range(2):
+        for _ in range(1):
             if TYPE == 'p':
                 open_vpn(d)
-            logging.info(f"Running script on device with IP: {device_ip}")
+            logging.info(f"Running script on device with thread: {threading.current_thread().name}")
             start_random_function([twi.main],d)
             close_apps(d)
             sleep(3)
-        logging.info(f"Device with IP {device_ip} completed its tasks.")
+        logging.info(f"Device with thread {threading.current_thread().name} completed its tasks.")
     except Exception as e:
-        logging.error(f"Error while processing device with IP {device_ip}: {e}")
+        logging.error(f"Error while processing device with thread {threading.current_thread().name}: {e}")
         sleep(60)
 
-    logging.info(f"Device with IP {device_ip} is sleeping for 1 hours before restarting tasks...")
+    logging.info(f"Device with thread {threading.current_thread().name} is sleeping for 1 hours before restarting tasks...")
     if TYPE=='v':
         sleep(0.5 * 3600)
     worker_queue.put(d)
-
-
-def report_twitter(device_id):
-    logging.info(f"Attempting to connect to device: {device_id}")
-    d = u2.connect(device_id)
-    if d is not None:
-        for rep in twitter_posts_to_report:
-            twi.report_post(d, rep[0], rep[1])
-    else:
-        logging.error(f"Could not connect to device: {device_id}")
-
-
-def report_instagram(device_id):
-    logging.info(f"Attempting to connect to device: {device_id}")
-    d = u2.connect(device_id)
-    if d is not None:
-        for rep in instagram_posts_to_report:
-            inst.report_post(d, rep[0], rep[1])
-    else:
-        logging.error(f"Could not connect to device: {device_id}")
-
-
-def report_tiktok(device_id):
-    logging.info(f"Attempting to connect to device: {device_id}")
-    d = u2.connect(device_id)
-    if d is not None:
-        for rep in tiktok_posts_to_report:
-            tik.report_post(d, rep[0], rep[1])
-    else:
-        logging.error(f"Could not connect to device: {device_id}")
-
-
 
 
 def main():
@@ -145,17 +112,34 @@ def run_on_multiple_devices():
 stop_event = threading.Event()
 
 
+devices_in_use = set()
+devices_in_use_lock = threading.Lock()
+
 def worker_task():
     while not stop_event.is_set():
         try:
             device = worker_queue.get(timeout=1)
             if device is None:
                 break
-            like_comment_follow(device)
-            close_apps(device)
+
+            # Ensure device is not already in use
+            with devices_in_use_lock:
+                if device in devices_in_use:
+                    worker_queue.put(device)  # Put it back in the queue
+                    continue
+                devices_in_use.add(device)
+
+            try:
+                # Perform the task
+                like_comment_follow(device)
+                close_apps(device)
+            finally:
+                # Mark device as no longer in use
+                with devices_in_use_lock:
+                    devices_in_use.remove(device)
+
             worker_queue.task_done()
             time.sleep(5)
-            worker_queue.put(device)
         except Empty:
             time.sleep(1)
         except Exception as e:
