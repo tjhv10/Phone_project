@@ -1,5 +1,5 @@
+import glob
 import logging
-import traceback
 from time import sleep
 import tiktokScript as tik
 import twitterScript as twi
@@ -26,7 +26,11 @@ logging.basicConfig(
     ]
 )
 
-  
+def clean_log_files(directory):
+    log_files = glob.glob(os.path.join(directory, "*.log"))  # Find all .log files in the directory 
+    for log_file in log_files:
+        with open(log_file, 'w') as _:
+            pass  # Opening in write mode clears the file   
 
 def like_comment_follow(d):
     """
@@ -41,7 +45,7 @@ def like_comment_follow(d):
             if TYPE == 'p':
                 open_vpn(d)
             logging.info(f"Running script on device with IP: {device_ip}")
-            start_random_function([twi.main,twi.extraFunctions],d)
+            start_random_function([twi.main],d)
             close_apps(d)
             sleep(3)
         logging.info(f"Device with IP {device_ip} completed its tasks.")
@@ -50,9 +54,8 @@ def like_comment_follow(d):
         sleep(60)
 
     logging.info(f"Device with IP {device_ip} is sleeping for 1 hours before restarting tasks...")
-    close_apps(d)
-    # if TYPE=='v':
-    sleep(0.5 * 3600)
+    if TYPE=='v':
+        sleep(0.5 * 3600)
     worker_queue.put(d)
 
 
@@ -90,7 +93,6 @@ def report_tiktok(device_id):
 
 def main():
     clean_log_files(".")
-    clear_screenshots()
     global worker_queue
     start_and_connect_all_servers()
 
@@ -162,6 +164,7 @@ def worker_task():
                 break
             else:
                 logging.error(f"Error in {threading.current_thread().name}: {e}")
+                import traceback
                 logging.error(traceback.format_exc())
 
 
