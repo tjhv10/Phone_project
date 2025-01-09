@@ -757,5 +757,5 @@ def arch_swipe(d, start_x_range, start_y_range, end_x_delta_range, end_y_delta_r
 
     # Swipe through the points with small delays
     for i in range(len(path) - 1):
-        d.swipe(path[i][0], path[i][1], path[i + 1][0], path[i + 1][1], duration=0.01)
+        d.swipe(path[i][0], path[i][1], path[i + 1][0], path[i + 1][1], duration=duration)
 
