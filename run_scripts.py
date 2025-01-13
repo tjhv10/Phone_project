@@ -53,6 +53,7 @@ def like_comment_follow(d):
 
     logging.info(f"Device with thread {threading.current_thread().name} is sleeping for 1 hours before restarting tasks...")
     if TYPE=='v':
+        restart_device(d)
         sleep(0.5 * 3600)
     worker_queue.put(d)
 
