@@ -238,7 +238,6 @@ def search_and_go_to_page(d, page_name,duration=0):
             d.click(int(x),int(y))
             update_results_file("Actions")
         except:
-
             if duration > MAX_DURATION:  # Check duration
                 return
             logging.warning(f"{threading.current_thread().name}:{d.wlan_ip} Didnt find '{page_name}' checking vpn and restarting.")
@@ -247,7 +246,7 @@ def search_and_go_to_page(d, page_name,duration=0):
             if type=='p':
                 open_vpn(d)
             else:
-                restart_device(d.wlan_ip)
+                restart_device(d)
                 sleep(15)
             sleep(5)
             search_and_go_to_page(d,page_name,duration)
@@ -513,10 +512,7 @@ def extraFunctions(d):
         d.app_stop("com.twitter.android")
 
 # d = u2.connect("127.0.0.1:6555")
-# d = u2.connect("10.0.0.20")
-
 # main(d)
 # report_account(d,random.choice(anti_israel_twitter))
 # report_post(d,random.choice(twitter_posts_to_report))
-
 # for i in range(10):

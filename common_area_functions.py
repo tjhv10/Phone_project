@@ -782,9 +782,12 @@ def list_running_devices():
     except subprocess.CalledProcessError as e:
         print(f"Error listing devices: {e.stderr}")
         return []
+    
+    
 
-def restart_device(ip):
+def restart_device(d):
     """Restarts a specific Genymotion device."""
+    ip = d.serial
     try:
         device_name = get_device_name_by_ip(ip)
         print(f"Stopping device: {device_name}")
@@ -801,15 +804,7 @@ def restart_device(ip):
     except subprocess.CalledProcessError as e:
         print(f"Error restarting device {device_name}: {e.stderr}")
 
-def restart_all_devices():
-    """Restarts all running Genymotion devices."""
-    devices = list_running_devices()
-    if not devices:
-        print("No running devices found.")
-        return
 
-    for device in devices:
-        restart_device(device)
 
 # Use the device name or UUID from list_running_devices
 def get_device_name_by_ip(ip_address):
