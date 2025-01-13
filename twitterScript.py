@@ -7,7 +7,6 @@ import uiautomator2 as u2
 import logging
 
 # Configure logging
-log_file = "logs.log" # Log file to capture output
 logging.basicConfig(
     level=logging.INFO,  # Log all messages of level DEBUG and above
     format="%(asctime)s - %(levelname)s - %(message)s",  # Include timestamp, level, and message

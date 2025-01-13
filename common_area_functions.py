@@ -783,13 +783,12 @@ def list_running_devices():
         print(f"Error listing devices: {e.stderr}")
         return []
     
-    
+
 
 def restart_device(d):
     """Restarts a specific Genymotion device."""
-    ip = d.serial
     try:
-        device_name = get_device_name_by_ip(ip)
+        device_name = get_device_name_by_ip(d.serial)
         print(f"Stopping device: {device_name}")
         subprocess.run([gmtoolPath, "admin", "stop", device_name], check=True)
         time.sleep(5)  # Wait a bit before restarting

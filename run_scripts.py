@@ -16,7 +16,6 @@ from common_area_functions import *
 
 
 # Set up logging
-log_file = "logs.log"  # Specify the log file name
 logging.basicConfig( 
     level=logging.INFO,  # Log all levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
@@ -54,7 +53,7 @@ def like_comment_follow(d):
 
     logging.info(f"Device with thread {threading.current_thread().name} is sleeping for 1 hours before restarting tasks...")
     if TYPE=='v':
-        sleep(0.005 * 3600)
+        sleep(0.5 * 3600)
     worker_queue.put(d)
 
 
