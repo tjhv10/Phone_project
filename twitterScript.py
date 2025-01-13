@@ -246,7 +246,7 @@ def search_and_go_to_page(d, page_name,duration=0):
             sleep(5)
             if type=='p':
                 open_vpn(d)
-            else:
+            # else:
                 
             sleep(5)
             search_and_go_to_page(d,page_name,duration)

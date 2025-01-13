@@ -1,6 +1,7 @@
 import logging
 import random
 import re
+import subprocess
 import threading
 from time import sleep
 import cv2
@@ -759,3 +760,81 @@ def arch_swipe(d, start_x_range, start_y_range, end_x_delta_range, end_y_delta_r
     for i in range(len(path) - 1):
         d.swipe(path[i][0], path[i][1], path[i + 1][0], path[i + 1][1], duration=duration)
 
+        
+def list_running_devices():
+    """Lists all running Genymotion devices."""
+    try:
+        result = subprocess.run(
+            [gmtoolPath, "admin", "list", "vms"],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        devices = []
+        print("Listing all running devices:")
+        for line in result.stdout.splitlines():
+            if "On" in line:  # Filter for running devices
+                device_info = line.split("|")
+                device_name = device_info[2].strip()  # The name should be in the third column
+                print(f"Found running device: {device_name}")
+                devices.append(device_name)
+        return devices
+    except subprocess.CalledProcessError as e:
+        print(f"Error listing devices: {e.stderr}")
+        return []
+
+def restart_device(device_name):
+    """Restarts a specific Genymotion device."""
+    try:
+        print(f"Stopping device: {device_name}")
+        subprocess.run([gmtoolPath, "admin", "stop", device_name], check=True)
+        time.sleep(5)  # Wait a bit before restarting
+
+        print(f"Starting device: {device_name}")
+        subprocess.run([gmtoolPath, "admin", "start", device_name], check=True)
+
+        # Wait for the device to boot up
+        print(f"Waiting for device {device_name} to boot...")
+        time.sleep(30)  # Adjust the wait time as needed
+        print(f"Device {device_name} restarted successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error restarting device {device_name}: {e.stderr}")
+
+def restart_all_devices():
+    """Restarts all running Genymotion devices."""
+    devices = list_running_devices()
+    if not devices:
+        print("No running devices found.")
+        return
+
+    for device in devices:
+        restart_device(device)
+
+# Use the device name or UUID from list_running_devices
+def get_device_name_by_ip(ip_address):
+    """Returns the device name for the given IP address."""
+    try:
+        result = subprocess.run(
+            [gmtoolPath, "admin", "list", "vms"],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        # Parse the result to find the device with the matching IP
+        for line in result.stdout.splitlines():
+            # Split the line by '|' to extract the fields
+            parts = line.split("|")
+            if len(parts) >= 3:
+                # Extract IP address and device name
+                device_ip = parts[1].strip()  # IP is in the second column
+                device_name = parts[2].strip()  # Device name is in the third column
+
+                # Check if the IP matches
+                if device_ip == ip_address:
+                    return device_name
+        
+        # Return None if no matching device was found
+        return None
+    except subprocess.CalledProcessError as e:
+        print(f"Error listing devices: {e.stderr}")
+        return None
