@@ -299,6 +299,8 @@ def find_best_match(image_path, users_template_path, d):
         return None
 
     h, w = template.shape[:2]
+    print(h)
+    print(w)
     result = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
     threshold = 0.8
     loc = np.where(result >= threshold)

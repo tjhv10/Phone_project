@@ -76,8 +76,15 @@ def search_and_go_to_account(d, name):
     d.click(661,109)
     sleep(1)
     tap_keyboard(d,name)
-    sleep(6)
-    d.click(357,221) # Press the search button
+    sleep(10)
+    # d.click(357,221) # Press the search button
+    try:
+        d.click(*tap_search_icon(d))
+    except:
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} somthing wrong happend")
+        take_screenshot(d,threading.current_thread(),"insterr")
+        
+        
     sleep(5)
     d.click(*search_sentence(d,"Accounts","inst")) # Press the accounts button
     sleep(5)
@@ -86,6 +93,7 @@ def search_and_go_to_account(d, name):
         print("Found account!")
     except:
         search_and_go_to_account(d,random.choice(instagram_accounts))
+        return
     d.click(int(x),int(y))
     sleep(5)
     num = random.choice([1,2,3])
@@ -94,7 +102,7 @@ def search_and_go_to_account(d, name):
     sleep(4)
     arch_swipe(d, *swipe_function_param)
     sleep(4)
-    d.click(120,600)
+    d.click(120,1000)
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished search_and_go_to_account function")
 
 
@@ -118,6 +126,25 @@ def tap_like_button(d, like_button_template_path="icons/instagram_icons/like.png
     else:
         print("Like button not found on the screen.")
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished tap_like_button function")
+
+
+def tap_search_icon(d, search_icon_template_path="icons/instagram_icons/search_icon.png"):
+    """
+    Takes a screenshot and tries to tap on the like button if found.
+
+    Parameters:
+    d (uiautomator2.Device): The connected device object from uiautomator2.
+    search_icon_template_path (str): Path to the like button template image.
+    """
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting tap_search_icon function")
+    screenshot_path = take_screenshot(d,threading.current_thread().name,'inst')
+    best_match = find_best_match(screenshot_path, search_icon_template_path,d)
+    print(f"Serach icon found at {best_match} with match value: {best_match}, clicking...")
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished tap_search_icon function")
+    if best_match:
+        return best_match[0],best_match[1]
+    else:
+        return None
 
 
 def comment_text(d,text, comment_template_path="icons/instagram_icons/comment.png"):
@@ -322,11 +349,9 @@ def support_accounts(d,accounts):
     for account in accounts:
         search_and_go_to_account(d,account)
         sleep(2)
-        scroll_like_and_comment(d,5)
+        scroll_like_and_comment(d)
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting support_accounts function")
         
-
-
 def main(d):
     """
     The main function connects to the Android device and performs various Instagram actions.
@@ -371,7 +396,8 @@ def main(d):
         logging.error("An error occurred", exc_info=True)
         d.app_stop("com.instagram.lite")
 
-# d = u2.connect("127.0.0.1:6555")
+d = u2.connect("127.0.0.1:6555")
 # main(d)
 # report_account(d,"https://www.instagram.com/freepalestineland?igsh=YzljYTk1ODg3Zg==") #TODO fix  func
 # report_post(d,"https://www.instagram.com/p/DEXwklSKeW5/?igsh=YzljYTk1ODg3Zg==")
+search_and_go_to_account(d,"idf")

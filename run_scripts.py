@@ -43,7 +43,7 @@ def like_comment_follow(d):
             if TYPE == 'p':
                 open_vpn(d)
             logging.info(f"Running script on device with thread: {threading.current_thread().name}")
-            start_random_function([twi.main],d)
+            start_random_function([inst.main],d)
             close_apps(d)
             sleep(3)
         logging.info(f"Device with thread {threading.current_thread().name} completed its tasks.")
@@ -53,7 +53,7 @@ def like_comment_follow(d):
 
     logging.info(f"Device with thread {threading.current_thread().name} is sleeping for 1 hours before restarting tasks...")
     if TYPE=='v':
-        restart_device(d)
+        # restart_device(d)
         sleep(0.5 * 3600)
     worker_queue.put(d)
 
@@ -157,3 +157,4 @@ try:
 except KeyboardInterrupt:
     logging.info("\nMain thread: Stopping all workers.")
     stop_event.set()
+    
