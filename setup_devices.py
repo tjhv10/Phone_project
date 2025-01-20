@@ -195,8 +195,7 @@ def insert_date(d, date: str):
 def setup_twitter(d,date,username):
     d.app_start("com.twitter.android")
     sleep(5)
-    
-    d.click(300,500)
+    d.click(300,200)
     sleep(2)
     d.click(360,1057) # Tap create account with google
     sleep(5)
