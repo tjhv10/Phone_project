@@ -242,7 +242,7 @@ def search_and_go_to_page(d, page_name,duration=0):
             logging.warning(f"{threading.current_thread().name}:{d.wlan_ip} Didnt find '{page_name}' checking vpn and restarting.")
             close_apps(d)
             sleep(5)
-            if TYPE=='p':
+            if type=='p':
                 open_vpn(d)
             else:
                 restart_device(d)
