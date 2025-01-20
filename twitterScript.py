@@ -276,10 +276,12 @@ def follow_page(d, follow_template_path="icons/twitter_icons/follow.png"):
 
 def report_twitter_posts(d):
     choice = random.choice([1, 2])
-
+    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} c:{choice}")
     if choice == 1:
         post = random.choice(twitter_posts_to_report)
-        report_post(d, post[0], post[1])
+        report_post(d, post)
+    else:
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} didnt reported!!")
 
 def report_twitter_accounts(d):
     choice = random.choice([1, 2])
@@ -305,6 +307,7 @@ def report_post(d, link_action_tuple):
 
     if "com.twitter.android" in d.app_list_running():
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Twitter is running!")
+        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Going to link {link}")
         # Open the tweet in the Twitter app
         d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Opened tweet: {link}")
@@ -342,7 +345,7 @@ def report_post(d, link_action_tuple):
 
 
 
-def report_account(d, account,action=0):
+def report_account(d, account,action=5):
     # Open Twitter app
     if "com.twitter.android" in d.app_list_running():
         # Stop Twitter app
@@ -361,6 +364,8 @@ def report_account(d, account,action=0):
         d.click(667, 120)
         update_results_file("Actions")
         sleep(3)
+        search_and_go_to_page(d,account)
+        sleep(6)
         # Click on the report button
         try:
             x,y = search_sentence(d,"Report","twi")
@@ -498,11 +503,9 @@ def main(d, duration=0):
 def extraFunctions(d):
     try:
         report_twitter_posts(d)
-        sleep(3)
-        account_to_report = random.choice(anti_israel_twitter)
-        report_account(d,account_to_report,5)
+        # sleep(3)
+        # report_twitter_accounts(d) TODO fix
         
-
     except Exception:
         logging.error("An error occurred", exc_info=True)  # Log error with stack trace
         d.app_stop("com.twitter.android")
