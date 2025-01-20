@@ -56,9 +56,7 @@ def setup_google(d,gmail:str,password):
     sleep(5)
     x,y = search_sentence(d,"Tagree","goo")
     d.click(x,y)
-    sleep(20)
-    d.app_stop("com.android.vending")
-    sleep(2)
+    
 
 
 
@@ -150,8 +148,6 @@ def insert_date(d, date: str):
         return target_value
 
 
-    
-
     day, month, year = map(int, date.split('/'))
     if d.app_current()["package"] == "com.instagram.lite": 
         # Adjust day
@@ -182,12 +178,7 @@ def insert_date(d, date: str):
         adjust_date_component(d, int(month_dict_month_to_number[image_to_string(take_screenshot(d, crop_area=MONTH_CROP_TIK),number=False).lower()]), month, MONTH_CROP_TIK, x=160,y = y)
         # Adjust year
         adjust_date_component(d, int(image_to_string(take_screenshot(d, crop_area=YEAR_CROP_TIK))), year, YEAR_CROP_TIK, x=550,y = y)
-
-
-# def setup_tiktok(d,gmail,date):
-#     d.app_start("com.zhiliaoapp.musically")
-#     sleep(10)
-#     d.click(314,199) # go to sign up google
+#  sign up google
 #     sleep(1)
 #     d.click(314,669) #sign up google
 #     sleep(1)
@@ -213,17 +204,17 @@ def setup_twitter(d,date,username):
         d.click(x,y)
     except:
         print("Didnt find mail")
-        return
-    try: 
-        x,y = search_sentence(d,"Allow Google to sign you in","twi")
-        x,y = search_sentence(d,"Agree","twi")
+    sleep(2)
+    try:
+        x,y = search_sentence(d,"Agree and share","twi",60)
         d.click(x,y)
     except:
-        pass
+        print("Didnt find agree")
     sleep(5)
-    d.click(632,1481) # Tap Next
-    sleep(2)
-    d.click(347,532) #Tap date of birth 
+    x,y = search_sentence(d,"next","twi")
+    d.click(x,y)
+    sleep(5)
+    d.click(331,533)
     sleep(2)
     insert_date(d,date)
     sleep(1)
@@ -231,10 +222,12 @@ def setup_twitter(d,date,username):
     d.click(x,y)
     sleep(5)
     d.click(347,460) #Tap usrname chagne
+    sleep(3)
     for _ in range(16):
         d.click(674,1389) # delete
         sleep(0.05)
-    tap_keyboard(d,username)
+    tap_keyboard(d,username[1:]+"17")
+    sleep(3)
     d.click(639,956) # Tap next
     sleep(5)
     d.app_stop("com.twitter.android")
@@ -319,14 +312,19 @@ def setup_instagram(d,gmail,full_name,password,date,username):
 # insert_date(d,date)
 # result.columns = ['Email', 'Password', 'Date', 'Username']
 def main():
-    i=2
-    
+    i=0
     accounts = extract_data_from_range()
     for device in get_connected_devices():
         gmail = accounts[i]["Email"]
         password = accounts[i]["Password"]
         date = accounts[i]["Date"]
         username = accounts[i]["Username"]
+        try:
+            setup_google(device,gmail,password)
+        except:
+            print("oops")
+        sleep(10)
         setup_twitter(device,date,username)
+        close_apps(device)
         i+=1
 main()
