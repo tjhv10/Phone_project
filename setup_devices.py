@@ -42,12 +42,13 @@ def setup_google(d,gmail:str,password):
     d.app_start("com.android.vending")
     sleep(5)
     d.click(300,1090) #sign in button
-    sleep(10)
+    sleep(7)
     d.click(300,630) #insert email press 
     sleep(3)
     tap_keyboard(d,gmail.split("@")[0])
     sleep(1)
-    d.click(592,1030) #press next
+    x,y = search_sentence(d,"NEXT","goo")
+    d.click(x,y)
     sleep(7)
     d.click(300,570) #insert password press 
     tap_keyboard(d,password)
