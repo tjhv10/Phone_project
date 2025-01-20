@@ -106,7 +106,7 @@ def scroll_like_and_comment(d,posts,duration):
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting scroll_like_and_comment function")
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} duration in main :"+str(duration))
     start_time = time.time()
-    actions = ['like', 'comment', 'both', 'none']
+    actions = ['like', 'comment', 'both', 'none','none','none','none','none']
     for _ in range(posts):
         if d(scrollable=True).exists:
             start_x = random.randint(400, 600)
@@ -401,7 +401,7 @@ def support_accounts(d,accounts):
         sleep(2)
 
 
-def main(d, duration=0):  
+def main(d, duration=0):
     """
     The main function connects to the Android device and performs various Twitter actions.
     
@@ -485,8 +485,8 @@ def main(d, duration=0):
             for _ in range(random.randint(5, 15)):
                 scroll_random_number(d,duration+time.time()-start_time)
                 sleep(2)
-
-            # Stop Twitter
+            support_accounts(d, twitter_handles_specials)
+            sleep(3)
             d.app_stop("com.twitter.android")
             sleep(5)
 
@@ -497,9 +497,6 @@ def main(d, duration=0):
 
 def extraFunctions(d):
     try:
-        # Report posts and accounts
-        support_accounts(d, twitter_handles_specials)
-        sleep(3)
         report_twitter_posts(d)
         sleep(3)
         account_to_report = random.choice(anti_israel_twitter)
@@ -510,8 +507,7 @@ def extraFunctions(d):
         logging.error("An error occurred", exc_info=True)  # Log error with stack trace
         d.app_stop("com.twitter.android")
 
-# d = u2.connect("127.0.0.1:6555")
+# d = u2.connect("127.0.0.1:6632")
 # main(d)
 # report_account(d,random.choice(anti_israel_twitter))
 # report_post(d,random.choice(twitter_posts_to_report))
-# for i in range(10):
