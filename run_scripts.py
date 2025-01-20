@@ -43,7 +43,7 @@ def like_comment_follow(d):
             if TYPE == 'p':
                 open_vpn(d)
             logging.info(f"Running script on device with thread: {threading.current_thread().name}")
-            start_random_function([twi.main],d)
+            start_random_function([twi.main,twi.extraFunctions],d)
             close_apps(d)
             sleep(3)
         logging.info(f"Device with thread {threading.current_thread().name} completed its tasks.")
