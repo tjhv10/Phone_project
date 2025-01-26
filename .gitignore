@@ -6,3 +6,4 @@ myenv/
 .venv/
 range.txt
 type.py
+output.log
