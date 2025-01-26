@@ -276,7 +276,6 @@ def follow_page(d, follow_template_path="icons/twitter_icons/follow.png"):
 
 def report_twitter_posts(d):
     choice = random.choice([1, 2])
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} c:{choice}")
     if choice == 1:
         post = random.choice(twitter_posts_to_report)
         report_post(d, post)
