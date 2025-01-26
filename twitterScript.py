@@ -383,7 +383,7 @@ def support_accounts(d,accounts):
         
         search_and_go_to_page(d,account)
         sleep(2)
-        scroll_like_and_comment(d,5,0)
+        scroll_like_and_comment(d,5)
         # Stop Twitter app
         d.app_stop("com.twitter.android")
         sleep(2)
