@@ -273,23 +273,7 @@ def follow_page(d, follow_template_path="icons/twitter_icons/follow.png"):
         logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Follow icon not found on the screen.")
     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished follow_page function")
         
-
-def report_twitter_posts(d):
-    choice = random.choice([1, 2])
-    if choice == 1:
-        post = random.choice(twitter_posts_to_report)
-        report_post(d, post)
-    else:
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} didnt reported!!")
-
-def report_twitter_accounts(d):
-    choice = random.choice([1, 2])
-
-    if choice == 1:
-        account = random.choice(anti_israel_twitter)
-        report_account(d, account)
-
-
+        
 def report_post(d, link_action_tuple):
     # Open Twitter app
     link,action = link_action_tuple
@@ -501,8 +485,9 @@ def main(d, duration=0):
 
 def extraFunctions(d):
     try:
-        report_twitter_posts(d)
+        report_post(d,random.choice(twitter_posts_to_report))
         # sleep(3)
+        # account = random.choice(anti_israel_twitter)
         # report_twitter_accounts(d) TODO fix
         
     except Exception:
