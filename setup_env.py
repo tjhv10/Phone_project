@@ -25,13 +25,10 @@ def create_files_and_directories():
 def run_setup_commands():
     # Commands to run
     commands = [
-        "python3 -m venv .venv",
-        "source .venv/bin/activate",
         "sudo apt-get install -y tesseract-ocr python3 python3-venv python3-pip adb",
-        (
-            "pip install opencv-python uiautomator2 easyocr numpy pillow selenium "
-            "pytesseract requests fuzzywuzzy pandas adb python-Levenshtein openpyxl pyautogui"
-        ),
+        "sudo python3 -m venv .venv",
+        "source .venv/bin/activate",
+        "pip install opencv-python uiautomator2 easyocr numpy pillow selenium pytesseract requests fuzzywuzzy pandas python-Levenshtein openpyxl pyautogui"
         'git config --global user.email "achiyabennatan@gmail.com"',
         'git config --global user.name "tjhv10"'
     ]
