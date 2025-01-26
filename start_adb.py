@@ -4,10 +4,25 @@ import subprocess
 import uiautomator2 as u2
 from time import sleep
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,  # Log all messages of level DEBUG and above
+    format="%(asctime)s - %(levelname)s - %(message)s",  # Include timestamp, level, and message
+    handlers=[
+        # logging.FileHandler(log_file, mode='w'),  # Write logs to a file
+        logging.StreamHandler()  # Also print logs to the console
+    ]
+)
+
+# Replace all `print` statements with `logging.info` or appropriate log levels
+print = logging.info  # Redirect print to info-level logging 
+
 def get_connected_devices():
     """
     Get a list of connected devices as uiautomator2.Device objects.
     """
+    with open("logs.log", 'w') as _:
+            pass  # Opening in write mode clears the file  
     try:
         print("Getting all connected devices...")
         result = subprocess.run(["adb", "devices"], capture_output=True, text=True)
@@ -95,6 +110,7 @@ def start_and_connect_all_servers():
     """
     Start ADB servers on unique ports and connect to the corresponding devices.
     """
+
     if NUM_SERVERS == 0:
         print("No devices connected. Exiting.")
         return  # Exit if no devices are connected

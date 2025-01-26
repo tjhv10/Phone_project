@@ -15,21 +15,18 @@ from queue import Empty
 from common_area_functions import *
 
 
-# Set up logging
-logging.basicConfig( 
-    level=logging.INFO,  # Log all levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-    format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,  # Log all messages of level DEBUG and above
+    format="%(asctime)s - %(levelname)s - %(message)s",  # Include timestamp, level, and message
     handlers=[
-        logging.FileHandler(log_file, mode='w'),  # Log to a file
-        logging.StreamHandler()  # Also print to console
+        # logging.FileHandler(log_file, mode='w'),  # Write logs to a file
+        logging.StreamHandler()  # Also print logs to the console
     ]
 )
 
-def clean_log_files(directory):
-    log_files = glob.glob(os.path.join(directory, "*.log"))  # Find all .log files in the directory 
-    for log_file in log_files:
-        with open(log_file, 'w') as _:
-            pass  # Opening in write mode clears the file   
+# Replace all `print` statements with `logging.info` or appropriate log levels
+print = logging.info  # Redirect print to info-level logging 
 
 def like_comment_follow(d):
     """
@@ -59,7 +56,6 @@ def like_comment_follow(d):
 
 
 def main():
-    clean_log_files(".")
     global worker_queue
     start_and_connect_all_servers()
 
@@ -87,27 +83,6 @@ def main():
         t.join()
 
     logging.info("Done with all tasks!")
-
-
-def main_for_1_phone():
-    d1 = u2.connect("10.0.0.11")
-    like_comment_follow(d1)
-
-
-def run_on_multiple_devices():
-    start_and_connect_all_servers()
-    d = u2.connect("10.0.0.21"), u2.connect("10.0.0.31")
-
-    max_threads = 1
-    with ThreadPoolExecutor(max_threads) as executor:
-        futures = {executor.submit(twi.report_twitter_posts, dev): dev for dev in d}
-        for future in futures:
-            try:
-                future.result()
-            except Exception as e:
-                device_ip = futures[future]
-                logging.error(f"An error occurred for device {device_ip}: {e}")
-
 
 stop_event = threading.Event()
 
