@@ -216,9 +216,10 @@ def scroll_like_and_comment(d):
     d.click(73,1508) # press home
     logging.info(f"{threading.current_thread().name}:{d.serial} Finished scroll_like_and_comment function")
 
-def report_post(d, link,action = 0):
+def report_post(d,action = 0):
     logging.info(f"{threading.current_thread().name}:{d.serial} Starting report_post function")
     # Open Twitter app
+    link = random.choice(instagram_posts_to_report)
     d.app_start("com.instagram.lite")
     print(f"{threading.current_thread().name}:{d.serial} :Opened Instagram!")
     # sleep(15)
@@ -231,13 +232,9 @@ def report_post(d, link,action = 0):
         print(f"{threading.current_thread().name}:{d.serial} Opened: {link}")
         sleep(3)
         # Click on the 3 dots button
-        d.click(650, 130)
+        d.click(700, 200)
         sleep(3)
-        # # Click on the report button
-        d.click(370, 1018)
-        sleep(3)
-        # # Click on the report button
-        d.click(370, 712)
+        d.click(*search_sentence(d,"Report...","inst"))
         sleep(8)
         if action == 0: 
             handle_user_selection(d,report_instagram_post_clicks)
@@ -389,5 +386,5 @@ d = u2.connect("127.0.0.1:6555")
 logging.info(f"Connected to device{d.serial}")
 # main(d)
 # report_account(d,"https://www.instagram.com/freepalestineland?igsh=YzljYTk1ODg3Zg==") #TODO fix  func
-# report_post(d,"https://www.instagram.com/p/DEXwklSKeW5/?igsh=YzljYTk1ODg3Zg==")
+report_post(d)
 # search_and_go_to_account(d,"idf")

@@ -734,12 +734,13 @@ tiktok_posts_to_report = [
 ]
 
 instagram_posts_to_report = [
-
+"https://www.instagram.com/p/DDXanKiNmPa/?igsh=MTVkeWhqcW82MGxtaA==",
+"https://www.instagram.com/reel/DCRFvJrqTHO/?igsh=YzljYTk1ODg3Zg==",
 ]
 
 
 report_instagram_post_clicks = {
-    "bullying or harassment":"d.click(370,750):d.click(370,660):d.click(370,614):d.click(370,1481)",
+    "bullying or harassment":"d.click(370,1010):d.click(370,1255):d.click(370,1165):d.click(370,1336)",
     "Credible threat to safty":"d.click(370,930):d.click(370,571):d.click(370,1481)",
     "Seems like terrorism or organized crime":"d.click(370,930):d.click(370,658):d.click(370,1481)",
     "Calling for violence":"d.click(370,930):d.click(370,838):d.click(370,1481)",

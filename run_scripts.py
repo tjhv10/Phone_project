@@ -40,7 +40,7 @@ def like_comment_follow(d):
             if TYPE == 'p':
                 open_vpn(d)
             logging.info(f"Running script on device with thread: {threading.current_thread().name}:{d.serial}")
-            start_random_function([inst.main],d)
+            start_random_function([inst.report_post],d)
             close_apps(d)
             sleep(3)
         logging.info(f"Device with thread {threading.current_thread().name}:{d.serial} completed its tasks.")
