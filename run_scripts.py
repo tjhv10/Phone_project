@@ -33,19 +33,19 @@ def like_comment_follow(d):
     Function to run Twitter and TikTok scripts on a specific phone.
     """
     try:
-        logging.info(f"Running tasks on device with thread: {threading.current_thread().name}")
+        logging.info(f"Running tasks on device with thread: {threading.current_thread().name}:{d.serial}")
         close_apps(d)
         sleep(3)
         for _ in range(1):
             if TYPE == 'p':
                 open_vpn(d)
-            logging.info(f"Running script on device with thread: {threading.current_thread().name}")
-            start_random_function([twi.extraFunctions,twi.main],d)
+            logging.info(f"Running script on device with thread: {threading.current_thread().name}:{d.serial}")
+            start_random_function([inst.main],d)
             close_apps(d)
             sleep(3)
-        logging.info(f"Device with thread {threading.current_thread().name} completed its tasks.")
+        logging.info(f"Device with thread {threading.current_thread().name}:{d.serial} completed its tasks.")
     except Exception as e:
-        logging.error(f"Error while processing device with thread {threading.current_thread().name}: {e}")
+        logging.error(f"Error while processing device with thread {threading.current_thread().name}:{d.serial}: {e}")
         sleep(60)
 
     logging.info(f"Device with thread {threading.current_thread().name} is sleeping for 1 hours before restarting tasks...")
@@ -126,10 +126,8 @@ def worker_task():
                 import traceback
                 logging.error(traceback.format_exc())
 
-
 try:
     main()
 except KeyboardInterrupt:
     logging.info("\nMain thread: Stopping all workers.")
     stop_event.set()
-    

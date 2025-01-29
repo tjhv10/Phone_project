@@ -20,7 +20,7 @@ logging.basicConfig(
 print = logging.info  # Redirect print to info-level logging
 
 def tap_users(d, users_template_path="icons/tiktok_icons/users.png"):
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting tap_users function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting tap_users function")
     screenshot_path = take_screenshot(d, threading.current_thread().name, "tik")
     best_coordinates = find_best_match(screenshot_path, users_template_path, d)
     if best_coordinates:
@@ -29,10 +29,10 @@ def tap_users(d, users_template_path="icons/tiktok_icons/users.png"):
     else:
         d.click(196, 213)
         update_results_file("Actions")
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Users button not found on the screen.")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Users button not found on the screen.")
 
 def search(d, text):
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting search function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting search function")
     screen_width = d.info['displayWidth']
     screen_height = d.info['displayHeight']
     x = screen_width * (650 / 720)
@@ -52,31 +52,31 @@ def search(d, text):
     sleep(10)
 
 def tap_like_button(d, like_button_template_path="icons/tiktok_icons/like.png"):
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting tap_like_button function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting tap_like_button function")
     screenshot_path = take_screenshot(d, threading.current_thread().name, "tik")
     sleep(2)
     best_coordinates = find_best_match(screenshot_path, like_button_template_path, d)
     sleep(2)
     if best_coordinates:
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Like button found at {best_coordinates}, tapping...")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Like button found at {best_coordinates}, tapping...")
         d.click(int(best_coordinates[0]), int(best_coordinates[1]))
         update_results_file("Actions")
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Tapped best match at {best_coordinates}.")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Tapped best match at {best_coordinates}.")
         update_results_file("Likes")
         sleep(1)
     else:
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Like button not found on the screen.")
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished tap_like_button function")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Like button not found on the screen.")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Finished tap_like_button function")
 
 def comment_text(d, text, send_button_template_path="icons/tiktok_icons/send.png"):
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting comment_text function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting comment_text function")
     d.click(670, 1000)  # Click on the comment button
     update_results_file("Actions")
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Clicked on the comment button.")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Clicked on the comment button.")
     sleep(3)
     d.click(310, 1500)  # Click on the comment input field
     update_results_file("Actions")
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Commenting: {text}")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Commenting: {text}")
     sleep(4)
     tap_keyboard(d, text)
     sleep(2)
@@ -85,35 +85,35 @@ def comment_text(d, text, send_button_template_path="icons/tiktok_icons/send.png
     best_coordinates = find_best_match(screenshot_path, send_button_template_path, d)
     sleep(2)
     if best_coordinates:
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Send button found at {best_coordinates}, tapping...")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Send button found at {best_coordinates}, tapping...")
         d.click(int(best_coordinates[0]), int(best_coordinates[1]))
         update_results_file("Actions")
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Tapped best match at {best_coordinates}.")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Tapped best match at {best_coordinates}.")
         sleep(1)
         update_results_file("Comments")
         sleep(1)
     else:
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Send button not found on the screen.")
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Comment submitted.")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Send button not found on the screen.")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Comment submitted.")
     sleep(3)
     d.press("back")
     update_results_file("Actions")
 
 def scroll_random_number(d):
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting scroll_random_number function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting scroll_random_number function")
     
     if d(scrollable=True).exists:
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Found a scrollable view! Swiping down...")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Found a scrollable view! Swiping down...")
         num_swipes = random.randint(1, 2)
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Number of swipes: {num_swipes}")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Number of swipes: {num_swipes}")
         for i in range(num_swipes):
             arch_swipe(d, *swipe_function_param)
             update_results_file("Actions")
             random_time = random.randint(2, 15)
             sleep(random_time)
-            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Swiped down {i + 1} time(s).")
+            logging.info(f"{threading.current_thread().name}:{d.serial} Swiped down {i + 1} time(s).")
     else:
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
+        logging.info(f"{threading.current_thread().name}:{d.serial} No scrollable view found!")
         main(d)
 
 
@@ -130,23 +130,23 @@ def scroll_like_and_comment(d,postsToLike):
             update_results_file("Actions")
             random_time = random.randint(2, 15)
             sleep(random_time)
-            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Swiped down {i + 1} time(s).")
+            logging.info(f"{threading.current_thread().name}:{d.serial} Swiped down {i + 1} time(s).")
         else:
-            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No scrollable view found!")
+            logging.info(f"{threading.current_thread().name}:{d.serial} No scrollable view found!")
             main(d)
         num = random.choice([1, 2, 3, 4, 5])
         if  num <= 2:
-            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} like")
+            logging.info(f"{threading.current_thread().name}:{d.serial} like")
             tap_like_button(d)
             sleep(1)
         elif num>2 and num<=4:
-            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} like and comment")
+            logging.info(f"{threading.current_thread().name}:{d.serial} like and comment")
             tap_like_button(d)
             sleep(2)
             comment_text(d,random.choice(israel_support_comments))
             sleep(1)
         else:
-            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} none")
+            logging.info(f"{threading.current_thread().name}:{d.serial} none")
     d.press("back")
     d.press("back")
     sleep(2)
@@ -173,7 +173,7 @@ def like_a_page(d, page):
         x,y = search_sentence(d,"Follow")
         d.click(x,y)
     except:
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} : Allready following!")
+        logging.info(f"{threading.current_thread().name}:{d.serial} : Allready following!")
     sleep(10)
     d.click(120, 1450) # Get in the first page
     update_results_file("Actions")
@@ -198,13 +198,13 @@ def report_post(d, link, action=0):
 
     # Start the Twitter app 
     d.app_start("com.zhiliaoapp.musically")
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} : Opened TikTok!")
+    logging.info(f"{threading.current_thread().name}:{d.serial} : Opened TikTok!")
     sleep(15)
 
     if "com.zhiliaoapp.musically" in d.app_list_running():
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} TikTok is running!")
+        logging.info(f"{threading.current_thread().name}:{d.serial} TikTok is running!")
         d.shell(f"am start -a android.intent.action.VIEW -d {link}")
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Opened link: {link}")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Opened link: {link}")
         sleep(10)
             
         try:   
@@ -249,18 +249,18 @@ def report_account(d, link):
 
     # Start the Twitter app 
     d.app_start("com.zhiliaoapp.musically")
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} : Opened TikTok!")
+    logging.info(f"{threading.current_thread().name}:{d.serial} : Opened TikTok!")
 
     # Wait to make sure TikTok fully loads
     sleep(15)
 
     # Check if TikTok is running
     if "com.zhiliaoapp.musically" in d.app_list_running():
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} TikTok is running!")
+        logging.info(f"{threading.current_thread().name}:{d.serial} TikTok is running!")
 
         # Open link with TikTok
         d.shell(f"am start -a android.intent.action.VIEW -d {link}")
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Opened link: {link}")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Opened link: {link}")
 
         # Give some time to load the page within TikTok
         sleep(15)
@@ -288,7 +288,7 @@ def report_account(d, link):
             update_results_file("Accounts reported")
         finally:
             d.app_stop("com.zhiliaoapp.musically")
-            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} : Stopped TikTok.")
+            logging.info(f"{threading.current_thread().name}:{d.serial} : Stopped TikTok.")
 
 
 def support_accounts(d,accounts):
@@ -301,7 +301,7 @@ def support_accounts(d,accounts):
 
         # Start the Twitter app 
         d.app_start("com.zhiliaoapp.musically")  # Open TikTok app
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} :Opened TikTok!")
+        logging.info(f"{threading.current_thread().name}:{d.serial} :Opened TikTok!")
         sleep(15)
         search(d,account)
         sleep(2)

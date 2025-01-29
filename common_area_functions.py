@@ -124,11 +124,11 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_ma
         tuple: Coordinates of the match center (x, y) or None if no match found.
     """
     screen_shot = take_screenshot(d, threading.current_thread().name, plat)
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for text: {name}")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Searching for text: {name}")
 
     while plat == "twi" and name.lower().strip() == "israel":
         name = random.choice(twitter_handles)
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Searching for text: {name}")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Searching for text: {name}")
     
     # Determine if we're searching for a word or a sentence
     is_word_search = len(name.split()) == 1 and name.__len__() < 20
@@ -237,14 +237,14 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_ma
         center_x = (top_left_x + bottom_right_x) // 2
         center_y = (top_left_y + bottom_right_y) // 2
 
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Best match found: \"{best_match_text}\" with similarity: {best_similarity}% in {center_x,center_y}")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Best match found: \"{best_match_text}\" with similarity: {best_similarity}% in {center_x,center_y}")
         return int(center_x), int(center_y)
 
     # Log the best match even if it doesn't meet the tolerance
     if best_match_text:
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Closest match: \"{best_match_text}\" with similarity: {best_similarity}%")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Closest match: \"{best_match_text}\" with similarity: {best_similarity}%")
 
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No sufficiently similar text was found.")
+    logging.info(f"{threading.current_thread().name}:{d.serial} No sufficiently similar text was found.")
     return None
 
 
@@ -268,7 +268,7 @@ def take_screenshot(d, thread=threading.current_thread().name, app="twi", crop_a
     filename = f"Screenshots/{thread}-screenshot_{app}.png"
     cropped_filename = f"Screenshots/{thread}-screenshot_{app}_cropped.png"
 
-    logging.info(f"{thread}:{d.wlan_ip} Taking screenshot...")
+    logging.info(f"{thread}:{d.serial} Taking screenshot...")
     d.screenshot(filename)
     logging.info(f"Screenshot saved as {filename}.")
 
@@ -289,13 +289,13 @@ def find_best_match(image_path, users_template_path, d):
     Finds the best match of a user's button icon in the screenshot using template matching.
     """
     sleep(0.5)
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting find_best_match function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting find_best_match function")
     
     img = cv2.imread(image_path)
     template = cv2.imread(users_template_path)
 
     if img is None or template is None:
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Error loading images.")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Error loading images.")
         return None
 
     h, w = template.shape[:2]
@@ -312,16 +312,16 @@ def find_best_match(image_path, users_template_path, d):
         best_match = max(matches, key=lambda x: x[1])
         best_coordinates = (best_match[0][0] + w // 2, best_match[0][1] + h // 2)
         best_value = best_match[1]
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Best match found with value: {best_value} at {best_coordinates}")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Best match found with value: {best_value} at {best_coordinates}")
     else:
         # If no matches found above threshold, find the closest match
         _, max_val, _, max_loc = cv2.minMaxLoc(result)
         best_coordinates = (max_loc[0] + w // 2, max_loc[1] + h // 2)
         best_value = max_val
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} No matches above threshold, closest match found with value: {best_value} at {best_coordinates}")
+        logging.info(f"{threading.current_thread().name}:{d.serial} No matches above threshold, closest match found with value: {best_value} at {best_coordinates}")
         return None
     
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished find_best_match function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Finished find_best_match function")
     
     return best_coordinates
 
@@ -464,12 +464,12 @@ def reopen_app(d, package_name, wait_time=5):
     try:
         # Check if the app is running
         if package_name in d.app_list_running():
-            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Stopping app: {package_name}")
+            logging.info(f"{threading.current_thread().name}:{d.serial} Stopping app: {package_name}")
             d.app_stop(package_name)  # Stop the app
             sleep(2)
 
         # Start the app
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting app: {package_name}")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Starting app: {package_name}")
         d.app_start(package_name)  # Start the app
 
         # Wait for the app to fully load
@@ -477,9 +477,9 @@ def reopen_app(d, package_name, wait_time=5):
 
         # Confirm the app is running
         if package_name in d.app_list_running():
-            logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Successfully reopened app: {package_name}")
+            logging.info(f"{threading.current_thread().name}:{d.serial} Successfully reopened app: {package_name}")
         else:
-            logging.warning(f"{threading.current_thread().name}:{d.wlan_ip} Failed to reopen app: {package_name}")
+            logging.warning(f"{threading.current_thread().name}:{d.serial} Failed to reopen app: {package_name}")
 
     except Exception as e:
         logging.error(f"Error while reopening app {package_name}: {e}")

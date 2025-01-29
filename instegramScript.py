@@ -10,7 +10,7 @@ def scroll_once(d):
     Parameters:
     d (uiautomator2.Device): The connected device object from uiautomator2.
     """
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting scroll_once function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting scroll_once function")
     """
     Scrolls down once on a scrollable view in the app if it exists.
 
@@ -34,7 +34,7 @@ def scroll_random_number(d):
     Parameters:
     d (uiautomator2.Device): The connected device object from uiautomator2.
     """
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting scroll_random_number function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting scroll_random_number function")
     """
     Scrolls down a random number of times between 3 and 8.
 
@@ -43,18 +43,18 @@ def scroll_random_number(d):
     """
     logging.info("Starting scroll_random_number function")
     if d(scrollable=True).exists:
-        num_swipes = random.randint(3, 8)
+        num_swipes = random.randint(3, 15)
         logging.info(f"Number of swipes: {num_swipes}")
         update_results_file("Scroll", num_swipes)
 
         for i in range(num_swipes):
             arch_swipe(d, *swipe_function_param)
-            random_time = random.randint(2, 15)
+            random_time = random.randint(2, 30)
             logging.info(f"Swipe {i + 1}/{num_swipes}. Waiting {random_time} seconds.")
             sleep(random_time)
     else:
         logging.warning("No scrollable view found!")
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished scroll_random_number function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Finished scroll_random_number function")
 
 
 def search_and_go_to_account(d, name):
@@ -65,7 +65,7 @@ def search_and_go_to_account(d, name):
     d (uiautomator2.Device): The connected device object from uiautomator2.
     text (str): The text to search for.
     """
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting search_and_go_to_account function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting search_and_go_to_account function")
     # Calculate the coordinates as percentages of the screen resolution
     d.click(215, 1515)  # Click on the search button
     sleep(1)
@@ -77,14 +77,11 @@ def search_and_go_to_account(d, name):
     sleep(1)
     tap_keyboard(d,name)
     sleep(10)
-    # d.click(357,221) # Press the search button
     try:
-        d.click(*tap_search_icon(d))
+        tap_search_icon(d)
     except:
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} somthing wrong happend")
+        logging.info(f"{threading.current_thread().name}:{d.serial} somthing wrong happend")
         take_screenshot(d,threading.current_thread(),"insterr")
-        
-        
     sleep(5)
     d.click(*search_sentence(d,"Accounts","inst")) # Press the accounts button
     sleep(5)
@@ -103,7 +100,7 @@ def search_and_go_to_account(d, name):
     arch_swipe(d, *swipe_function_param)
     sleep(4)
     d.click(120,1000)
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished search_and_go_to_account function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Finished search_and_go_to_account function")
 
 
 def tap_like_button(d, like_button_template_path="icons/instagram_icons/like.png"):
@@ -114,7 +111,7 @@ def tap_like_button(d, like_button_template_path="icons/instagram_icons/like.png
     d (uiautomator2.Device): The connected device object from uiautomator2.
     like_button_template_path (str): Path to the like button template image.
     """
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting tap_like_button function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting tap_like_button function")
     screenshot_path = take_screenshot(d,threading.current_thread().name,'inst')
     best_match = find_best_match(screenshot_path, like_button_template_path,d)
 
@@ -125,7 +122,7 @@ def tap_like_button(d, like_button_template_path="icons/instagram_icons/like.png
         update_results_file("Likes")
     else:
         print("Like button not found on the screen.")
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished tap_like_button function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Finished tap_like_button function")
 
 
 def tap_search_icon(d, search_icon_template_path="icons/instagram_icons/search_icon.png"):
@@ -136,15 +133,15 @@ def tap_search_icon(d, search_icon_template_path="icons/instagram_icons/search_i
     d (uiautomator2.Device): The connected device object from uiautomator2.
     search_icon_template_path (str): Path to the like button template image.
     """
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting tap_search_icon function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting tap_search_icon function")
     screenshot_path = take_screenshot(d,threading.current_thread().name,'inst')
     best_match = find_best_match(screenshot_path, search_icon_template_path,d)
     print(f"Serach icon found at {best_match} with match value: {best_match}, clicking...")
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished tap_search_icon function")
     if best_match:
-        return best_match[0],best_match[1]
+       d.click(int(best_match[0]),int(best_match[1]))
     else:
-        return None
+        print("Search button not found on the screen.")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Finished tap_search_icon function")
 
 
 def comment_text(d,text, comment_template_path="icons/instagram_icons/comment.png"):
@@ -155,7 +152,7 @@ def comment_text(d,text, comment_template_path="icons/instagram_icons/comment.pn
     d (uiautomator2.Device): The connected device object from uiautomator2.
     comment_template_path (str): Path to the comment icon template image.
     """
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting comment_text function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting comment_text function")
     # Take a screenshot of the current screen
     screenshot_path = take_screenshot(d,threading.current_thread().name,"inst")
     
@@ -186,7 +183,7 @@ def comment_text(d,text, comment_template_path="icons/instagram_icons/comment.pn
         d.press("back")
         sleep(2)
     sleep(2)
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished comment_text function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Finished comment_text function")
 
 def scroll_like_and_comment(d):
     """
@@ -195,7 +192,7 @@ def scroll_like_and_comment(d):
     Parameters:
     d (uiautomator2.Device): The connected device object from uiautomator2.
     """
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting scroll_like_and_comment function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting scroll_like_and_comment function")
     for _ in range(rnd_value(10)):
         scroll_once(d)  # Scroll down once
         sleep(3)  # Wait 3 second between actions
@@ -217,21 +214,21 @@ def scroll_like_and_comment(d):
     d.press("back")
     sleep(0.99)
     d.click(73,1508) # press home
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished scroll_like_and_comment function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Finished scroll_like_and_comment function")
 
 def report_post(d, link,action = 0):
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting report_post function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting report_post function")
     # Open Twitter app
     d.app_start("com.instagram.lite")
-    print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Instagram!")
+    print(f"{threading.current_thread().name}:{d.serial} :Opened Instagram!")
     # sleep(15)
 
     if "com.instagram.lite" in d.app_list_running():
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Instagram is running!")
+        print(f"{threading.current_thread().name}:{d.serial} Instagram is running!")
 
         # Open the tweet in the Twitter app
         d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Opened: {link}")
+        print(f"{threading.current_thread().name}:{d.serial} Opened: {link}")
         sleep(3)
         # Click on the 3 dots button
         d.click(650, 130)
@@ -251,23 +248,23 @@ def report_post(d, link,action = 0):
         update_results_file("Posts reported")
         sleep(4)
         d.app_stop("com.twitter.android")
-        logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished report_post function")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Finished report_post function")
 
 
 # TODO fix function
 # def report_account(d, link): 
-#     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting report_account function")
+#     logging.info(f"{threading.current_thread().name}:{d.serial} Starting report_account function")
 #     # Open Twitter app
 #     d.app_start("com.instagram.lite")
-#     print(f"{threading.current_thread().name}:{d.wlan_ip} :Opened Instagram!")
+#     print(f"{threading.current_thread().name}:{d.serial} :Opened Instagram!")
 #     # sleep(15)
 
 #     if "com.instagram.lite" in d.app_list_running():
-#         print(f"{threading.current_thread().name}:{d.wlan_ip} Instagram is running!")
+#         print(f"{threading.current_thread().name}:{d.serial} Instagram is running!")
 
 #         # Open the tweet in the Twitter app
 #         d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
-#         print(f"{threading.current_thread().name}:{d.wlan_ip} Opened: {link}")
+#         print(f"{threading.current_thread().name}:{d.serial} Opened: {link}")
 #         sleep(3)
 #         # Click on the share button
 #         d.click(660, 135)
@@ -283,7 +280,7 @@ def report_post(d, link,action = 0):
 #         update_results_file("Accounts reported")
 #         sleep(4)
 #         d.app_stop("com.twitter.android")
-#     logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Finished report_account function")
+#     logging.info(f"{threading.current_thread().name}:{d.serial} Finished report_account function")
 
 
 
@@ -295,7 +292,7 @@ def comment_text(d,text, comment_template_path="icons/instagram_icons/comment.pn
     d (uiautomator2.Device): The connected device object from uiautomator2.
     comment_template_path (str): Path to the comment icon template image.
     """
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting comment_text function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting comment_text function")
     # Take a screenshot of the current screen
     screenshot_path = take_screenshot(d,threading.current_thread().name,"inst")
     
@@ -326,31 +323,31 @@ def comment_text(d,text, comment_template_path="icons/instagram_icons/comment.pn
         d.press("back")
         sleep(2)
     sleep(2)
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting comment_text function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting comment_text function")
 
 def follow_page(d, follow_template_path="icons/instagram_icons/follow.png"):
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Starting follow_page function")
+    print(f"{threading.current_thread().name}:{d.serial} Starting follow_page function")
     screenshot_path = take_screenshot(d,threading.current_thread().name,"inst")
     best_match = find_best_match(screenshot_path, follow_template_path,d)
     if not best_match:
         best_match = find_best_match(screenshot_path, "icons/instagram_icons/follow_small.png",d)
     if best_match:
         d.click(int(best_match[0]), int(best_match[1]))
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Followed account!")
+        print(f"{threading.current_thread().name}:{d.serial} Followed account!")
         sleep(2)
         update_results_file("Follows")
     else:
-        print(f"{threading.current_thread().name}:{d.wlan_ip} Follow icon not found on the screen.")
-    print(f"{threading.current_thread().name}:{d.wlan_ip} Finished follow_page function")
+        print(f"{threading.current_thread().name}:{d.serial} Follow icon not found on the screen.")
+    print(f"{threading.current_thread().name}:{d.serial} Finished follow_page function")
 
 def support_accounts(d,accounts):
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting support_accounts function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting support_accounts function")
     random.shuffle(accounts)
     for account in accounts:
         search_and_go_to_account(d,account)
         sleep(2)
         scroll_like_and_comment(d)
-    logging.info(f"{threading.current_thread().name}:{d.wlan_ip} Starting support_accounts function")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting support_accounts function")
         
 def main(d):
     """
@@ -370,11 +367,7 @@ def main(d):
         logging.info("Opened Instagram!")
         time.sleep(10)
 
-        for _ in range(5):
-            if time.time() - start_time > MAX_DURATION:
-                logging.info("Exceeded max duration. Exiting main.")
-                break
-
+        while (time.time() - start_time) < (MAX_DURATION-1000):
             scroll_random_number(d)
             time.sleep(2)
             tap_like_button(d)
@@ -383,11 +376,7 @@ def main(d):
             time.sleep(3)
             scroll_like_and_comment(d)
             time.sleep(3)
-            scroll_random_number(d)
-            tap_like_button(d)
-            scroll_random_number(d)
-            time.sleep(2)
-
+        logging.info("Exceeded max duration. Exiting main.")
         support_accounts(d, instagram_handles_special)
         time.sleep(3)
         d.app_stop("com.instagram.lite")
@@ -396,7 +385,8 @@ def main(d):
         logging.error("An error occurred", exc_info=True)
         d.app_stop("com.instagram.lite")
 
-# d = u2.connect("127.0.0.1:6555")
+d = u2.connect("127.0.0.1:6555")
+logging.info(f"Connected to device{d.serial}")
 # main(d)
 # report_account(d,"https://www.instagram.com/freepalestineland?igsh=YzljYTk1ODg3Zg==") #TODO fix  func
 # report_post(d,"https://www.instagram.com/p/DEXwklSKeW5/?igsh=YzljYTk1ODg3Zg==")
