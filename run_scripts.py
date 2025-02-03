@@ -1,4 +1,3 @@
-import glob
 import logging
 from time import sleep
 import tiktokScript as tik
@@ -6,27 +5,12 @@ import twitterScript as twi
 import instegramScript as inst
 import uiautomator2 as u2
 from start_adb import *
-from concurrent.futures import ThreadPoolExecutor
 from common_area_items import *
 from queue import Queue
 import time
 import threading
 from queue import Empty
 from common_area_functions import *
-
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,  # Log all messages of level DEBUG and above
-    format="%(asctime)s - %(levelname)s - %(message)s",  # Include timestamp, level, and message
-    handlers=[
-        # logging.FileHandler(log_file, mode='w'),  # Write logs to a file
-        logging.StreamHandler()  # Also print logs to the console
-    ]
-)
-
-# Replace all `print` statements with `logging.info` or appropriate log levels
-print = logging.info  # Redirect print to info-level logging 
 
 def like_comment_follow(d):
     """
@@ -40,7 +24,7 @@ def like_comment_follow(d):
             if TYPE == 'p':
                 open_vpn(d)
             logging.info(f"Running script on device with thread: {threading.current_thread().name}:{d.serial}")
-            start_random_function([inst.report_post],d)
+            start_random_function([twi.main,twi.extraFunctions],d)
             close_apps(d)
             sleep(3)
         logging.info(f"Device with thread {threading.current_thread().name}:{d.serial} completed its tasks.")

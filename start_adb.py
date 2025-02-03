@@ -3,6 +3,7 @@ import os
 import subprocess
 import uiautomator2 as u2
 from time import sleep
+import shutil
 
 # Configure logging
 logging.basicConfig(
@@ -15,7 +16,7 @@ logging.basicConfig(
 )
 
 # Replace all `print` statements with `logging.info` or appropriate log levels
-print = logging.info  # Redirect print to info-level logging 
+# print = logging.info  # Redirect print to info-level logging 
 
 def get_connected_devices():
     """
@@ -23,6 +24,8 @@ def get_connected_devices():
     """
     with open("logs.log", 'w') as _:
             pass  # Opening in write mode clears the file  
+    shutil.rmtree("Screenshots")
+    os.makedirs("Screenshots")
     try:
         print("Getting all connected devices...")
         result = subprocess.run(["adb", "devices"], capture_output=True, text=True)

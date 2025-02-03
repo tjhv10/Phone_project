@@ -4,20 +4,6 @@ import threading
 from common_area_items import *
 from common_area_functions import *
 import uiautomator2 as u2
-import logging
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,  # Log all messages of level DEBUG and above
-    format="%(asctime)s - %(levelname)s - %(message)s",  # Include timestamp, level, and message
-    handlers=[
-        logging.FileHandler(log_file, mode='w'),  # Write logs to a file
-        logging.StreamHandler()  # Also print logs to the console
-    ]
-)
-
-# Replace all `print` statements with `logging.info` or appropriate log levels
-print = logging.info  # Redirect print to info-level logging
 
 def tap_users(d, users_template_path="icons/tiktok_icons/users.png"):
     logging.info(f"{threading.current_thread().name}:{d.serial} Starting tap_users function")

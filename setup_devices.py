@@ -7,20 +7,6 @@ import pandas as pd
 from start_adb import *
 
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,  # Log all messages of level DEBUG and above
-    format="%(asctime)s - %(levelname)s - %(message)s",  # Include timestamp, level, and message
-    handlers=[
-        logging.FileHandler(log_file, mode='w'),  # Write logs to a file
-        logging.StreamHandler()  # Also print logs to the console
-    ]
-)
-
-# Replace all `print` statements with `logging.info` or appropriate log levels
-print = logging.info  # Redirect print to info-level logging
-
-
 def extract_data_from_range(file_path="Profiles _ BFJ.xlsx", range_file_path="range.txt"):
     with open(range_file_path, 'r') as file:
         range_str = file.read().strip()
@@ -98,6 +84,8 @@ def insert_date(d, date: str):
                 current_value = int(month_dict_month_to_number[image_to_string(take_screenshot(d, crop_area=crop_area),number=False).lower()])
 
         return current_value
+    
+
     def adjust_date_component_with_list(d, current_values, target_value, crop_area, x, swipe_distance=100):
         """
         Adjusts a date component (day, month, year) to match a target value by comparing with a list of current values.
@@ -115,10 +103,11 @@ def insert_date(d, date: str):
         Returns:
             int: The matched target value or -1 if not matched.
         """
+        y = 1244
         if not current_values:
             raise ValueError("Current values list cannot be empty.")        
-
         while target_value not in current_values:
+            print(target_value,current_values)
             min_value = min(current_values)
             max_value = max(current_values)
             if (target_value > max_value and crop_area == YEAR_CROP_INST ) or (target_value < min_value and (crop_area == DAY_CROP_INST or crop_area == MONTH_CROP_INST)):
@@ -142,7 +131,8 @@ def insert_date(d, date: str):
                 current_values = convert_strings_to_ints(strip_newlines_and_spaces(image_to_string(take_screenshot(d, crop_area=crop_area))).split("/"))
                 
             else:
-                current_values = transform_list(strip_newlines_and_spaces(image_to_string(take_screenshot(d, crop_area=crop_area))).split("/"),month_dict_month_to_number)
+                print(x)
+                current_values = transform_list(strip_newlines_and_spaces(image_to_string(take_screenshot(d, crop_area=crop_area),number=False)).split("/"),month_dict_month_to_number_capital)
             sleep(1)
                 
 
@@ -150,6 +140,9 @@ def insert_date(d, date: str):
 
 
     day, month, year = map(int, date.split('/'))
+    day = 4
+    if month == 3:
+        month = 12
     if d.app_current()["package"] == "com.instagram.lite": 
         # Adjust day
         adjust_date_component_with_list(d, convert_strings_to_ints(strip_newlines_and_spaces(image_to_string(take_screenshot(d, crop_area=DAY_CROP_INST))).split("/")), day, DAY_CROP_INST, x=150)
@@ -158,9 +151,13 @@ def insert_date(d, date: str):
         d.click(x,y)
         sleep(1)
         # Adjust month
-        adjust_date_component_with_list(d, transform_list(strip_newlines_and_spaces(image_to_string(take_screenshot(d, crop_area=MONTH_CROP_INST),number=False)).split("/"),month_dict_month_to_number), month, MONTH_CROP_INST, x=355)
+        adjust_date_component_with_list(d, transform_list(strip_newlines_and_spaces(image_to_string(take_screenshot(d, crop_area=MONTH_CROP_INST),number=False)).split("/"),month_dict_month_to_number_capital), month, MONTH_CROP_INST, x=355)
         x,y = search_sentence(d,month_dict_number_to_month[str(month)],"inst")
         d.click(x,y)
+        sleep(2)
+        # Adjust year
+        adjust_date_component_with_list(d, convert_strings_to_ints(strip_newlines_and_spaces(image_to_string(take_screenshot(d, crop_area=YEAR_CROP_INST))).split("/")), year, YEAR_CROP_INST, x=600)
+        sleep(2)
         x,y = search_sentence(d,str(year),"inst")
         d.click(x,y)
     elif d.app_current()["package"] == "com.twitter.android":
@@ -246,22 +243,25 @@ def setup_instagram(d,gmail,full_name,password,date,username):
     sleep(2)
     tap_keyboard(d,gmail)
     sleep(2)
-    d.click(360,500) # nextprint(image_to_string(take_screenshot(d, crop_area=DAY_CROP_TWI)))
-    d.click(x,y)
-    sleep(3)
+    d.click(360,500) # next
+    sleep(5)
+    d.app_start("com.google.android.gm")
+    sleep(10)
     d.swipe(500, 1000, 500, 1000 + 500, duration = 0.1)
     sleep(20)
     code = None
     while code is None:
-        code = return_code_inst(image_to_string(take_screenshot(d,app="inst")),"Instagram")
-        d.swipe(500, 1000, 500, 1000 + 500, duration = 0.1)
-        print("searching code again...")
-        sleep(20)
+        code = return_code_inst(image_to_string(take_screenshot(d,app="inst"),number=False),"Instagram")
+        if code is None:    
+            d.swipe(500, 1000, 500, 1000 + 500, duration = 0.1)
+            print("searching code again...")
+            sleep(20)
+    print(code)
         
     d.app_stop("com.google.android.gm")
-    sleep(2)
-    d.app_start("com.instagram.lite")
     sleep(5)
+    d.app_start("com.instagram.lite")
+    sleep(8)
     tap_keyboard(d,code,keyboard_dic_only_nums)
     sleep(2)
     d.click(360,460)
@@ -316,16 +316,17 @@ def main():
     i=0
     accounts = extract_data_from_range()
     for device in get_connected_devices():
-        gmail = accounts[i]["Email"]
-        password = accounts[i]["Password"]
-        date = accounts[i]["Date"]
-        username = accounts[i]["Username"]
-        try:
-            setup_google(device,gmail,password)
-        except:
-            print("oops")
-        sleep(10)
-        setup_twitter(device,date,username)
+        # gmail = accounts[i]["Email"]
+        # password = accounts[i]["Password"]
+        # date = accounts[i]["Date"]
+        # username = accounts[i]["Username"]
+        gmail = "oliviasmith67556@gmail.com"
+        password = "bzcdqkf2"
+        date = "31/12/1990"
+        username = "oliviasmith67556"
+        name = "Olivia Smith"
+        setup_instagram(device,gmail,name,password,date,username)
         close_apps(device)
         i+=1
 main()
+# u2.connect("127.0.0.1:6562").swipe(500, 1000, 500, 1000 + 500, duration = 0.1)
