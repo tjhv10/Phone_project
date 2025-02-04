@@ -573,13 +573,9 @@ def image_to_string(image_path,number = True):
         
         # Extract text using pytesseract
         if number:
-            advanced_preprocess_image_inplace(image_path)
-            extracted_text = pytesseract.image_to_string(Image.open(image_path), config='--psm 6 -c tessedit_char_whitelist=0123456789Ss').strip()  # Restrict to numbers only
-            if extracted_text == 'S' or extracted_text == 's':
-                extracted_text = '5'
-
+            extracted_text = pytesseract.image_to_string(Image.open(image_path), config='--psm 6').strip()
         else:
-            extracted_text = pytesseract.image_to_string(Image.open(image_path)).strip() 
+            extracted_text = pytesseract.image_to_string(Image.open(image_path)).strip()
         print(f"Extracted Text (Raw): {extracted_text}")
         
         # Handle specific edge cases

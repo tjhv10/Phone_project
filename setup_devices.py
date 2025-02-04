@@ -290,6 +290,12 @@ def setup_instagram(d):
     except:
         d.click(700,300)
     sleep(5)
+    d.click(360,500) # nextprint(image_to_string(take_screenshot(d, crop_area=DAY_CROP_TWI)))
+    d.app_start("com.google.android.gm")
+    d.click(90,120)
+    d.sleep(2)
+    d.click(50,430)
+    sleep(10)
     d.swipe(500, 1000, 500, 1000 + 500, duration = 0.1)
     sleep(20)
     d.swipe(500, 1000, 500, 1000 + 500, duration = 0.1)
@@ -345,24 +351,52 @@ def setup_instagram(d):
     d.app_stop("com.instagram.lite")
 
 
+d = u2.connect("127.0.0.1:6583")
+name="Hunter Flores"
+gmail='hunterflores232@gmail.com'
+password='G3k#9Dzj'
+date='08/01/1998'
+user='@HunterDrone'
 
-def main():
-    accounts = extract_data_from_range()
-    i=0
-    for device in get_connected_devices():
-        gmail = accounts[i]["Email"]
-        password = accounts[i]["Password"]
-        date = accounts[i]["Date"]
-        username = accounts[i]["Username"]
-        close_apps(device)
-        sleep(2)
-        try:
-            setup_google(device,gmail,password)
-        except:
-            print("Error setting up google")
-        sleep(2)
-        setup_twitter(device,date,username)
-        sleep(2)
-        close_apps(device)
-        i+=1
-main()
+setup_instagram(d,gmail,name,password,date,user)
+# code=None
+# while code is None:
+#        its = image_to_string(take_screenshot(d,app="inst"))
+#        print(its)
+#        code = return_code_inst(its,"Instagram")
+#        d.swipe(500, 1000, 500, 1000 + 500, duration = 0.1)
+#        print("searching code again...")
+#        sleep(20)
+# d.app_start("com.google.android.gm")
+# result = search_sentence(d, "Instagram", "inst")
+# print(result)
+# setup_google(d,gmail,password)
+# print_running_apps(d)
+# sleep(5)
+# setup_twitter(d,gmail,"17/9/1998","alexanderson_fit")
+# setup_instagram(d,gmail,"Riley Jackson",password,date,"rileyj_foodiesss")
+# print(d.app_current()["package"])
+# setup_twitter(d,gmail,date,"riley_foodyyyy")
+# setup_tiktok(d,gmail,date,"riley_foodyyyy")
+# insert_date(d,date)
+# result.columns = ['Email', 'Password', 'Date', 'Username']
+# def main():
+    # i=0
+    # accounts = extract_data_from_range()
+    # print(accounts["Email"].count('hunterflores232@gmail.com'))
+
+
+    # for device in get_connected_devices():
+    #     gmail = accounts[i]["Email"]
+    #     password = accounts[i]["Password"]
+    #     date = accounts[i]["Date"]
+    #     username = accounts[i]["Username"]
+    #     try:
+    #         setup_google(device,gmail,password)
+    #     except:
+    #         print("oops")
+    #     sleep(10)
+    #     setup_twitter(device,date,username)
+    #     close_apps(device)
+    #     i+=1
+# main()
