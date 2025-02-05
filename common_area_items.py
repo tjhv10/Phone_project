@@ -12,7 +12,7 @@ logging.basicConfig(
 )
 
 # Replace all `print` statements with `logging.info` or appropriate log levels
-print = logging.info  # Redirect print to info-level logging
+# print = logging.info  # Redirect print to info-level logging
 
 
 
@@ -429,7 +429,6 @@ anti_israel_twitter = [
     "raisi_com",
     "TamimBinHamad",
     "MBA_AlThani",
-    "Slogging.infoerFamily",
     "DravenNoctis",
     # -----antiIsrael
     "umyaznemo",
@@ -734,22 +733,23 @@ tiktok_posts_to_report = [
 ]
 
 instagram_posts_to_report = [
-"https://www.instagram.com/p/DDXanKiNmPa/?igsh=MTVkeWhqcW82MGxtaA==",
-"https://www.instagram.com/reel/DCRFvJrqTHO/?igsh=YzljYTk1ODg3Zg==",
+# ("https://www.instagram.com/p/DDXanKiNmPa/?igsh=MTVkeWhqcW82MGxtaA==",8),
+# ("https://www.instagram.com/reel/DCRFvJrqTHO/?igsh=YzljYTk1ODg3Zg==",8),
+"https://www.instagram.com/reel/DDSlLsPOn62/?igsh=YzljYTk1ODg3Zg==",
 ]
 
 
 report_instagram_post_clicks = {
     "bullying or harassment":"d.click(370,1010):d.click(370,1255):d.click(370,1165):d.click(370,1336)",
-    "Credible threat to safty":"d.click(370,930):d.click(370,571):d.click(370,1481)",
-    "Seems like terrorism or organized crime":"d.click(370,930):d.click(370,658):d.click(370,1481)",
-    "Calling for violence":"d.click(370,930):d.click(370,838):d.click(370,1481)",
-    "Hate speech or symbols":"d.click(370,930):d.click(370,931):d.click(370,1481)",
-    "Showing violence, death or severe injury":"d.click(370,930):d.click(370,1021):d.click(370,1481)",
-    "False information-Health":"d.click(370,1286):d.click(370,520):d.click(370,1440)",
-    "False information-Politics":"d.click(370,1286):d.click(370,613):d.click(370,1440)",
-    "False information-Social issues":"d.click(370,1286):d.click(370,700):d.click(370,1440)",
-    "False information-Digitally created or altered":"d.click(370,1286):d.click(370,800):d.click(370,1440)",
+    "Credible threat to safty":"d.click(370,1181):d.click(370,835)",
+    "Seems like terrorism or organized crime":"d.click(370,1181):d.click(370,915)",
+    "Calling for violence":"d.click(370,1181):d.click(370,1168)",
+    "Hate speech or symbols":"d.click(370,1181):d.click(370,1090)",
+    "Showing violence, death or severe injury":"d.click(370,1181):d.click(370,1256)",
+    "False information-Health":"d.click(370,1518):d.click(370,1085)",
+    "False information-Politics":"d.click(370,1518):d.click(370,1165)",
+    "False information-Social issues":"d.click(370,1518):d.click(370,1252)",
+    "False information-Digitally created or altered":"d.click(370,1518):d.click(370,1341)",
 }
 report_instagram_keys = [
     "bullying or harassment",                             # 1
@@ -765,15 +765,26 @@ report_instagram_keys = [
 ]
 
 report_instagram_account_clicks = {
-    "bullying or harassment":"d.click(370,1334):d.click(370,790):d.click(370,1381)",
-    "Terrorism":"d.click(370,1242):d.click(370,915):d.click(370,1481)",
-    "Violent threat":"d.click(370,1242):d.click(370,450):d.click(370,1481)",
-    "Dangerous organizations or individuals":"d.click(370,1242):d.click(370,723):d.click(370,1481)",
-    "Credible threat to safty":"d.click(370,1242):d.click(370,1000):d.click(370,1481)",
-    "Calling for violence":"d.click(370,930):d.click(370,838):d.click(370,1481)",
-    "Hate speech or symbols":"d.click(370,1150):d.click(370,1381)",
-    "False information":"d.swipe(500, 1200, 500, 300, duration=0.05):d.click(370,1533):d.click(370,1440)",
+    "bullying or harassment":"d.click(370,1223):d.click(370,1304):d.click(370,1489)",
+    "Terrorism":"d.click(370,1135):d.click(370,1000):d.click(370,1481)",
+    "Violent threat":"d.click(370,1135):d.click(370,585):d.click(370,1481)",
+    "Dangerous organizations or individuals":"d.click(370,1135):d.click(370,837):d.click(370,1481)",
+    "Credible threat to safty":"d.click(370,1135):d.click(370,1085):d.click(370,1481)",
+    "Hate speech or symbols":"d.click(370,1054):d.click(370,1500)",
+    "False information":"d.click(370,1476)",
 }
+instagram_accounts_to_report =[
+    ("https://www.instagram.com/free.palestine.1967?igsh=YzljYTk1ODg3Zg==",7)
+]
+report_instagram_account_keys = [
+    "bullying or harassment",                     # 1
+    "Terrorism",                                  # 2
+    "Violent threat",                             # 3
+    "Dangerous organizations or individuals",     # 4
+    "Credible threat to safty",                   # 5
+    "Hate speech or symbols",                     # 6
+    "False information"                           # 7
+]
 
 month_dict_month_to_number = {
     "jan": "1",
@@ -788,6 +799,20 @@ month_dict_month_to_number = {
     "oct": "10",
     "nov": "11",
     "dec": "12"
+}
+month_dict_month_to_number_capital = {
+    "Jan": "1",
+    "Feb": "2",
+    "Mar": "3",
+    "Apr": "4",
+    "May": "5",
+    "Jun": "6",
+    "Jul": "7",
+    "Aug": "8",
+    "Sep": "9",
+    "Oct": "10",
+    "Nov": "11",
+    "Dec": "12"
 }
 month_dict_number_to_month = {
     "1": "Jan",

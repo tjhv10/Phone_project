@@ -4,20 +4,7 @@ import random
 from common_area_items import *
 from common_area_functions import *
 import uiautomator2 as u2
-import logging
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,  # Log all messages of level DEBUG and above
-    format="%(asctime)s - %(levelname)s - %(message)s",  # Include timestamp, level, and message
-    handlers=[
-        logging.FileHandler(log_file, mode='w'),  # Write logs to a file
-        logging.StreamHandler()  # Also print logs to the console
-    ]
-)
-
-# Replace all `print` statements with `logging.info` or appropriate log levels
-print = logging.info  # Redirect print to info-level logging
 
 
 def tap_like_button(d, like_button_template_path="icons/twitter_icons/like.png"):
@@ -274,9 +261,9 @@ def follow_page(d, follow_template_path="icons/twitter_icons/follow.png"):
     logging.info(f"{threading.current_thread().name}:{d.serial} Finished follow_page function")
         
         
-def report_post(d, link_action_tuple):
+def report_post(d):
     # Open Twitter app
-    link,action = link_action_tuple
+    link,action = random.choice(twitter_posts_to_report)
     if "com.twitter.android" in d.app_list_running():
         # Stop Twitter app
         d.app_stop("com.twitter.android")
@@ -328,44 +315,38 @@ def report_post(d, link_action_tuple):
 
 
 
-def report_account(d, account,action=5):
+def report_account(d):
+    account = random.choice(anti_israel_twitter)
+    action = 5
     # Open Twitter app
     if "com.twitter.android" in d.app_list_running():
         # Stop Twitter app
         d.app_stop("com.twitter.android")
         sleep(2)
-
-    # Start the Twitter app 
-    d.app_start("com.twitter.android")
-    logging.info(f"{threading.current_thread().name}:{d.serial} :Opened Twitter!")
-    sleep(15)
-
-    if "com.twitter.android" in d.app_list_running():
-        logging.info(f"{threading.current_thread().name}:{d.serial} Twitter is running!")
-        sleep(5)
-        # Click on the share button
-        d.click(667, 120)
-        update_results_file("Actions")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Twitter is running!")
+    search_and_go_to_page(d,account)
+    sleep(5)
+    # Click on the share button
+    d.click(667, 120)
+    update_results_file("Actions")
+    sleep(3)
+    # Click on the report button
+    try:
+        x,y = search_sentence(d,"Report","twi")
         sleep(3)
-        search_and_go_to_page(d,account)
-        sleep(6)
-        # Click on the report button
-        try:
-            x,y = search_sentence(d,"Report","twi")
-            sleep(3)
-            d.click(int(x), int(y))
-            update_results_file("Actions")
-            sleep(8)
-            if action == 0: 
-                    handle_user_selection(d, report_twitter_clicks)
-            else:
-                execute_action(d,twitter_report_keys[action-1], report_twitter_clicks)
-            sleep(10)
-            update_results_file("Accounts reported")
-            d.app_stop("com.twitter.android")
-        except:
-            logging.error(f"{threading.current_thread().name}:{d.serial} Report button not found!!")
-            return
+        d.click(int(x), int(y))
+        update_results_file("Actions")
+        sleep(8)
+        if action == 0: 
+                handle_user_selection(d, report_twitter_clicks)
+        else:
+            execute_action(d,twitter_report_keys[action-1], report_twitter_clicks)
+        sleep(10)
+        update_results_file("Accounts reported")
+        d.app_stop("com.twitter.android")
+    except:
+        logging.error(f"{threading.current_thread().name}:{d.serial} Report button not found!!")
+        return
 
 
 
@@ -485,16 +466,15 @@ def main(d, duration=0):
 
 def extraFunctions(d):
     try:
-        report_post(d,random.choice(twitter_posts_to_report))
-        # sleep(3)
-        # account = random.choice(anti_israel_twitter)
-        # report_twitter_accounts(d) TODO fix
+        report_post(d)
+        sleep(3)
+        report_account(d)
         
     except Exception:
         logging.error("An error occurred", exc_info=True)  # Log error with stack trace
         d.app_stop("com.twitter.android")
 
-# d = u2.connect("127.0.0.1:6632")
+# d = u2.connect("127.0.0.1:6555")
 # main(d)
-# report_account(d,random.choice(anti_israel_twitter))
+# report_account(d)
 # report_post(d,random.choice(twitter_posts_to_report))

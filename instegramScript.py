@@ -144,6 +144,26 @@ def tap_search_icon(d, search_icon_template_path="icons/instagram_icons/search_i
     logging.info(f"{threading.current_thread().name}:{d.serial} Finished tap_search_icon function")
 
 
+
+def tap_three_dots(d, three_dots_template_path="icons/instagram_icons/threedots.png"):
+    """
+    Takes a screenshot and tries to tap on the like button if found.
+
+    Parameters:
+    d (uiautomator2.Device): The connected device object from uiautomator2.
+    three_dots_template_path (str): Path to the like button template image.
+    """
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting tap_three_dots function")
+    screenshot_path = take_screenshot(d,threading.current_thread().name,'inst')
+    best_match = find_best_match(screenshot_path, three_dots_template_path,d)
+    print(f"three dots found at {best_match} with match value: {best_match}, clicking...")
+    if best_match:
+       d.click(int(best_match[0]),int(best_match[1]))
+    else:
+        print("three dots not found on the screen.")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Finished tap_three_dots function")
+
+
 def comment_text(d,text, comment_template_path="icons/instagram_icons/comment.png"):
     """
     Takes a screenshot and tries to tap on the comment icon if found.
@@ -216,10 +236,15 @@ def scroll_like_and_comment(d):
     d.click(73,1508) # press home
     logging.info(f"{threading.current_thread().name}:{d.serial} Finished scroll_like_and_comment function")
 
-def report_post(d,action = 0):
+def report_post(d):
     logging.info(f"{threading.current_thread().name}:{d.serial} Starting report_post function")
-    # Open Twitter app
-    link = random.choice(instagram_posts_to_report)
+    try:
+        link,action = random.choice(instagram_posts_to_report)
+        print("Link:",link,"Action:",action)
+    except:
+        link = random.choice(instagram_posts_to_report)
+        action = 8 # default action
+
     d.app_start("com.instagram.lite")
     print(f"{threading.current_thread().name}:{d.serial} :Opened Instagram!")
     # sleep(15)
@@ -230,11 +255,19 @@ def report_post(d,action = 0):
         # Open the tweet in the Twitter app
         d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
         print(f"{threading.current_thread().name}:{d.serial} Opened: {link}")
+        sleep(7)
+        tap_three_dots(d)
         sleep(3)
-        # Click on the 3 dots button
-        d.click(700, 200)
-        sleep(3)
-        d.click(*search_sentence(d,"Report...","inst"))
+        try:
+            d.click(*search_sentence(d,"Report...","inst"))
+        except:
+            d.click(700, 200)
+            sleep(3)
+            try:
+                d.click(*search_sentence(d,"Report","inst"))
+            except:
+                print(f"{threading.current_thread().name}:{d.serial} :Report not found!")
+                return
         sleep(8)
         if action == 0: 
             handle_user_selection(d,report_instagram_post_clicks)
@@ -248,36 +281,42 @@ def report_post(d,action = 0):
         logging.info(f"{threading.current_thread().name}:{d.serial} Finished report_post function")
 
 
-# TODO fix function
-# def report_account(d, link): 
-#     logging.info(f"{threading.current_thread().name}:{d.serial} Starting report_account function")
-#     # Open Twitter app
-#     d.app_start("com.instagram.lite")
-#     print(f"{threading.current_thread().name}:{d.serial} :Opened Instagram!")
-#     # sleep(15)
-
-#     if "com.instagram.lite" in d.app_list_running():
-#         print(f"{threading.current_thread().name}:{d.serial} Instagram is running!")
-
-#         # Open the tweet in the Twitter app
-#         d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
-#         print(f"{threading.current_thread().name}:{d.serial} Opened: {link}")
-#         sleep(3)
-#         # Click on the share button
-#         d.click(660, 135)
-#         sleep(3)
-#         d.click(*search_sentence(d,"Report_","inst"))
-#         sleep(3)
-#         d.click(*search_sentence(d,"Report Account","inst"))
-#         sleep(3)
-#         d.click(*search_sentence(d,"it's posting content that shoulden't be on","inst"))
-#         sleep(8)
-#         handle_user_selection(d,report_instagram_account_clicks)
-#         sleep(2)
-#         update_results_file("Accounts reported")
-#         sleep(4)
-#         d.app_stop("com.twitter.android")
-#     logging.info(f"{threading.current_thread().name}:{d.serial} Finished report_account function")
+def report_account(d): 
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting report_account function")
+    d.app_start("com.instagram.lite")
+    print(f"{threading.current_thread().name}:{d.serial} :Opened Instagram!")
+    # sleep(15)
+    try:
+        link,action = random.choice(instagram_accounts_to_report) 
+    except:
+        link = random.choice(instagram_accounts_to_report)
+        action = 7 # default action
+    print("Link:",link,"Action:",action)
+    if "com.instagram.lite" in d.app_list_running():
+        print(f"{threading.current_thread().name}:{d.serial} Instagram is running!")# 
+        # Open the tweet in the Twitter app
+        d.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
+        print(f"{threading.current_thread().name}:{d.serial} Opened: {link}")
+        sleep(5)
+        # Click on the share button
+        d.click(660, 135)
+        sleep(5)
+        d.click(*search_sentence(d,"Report_","inst"))
+        sleep(5)
+        d.click(*search_sentence(d,"Report Account","inst"))
+        sleep(5)
+        d.click(*search_sentence(d,"it's posting content that shoulden't be on","inst"))
+        sleep(8)
+        if action == 0: 
+            handle_user_selection(d,report_instagram_account_clicks)
+        else:
+            print(report_instagram_account_clicks[report_instagram_account_keys[action-1]])
+            execute_action(d,report_instagram_account_keys[action-1],report_instagram_account_clicks)
+        sleep(2)
+        update_results_file("Accounts reported")
+        sleep(4)
+        d.app_stop("com.instagram.lite")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Finished report_account function")
 
 
 
@@ -382,9 +421,11 @@ def main(d):
         logging.error("An error occurred", exc_info=True)
         d.app_stop("com.instagram.lite")
 
-#d = u2.connect("127.0.0.1:6555")
-# logging.info(f"Connected to device{d.serial}")
+# d = u2.connect("127.0.0.1:6555")
+# logging.info(f"Connected to device {d.serial}")
 # main(d)
-# report_account(d,"https://www.instagram.com/freepalestineland?igsh=YzljYTk1ODg3Zg==") #TODO fix  func
+# report_account(d)
 # report_post(d)
+
+# take_screenshot(d,threading.current_thread().name,"inst",crop_area=(665,1215,671,1245))
 # search_and_go_to_account(d,"idf")
