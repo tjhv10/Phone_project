@@ -380,23 +380,23 @@ setup_instagram(d,gmail,name,password,date,user)
 # setup_tiktok(d,gmail,date,"riley_foodyyyy")
 # insert_date(d,date)
 # result.columns = ['Email', 'Password', 'Date', 'Username']
-# def main():
-    # i=0
-    # accounts = extract_data_from_range()
-    # print(accounts["Email"].count('hunterflores232@gmail.com'))
-
-
-    # for device in get_connected_devices():
-    #     gmail = accounts[i]["Email"]
-    #     password = accounts[i]["Password"]
-    #     date = accounts[i]["Date"]
-    #     username = accounts[i]["Username"]
-    #     try:
-    #         setup_google(device,gmail,password)
-    #     except:
-    #         print("oops")
-    #     sleep(10)
-    #     setup_twitter(device,date,username)
-    #     close_apps(device)
-    #     i+=1
-# main()
+def main():
+    accounts = extract_data_from_range()
+    i=0
+    for device in get_connected_devices():
+        gmail = accounts[i]["Email"]
+        password = accounts[i]["Password"]
+        date = accounts[i]["Date"]
+        username = accounts[i]["Username"]
+        close_apps(device)
+        sleep(2)
+        try:
+            setup_google(device,gmail,password)
+        except:
+            print("Error setting up google")
+        sleep(2)
+        setup_twitter(device,date,username)
+        sleep(2)
+        close_apps(device)
+        i+=1
+main()
