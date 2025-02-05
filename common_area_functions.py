@@ -107,7 +107,7 @@ def tap_keyboard(d, text:str, keyboard = keyboard_dic):
             sleep(random.uniform(0.1, 0.2))  # Add a small delay between taps
                 
 
-def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_max=1650):
+def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_max=1650, bestMatch=False, min_word_length=0):
     """
     Searches for a word or sentence in the screenshot using OCR.
 
@@ -119,6 +119,7 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_ma
         usegpu (bool): Whether to use GPU for OCR (default=True).
         y_min (int): Minimum Y-coordinate boundary (default=0).
         y_max (int): Maximum Y-coordinate boundary (default=infinity).
+        min_word_length (int): Minimum length of the word to be returned (default=2).
     
     Returns:
         tuple: Coordinates of the match center (x, y) or None if no match found.
@@ -131,7 +132,7 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_ma
         logging.info(f"{threading.current_thread().name}:{d.serial} Searching for text: {name}")
     
     # Determine if we're searching for a word or a sentence
-    is_word_search = len(name.split()) == 1 and name.__len__() < 20
+    is_word_search = len(name.split()) == 1 and name.__len__() < 30
 
     # Initialize the OCR reader
     reader = easyocr.Reader(['en'], gpu=usegpu)
@@ -160,6 +161,10 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_ma
             words = text.strip().split()
 
             for word in words:
+                # Check if the word is long enough before comparing
+                if len(word) < min_word_length:
+                    continue
+
                 similarity_score = fuzz.ratio(processed_name.lower(), word.lower())
                 
                 if similarity_score > best_similarity:
@@ -238,6 +243,8 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_ma
         center_y = (top_left_y + bottom_right_y) // 2
 
         logging.info(f"{threading.current_thread().name}:{d.serial} Best match found: \"{best_match_text}\" with similarity: {best_similarity}% in {center_x,center_y}")
+        if bestMatch:
+            return best_match_text
         return int(center_x), int(center_y)
 
     # Log the best match even if it doesn't meet the tolerance
@@ -246,6 +253,7 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_ma
 
     logging.info(f"{threading.current_thread().name}:{d.serial} No sufficiently similar text was found.")
     return None
+
 
 
 
@@ -511,6 +519,8 @@ def close_apps(device):
     device.app_stop("com.nordvpn.android")
     sleep(0.5)
     device.app_stop("com.instagram.lite")
+    sleep(0.5)
+    device.app_stop("com.google.android.gm")
     logging.info(f"{device.wlan_ip} closed apps.")
 
 

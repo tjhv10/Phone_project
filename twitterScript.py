@@ -474,7 +474,7 @@ def extraFunctions(d):
         logging.error("An error occurred", exc_info=True)  # Log error with stack trace
         d.app_stop("com.twitter.android")
 
-d = u2.connect("127.0.0.1:6555")
+# d = u2.connect("127.0.0.1:6555")
 # main(d)
-report_account(d)
+# report_account(d)
 # report_post(d,random.choice(twitter_posts_to_report))

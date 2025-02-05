@@ -421,10 +421,10 @@ def main(d):
         logging.error("An error occurred", exc_info=True)
         d.app_stop("com.instagram.lite")
 
-d = u2.connect("127.0.0.1:6555")
-logging.info(f"Connected to device {d.serial}")
+# d = u2.connect("127.0.0.1:6555")
+# logging.info(f"Connected to device {d.serial}")
 # main(d)
-report_account(d)
+# report_account(d)
 # report_post(d)
 
 # take_screenshot(d,threading.current_thread().name,"inst",crop_area=(665,1215,671,1245))
