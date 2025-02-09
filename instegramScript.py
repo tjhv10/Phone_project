@@ -1,6 +1,3 @@
-import uiautomator2 as u2
-from time import sleep
-from common_area_items import *
 from common_area_functions import *
 
 def scroll_once(d):

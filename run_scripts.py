@@ -1,4 +1,3 @@
-from common_area_items import *
 from common_area_functions import *
 
 def like_comment_follow(d):
