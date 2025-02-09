@@ -1,5 +1,6 @@
 import logging
-from type import TYPE 
+from env import *
+from env import TYPE 
 # Configure logging
 log_file = "logs.log"  # Log file to capture output
 logging.basicConfig(
@@ -733,9 +734,9 @@ tiktok_posts_to_report = [
 ]
 
 instagram_posts_to_report = [
-# ("https://www.instagram.com/p/DDXanKiNmPa/?igsh=MTVkeWhqcW82MGxtaA==",8),
-# ("https://www.instagram.com/reel/DCRFvJrqTHO/?igsh=YzljYTk1ODg3Zg==",8),
-"https://www.instagram.com/reel/DDSlLsPOn62/?igsh=YzljYTk1ODg3Zg==",
+("https://www.instagram.com/p/DDXanKiNmPa/?igsh=MTVkeWhqcW82MGxtaA==",8),
+("https://www.instagram.com/reel/DCRFvJrqTHO/?igsh=YzljYTk1ODg3Zg==",8),
+("https://www.instagram.com/reel/DDSlLsPOn62/?igsh=YzljYTk1ODg3Zg==",8),
 ]
 
 
@@ -845,4 +846,3 @@ MONTH_CROP_TIK = (102,y_start,200,y_end)
 DAY_CROP_TIK = (300,y_start,400,y_end)
 MAX_DURATION = 3000
 swipe_function_param = ((400, 500), (1200, 1400), (-180, 180), (800, 900), 1, 0.05)
-gmtoolPath = "/home/goldfish/Desktop/genymotion/gmtool"

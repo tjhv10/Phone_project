@@ -21,6 +21,7 @@ from PIL import ImageFilter
 import uiautomator2 as u2
 
 
+
 keyboard_dic = {
     "q": [(40, 1200)],
     "w": [(110, 1200)],

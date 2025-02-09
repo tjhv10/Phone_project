@@ -3,7 +3,7 @@ import subprocess
 
 def create_files_and_directories():
     # Paths to create
-    files = ["logs.log", "result.txt", "type.py", "range.txt"]
+    files = ["logs.log", "result.txt", "env.py", "range.txt"]
     directories = ["Screenshots"]
 
     # Create files
@@ -22,7 +22,7 @@ def create_files_and_directories():
         else:
             print(f"Directory already exists: {directory}")
 
-def write_to_result():
+def write_to_files():
     content = """
 Likes - 0
 Comments - 0
@@ -32,6 +32,9 @@ Posts reported - 0
 Accounts reported - 0
 Actions - 0
     """
+    with open("env.py", "w") as env_file: # default content
+        env_file.write("TYPE = 'v'\n")
+        env_file.write('gmtoolPath = "/home/goldfish/Desktop/genymotion/gmtool"\n')
     with open("result.txt", "w") as f:
         f.write(content.strip())
     print("Content written to result.txt")
@@ -59,6 +62,6 @@ def run_setup_commands():
 if __name__ == "__main__":
     print("Setting up environment...")
     create_files_and_directories()
-    write_to_result()
+    write_to_files()
     run_setup_commands()
     print("Environment setup complete.")

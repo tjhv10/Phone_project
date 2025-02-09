@@ -5,5 +5,5 @@ logs.log
 myenv/
 .venv/
 range.txt
-type.py
+env.py
 output.log
