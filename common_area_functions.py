@@ -797,6 +797,7 @@ def restart_device(d):
     """Restarts a specific Genymotion device."""
     try:
         device_name = d.serial
+        device_name = d.serial
         print(f"Stopping device: {device_name}")
         subprocess.run([gmtoolPath, "admin", "stop", device_name], check=True)
         time.sleep(5)  # Wait a bit before restarting
