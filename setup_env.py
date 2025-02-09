@@ -22,7 +22,14 @@ def create_files_and_directories():
         else:
             print(f"Directory already exists: {directory}")
 
-def write_to_files():
+def write_default_env_file():
+    with open("env.py", "w") as env_file:
+        env_file.write("TYPE = 'v'\n")
+        env_file.write('gmtoolPath = "/home/goldfish/Desktop/genymotion/gmtool"\n')
+        env_file.write('phoneRange = ""\n')
+    print("Default content written to env.py")
+
+def write_initial_result_file():
     content = """
 Likes - 0
 Comments - 0
@@ -32,13 +39,10 @@ Posts reported - 0
 Accounts reported - 0
 Actions - 0
     """
-    with open("env.py", "w") as env_file: # default content
-        env_file.write("TYPE = 'v'\n")
-        env_file.write('gmtoolPath = "/home/goldfish/Desktop/genymotion/gmtool"\n')
-        env_file.write('phoneRange = ""\n')
     with open("result.txt", "w") as f:
         f.write(content.strip())
     print("Content written to result.txt")
+
 
 def run_setup_commands():
     # Commands to run
@@ -62,7 +66,5 @@ def run_setup_commands():
 
 if __name__ == "__main__":
     print("Setting up environment...")
-    create_files_and_directories()
-    write_to_files()
-    run_setup_commands()
+    write_default_env_file()
     print("Environment setup complete.")
