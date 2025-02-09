@@ -19,7 +19,8 @@ import pytesseract
 from PIL import ImageEnhance
 from PIL import ImageFilter
 import uiautomator2 as u2
-
+import pandas as pd
+from openpyxl import load_workbook
 
 
 keyboard_dic = {
@@ -840,3 +841,34 @@ def get_device_name_by_ip(ip_address):
     except subprocess.CalledProcessError as e:
         print(f"Error listing devices: {e.stderr}")
         return None
+
+
+
+def get_links_and_reasons_from_non_red_cells(file_path, sheet_name, link_column, reason_column):
+    # Load workbook and sheet
+    wb = load_workbook(file_path, data_only=True)
+    ws = wb[sheet_name]
+    twitter_report_dict = {key: i + 1 for i, key in enumerate(twitter_report_keys)}
+    data = []
+    # Iterate over the specified column
+    for row in range(2, 300):  # Assuming the first row is a header
+        cell_link = ws[f"{link_column}{row}"]
+        cell_reason = ws[f"{reason_column}{row}"]
+
+        # Check if the link cell background is NOT red
+        cell_color = cell_link.fill.start_color.index
+        if cell_color not in ["FFFF0000", "FF0000"]:  # Exclude red-colored cells
+            if cell_link.value and isinstance(cell_link.value, str) and cell_link.value.startswith("http"):
+                
+                # If reason is already a number, use it directly
+                if isinstance(cell_reason.value, (int, float)):
+                    reason_number = int(cell_reason.value)
+                else:
+                    reason_text = cell_reason.value.strip() if isinstance(cell_reason.value, str) else ""
+                    reason_number = twitter_report_dict.get(reason_text, 5)  # Default to 5 (Incitement)
+                data.append((cell_link.value, reason_number))
+
+    return data
+
+twitter_posts_to_report = get_links_and_reasons_from_non_red_cells("Posts to report _ ARISE.xlsx", "Sheet1", "C", "D")
+
