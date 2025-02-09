@@ -1,4 +1,10 @@
+import uiautomator2 as u2
+import logging
+from time import sleep
+from common_area_items import *
 from common_area_functions import *
+import pandas as pd
+from start_adb import *
 
 
 def extract_data_from_range(file_path="Profiles _ BFJ.xlsx"):

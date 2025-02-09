@@ -1,31 +1,6 @@
 import logging
-import time
-import random
-import re
-import subprocess
-import threading
-from time import sleep
-from queue import Queue, Empty
-import uiautomator2 as u2
-import cv2
-import easyocr
-import numpy as np
-import requests
-import pandas as pd
-from openpyxl import load_workbook
-from fuzzywuzzy import fuzz
-from PIL import Image, ImageEnhance, ImageFilter
-import pytesseract
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
 from env import *
-from start_adb import *
-import tiktokScript as tik
-import twitterScript as twi
-import instegramScript as inst
-
-
+from env import TYPE 
 # Configure logging
 log_file = "logs.log"  # Log file to capture output
 logging.basicConfig(
@@ -41,68 +16,6 @@ logging.basicConfig(
 # print = logging.info  # Redirect print to info-level logging
 
 
-keyboard_dic = {
-    "q": [(40, 1200)],
-    "w": [(110, 1200)],
-    "e": [(180, 1200)],
-    "r": [(250, 1200)],
-    "t": [(320, 1200)],
-    "y": [(390, 1200)],
-    "u": [(460, 1200)],
-    "i": [(530, 1200)],
-    "o": [(600, 1200)],
-    "p": [(670, 1200)],
-    "a": [(70, 1285)],
-    "s": [(140, 1285)],
-    "d": [(210, 1285)],
-    "f": [(280, 1285)],
-    "g": [(350, 1285)],
-    "h": [(420, 1285)],
-    "j": [(490, 1285)],
-    "k": [(560, 1285)],
-    "l": [(630, 1285)],
-    "z": [(150, 1400)],
-    "x": [(220, 1400)],
-    "c": [(290, 1400)],
-    "v": [(360, 1400)],
-    "b": [(430, 1400)],
-    "n": [(500, 1400)],
-    "m": [(570, 1400)],
-    ".": [(570,1500)],
-    ",": [(150,1500)],
-    " ": [(400,1500)],
-    "_": [(65,1500),(250,1500),(65,1500)],
-    "0":[(65,1500),(680,1190),(65,1500)],
-    "1":[(65,1500),(40,1190),(65,1500)],
-    "2":[(65,1500),(110,1190),(65,1500)],
-    "3":[(65,1500),(180,1190),(65,1500)],
-    "4":[(65,1500),(250,1190),(65,1500)],
-    "5":[(65,1500),(320,1190),(65,1500)],
-    "6":[(65,1500),(390,1190),(65,1500)],
-    "7":[(65,1500),(460,1190),(65,1500)],
-    "8":[(65,1500),(530,1190),(65,1500)],
-    "9":[(65,1500),(610,1190),(65,1500)],
-    "'":[(65,1500),(288,1400),(65,1500)],
-    "@":[(65,1500),(72,1275),(65,1500)],
-    "#":[(65,1500),(145,1275),(65,1500)],
-    "$":[(65,1500),(219,1275),(65,1500)],
-    "%":[(65,1500),(292,1275),(65,1500)],
-    "&":[(65,1500),(360,1275),(65,1500)],
-    "!":[(65,1500),(502,1387),(65,1500)],
-    "?":[(65,1500),(578,1387),(65,1500)],    
-}
-keyboard_dic_only_nums = {
-    "1":[(72,1160)],
-    "2":[(280,1160)],
-    "3":[(475,1160)],
-    "4":[(72,1265)],
-    "5":[(280,1265)],
-    "6":[(475,1265)],
-    "7":[(72,1380)],
-    "8":[(280,1380)],
-    "9":[(475,1380)],
-    "0":[(280,1500)],
-}
 
 # israel_support_comments = [
 #     "Israel has the right to defend itself.",
