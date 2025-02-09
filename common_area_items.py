@@ -1,6 +1,41 @@
 import logging
 from env import *
-from env import TYPE 
+from time import sleep
+import tiktokScript as tik
+import twitterScript as twi
+import instegramScript as inst
+import uiautomator2 as u2
+from start_adb import *
+from common_area_items import *
+from queue import Queue
+import time
+import threading
+from queue import Empty
+from common_area_functions import *
+import random
+import re
+import subprocess
+import threading
+from time import sleep
+import cv2
+import easyocr
+from fuzzywuzzy import fuzz
+import numpy as np
+import requests
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+import time
+from PIL import Image
+from common_area_items import *
+import pytesseract
+from PIL import ImageEnhance
+from PIL import ImageFilter
+import uiautomator2 as u2
+import pandas as pd
+from openpyxl import load_workbook
+
+
 # Configure logging
 log_file = "logs.log"  # Log file to capture output
 logging.basicConfig(
