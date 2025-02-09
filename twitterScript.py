@@ -104,6 +104,9 @@ def scroll_like_and_comment(d,posts,duration):
             logging.info(f"{threading.current_thread().name}:{d.serial} Scrolled from ({start_x}, {start_y}) to ({start_x}, {end_y}) in {swipe_duration:.2f} seconds.")
         else:
             logging.info(f"{threading.current_thread().name}:{d.serial} No scrollable view found!")
+            if TYPE == 'v':
+                restart_device(d)
+                sleep(5)
             main(d,duration+time.time()-start_time)
 
             
@@ -170,10 +173,16 @@ def scroll_random_number(d,duration):
                 logging.info(f"{threading.current_thread().name}:{d.serial} No scrollable view found!")
                 d.click(40,1340)
                 update_results_file("Actions")
+                if TYPE == 'v':
+                    restart_device(d)
+                    sleep(5)
                 main(d,duration+time.time()-start_time)
             sleep(random.randint(2, 30))
     else:
         logging.info(f"{threading.current_thread().name}:{d.serial} No scrollable view found!")
+        if TYPE == 'v':
+            restart_device(d)
+            sleep(5)
         main(d,duration+time.time()-start_time)
         
 
@@ -231,6 +240,7 @@ def search_and_go_to_page(d, page_name,duration=0):
             if TYPE=='p':
                 open_vpn(d)
             else:
+                logging.warning(f"{threading.current_thread().name}:{d.serial} restarting...")
                 restart_device(d)
                 sleep(15)
             sleep(5)

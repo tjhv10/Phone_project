@@ -796,7 +796,7 @@ def list_running_devices():
 def restart_device(d):
     """Restarts a specific Genymotion device."""
     try:
-        device_name = get_device_name_by_ip(d.serial)
+        device_name = d.serial
         print(f"Stopping device: {device_name}")
         subprocess.run([gmtoolPath, "admin", "stop", device_name], check=True)
         time.sleep(5)  # Wait a bit before restarting
@@ -814,35 +814,6 @@ def restart_device(d):
 
 
 # Use the device name or UUID from list_running_devices
-def get_device_name_by_ip(ip_address):
-    """Returns the device name for the given IP address."""
-    try:
-        result = subprocess.run(
-            [gmtoolPath, "admin", "list", "vms"],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        # Parse the result to find the device with the matching IP
-        for line in result.stdout.splitlines():
-            # Split the line by '|' to extract the fields
-            parts = line.split("|")
-            if len(parts) >= 3:
-                # Extract IP address and device name
-                device_ip = parts[1].strip()  # IP is in the second column
-                device_name = parts[2].strip()  # Device name is in the third column
-
-                # Check if the IP matches
-                if device_ip == ip_address:
-                    return device_name
-        
-        # Return None if no matching device was found
-        return None
-    except subprocess.CalledProcessError as e:
-        print(f"Error listing devices: {e.stderr}")
-        return None
-
-
 
 def get_links_and_reasons_from_non_red_cells(file_path, sheet_name, link_column, reason_column):
     # Load workbook and sheet
