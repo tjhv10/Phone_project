@@ -820,23 +820,23 @@ def get_device_name_by_ip(ip_address):
         return None
     
 
-def restart_device(d):
+# def restart_device(d):fixxxx
     """Restarts a specific Genymotion device."""
-    try:
-        device_name = get_device_name_by_ip(d.serial)
-        print(f"Stopping device: {device_name}")
-        subprocess.run([gmtoolPath, "admin", "stop", device_name], check=True)
-        time.sleep(5)  # Wait a bit before restarting
+    # try:
+    #     device_name = get_device_name_by_ip(d.serial)
+    #     print(f"Stopping device: {device_name}")
+    #     subprocess.run([gmtoolPath, "admin", "stop", device_name], check=True)
+    #     time.sleep(5)  # Wait a bit before restarting
 
-        print(f"Starting device: {device_name}")
-        subprocess.run([gmtoolPath, "admin", "start", device_name], check=True)
+    #     print(f"Starting device: {device_name}")
+    #     subprocess.run([gmtoolPath, "admin", "start", device_name], check=True)
 
-        # Wait for the device to boot up
-        print(f"Waiting for device {device_name} to boot...")
-        time.sleep(30)  # Adjust the wait time as needed
-        print(f"Device {device_name} restarted successfully.")
-    except subprocess.CalledProcessError as e:
-        print(f"Error restarting device {device_name}: {e.stderr}")
+    #     # Wait for the device to boot up
+    #     print(f"Waiting for device {device_name} to boot...")
+    #     time.sleep(30)  # Adjust the wait time as needed
+    #     print(f"Device {device_name} restarted successfully.")
+    # except subprocess.CalledProcessError as e:
+    #     print(f"Error restarting device {device_name}: {e.stderr}")
 
 
 
