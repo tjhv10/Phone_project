@@ -7,10 +7,8 @@ import pandas as pd
 from start_adb import *
 
 
-def extract_data_from_range(file_path="Profiles _ BFJ.xlsx", range_file_path="range.txt"):
-    with open(range_file_path, 'r') as file:
-        range_str = file.read().strip()
-    start_id, end_id = map(int, range_str.split('-'))
+def extract_data_from_range(file_path="Profiles _ BFJ.xlsx"):
+    start_id, end_id = map(int, phoneRange.split('-'))
     sheet_data = pd.read_excel(file_path, sheet_name='Sheet1')
     sheet_data['Phone ID #'] = pd.to_numeric(sheet_data['Phone ID #'], errors='coerce')
     filtered_data = sheet_data[(sheet_data['Phone ID #'] >= start_id) & (sheet_data['Phone ID #'] <= end_id)]

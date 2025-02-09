@@ -3,7 +3,7 @@ import subprocess
 
 def create_files_and_directories():
     # Paths to create
-    files = ["logs.log", "result.txt", "env.py", "range.txt"]
+    files = ["logs.log", "result.txt", "env.py"]
     directories = ["Screenshots"]
 
     # Create files
@@ -35,6 +35,7 @@ Actions - 0
     with open("env.py", "w") as env_file: # default content
         env_file.write("TYPE = 'v'\n")
         env_file.write('gmtoolPath = "/home/goldfish/Desktop/genymotion/gmtool"\n')
+        env_file.write('phoneRange = ""\n')
     with open("result.txt", "w") as f:
         f.write(content.strip())
     print("Content written to result.txt")
