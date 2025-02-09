@@ -272,7 +272,7 @@ def follow_page(d, follow_template_path="icons/twitter_icons/follow.png"):
         
 def report_post(d):
     # Open Twitter app
-    link,action = random.choice(twitter_posts_to_report)
+    link,action = random.choice(get_links_and_reasons_from_non_red_cells("Posts to report _ ARISE.xlsx", "Sheet1", "C", "D"))
     if "com.twitter.android" in d.app_list_running():
         # Stop Twitter app
         d.app_stop("com.twitter.android")
