@@ -294,9 +294,23 @@ def report_post(d):
             d.click(*search_sentence(d, "Report post","twi"))
             update_results_file("Actions")
             sleep(15)
-            while not search_sentence(d,"What type of issue are","twi"):
-                logging.info(f"{threading.current_thread().name}:{d.serial} Waiting for report page to load...")
+            retry_count = 0
+            while not search_sentence(d,"What type of issue are","twi") and retry_count < 3:
+                logging.info(f"{threading.current_thread().name}:{d.serial} Waiting for report page to load... Attempt {retry_count + 1}")
                 sleep(10)
+                retry_count += 1
+
+            if retry_count == 3:
+                logging.warning(f"{threading.current_thread().name}:{d.serial} Report page did not load after 3 attempts. Restarting VPN...")
+                close_apps(d)
+                sleep(5)
+                if TYPE == 'p':
+                    open_vpn(d)
+                else:
+                    restart_device(d)
+                    sleep(15)
+                sleep(5)
+                report_post(d)
 
             if action == 0: 
                 handle_user_selection(d, report_twitter_clicks)
@@ -336,9 +350,26 @@ def report_account(d):
         sleep(3)
         d.click(int(x), int(y))
         update_results_file("Actions")
-        sleep(8)
+        retry_count = 0
+        sleep(10)
+        while not search_sentence(d,"What type of issue are","twi") and retry_count < 3:
+            logging.info(f"{threading.current_thread().name}:{d.serial} Waiting for report page to load... Attempt {retry_count + 1}")
+            sleep(10)
+            retry_count += 1
+
+            if retry_count == 3:
+                logging.warning(f"{threading.current_thread().name}:{d.serial} Report page did not load after 3 attempts. Restarting VPN...")
+                close_apps(d)
+                sleep(5)
+                if TYPE == 'p':
+                    open_vpn(d)
+                else:
+                    restart_device(d)
+                    sleep(15)
+                sleep(5)
+                report_account(d)        
         if action == 0: 
-                handle_user_selection(d, report_twitter_clicks)
+            handle_user_selection(d, report_twitter_clicks)
         else:
             execute_action(d,twitter_report_keys[action-1], report_twitter_clicks)
         sleep(10)
@@ -477,4 +508,4 @@ def extraFunctions(d):
 # d = u2.connect("127.0.0.1:6555")
 # main(d)
 # report_account(d)
-# report_post(d,random.choice(twitter_posts_to_report))
+# report_post(d)
