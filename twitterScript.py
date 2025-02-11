@@ -389,10 +389,9 @@ def report_account(d):
         return
 
 
-
-def support_accounts(d,accounts):
-    random.shuffle(accounts)
-    for account in accounts:
+def support_accounts(d):
+    random.shuffle(twitter_handles_specials)
+    for account in twitter_handles_specials:
         # Start the Twitter app 
         if "com.twitter.android" in d.app_list_running():
             # Stop Twitter app
@@ -409,98 +408,96 @@ def support_accounts(d,accounts):
         d.app_stop("com.twitter.android")
         sleep(2)
 
+def scroll_like_comment(d,duration=0):    
+    logging.info(f"{threading.current_thread().name}:{d.serial} duration in main: "+str(duration))
+    start_time = time.time()
+    duration = duration+time.time()-start_time
+    if duration > MAX_DURATION:  # Check duration
+        logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
+        return  
+    # Check if Twitter is running and stop it
+    if "com.twitter.android" in d.app_list_running():
+        d.app_stop("com.twitter.android")
+        sleep(2)
 
-def main(d, duration=0):
+    # Start Twitter
+    d.app_start("com.twitter.android")
+    logging.info(f"{threading.current_thread().name}:{d.serial} Opened Twitter!")
+    sleep(12)  # Wait for Twitter to fully load
+    d.click(75, 1500)  # Go to home
+    update_results_file("Actions")
+    sleep(2)
+    duration = duration+time.time()-start_time
+    logging.info(f"{threading.current_thread().name}:{d.serial} duration in main:" +str(duration))
+    # Perform random scrolling actions
+    for _ in range(random.randint(1,5)):
+        duration = duration+time.time()-start_time
+        if duration > MAX_DURATION:  # Check duration
+            logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
+            return
+        scroll_random_number(d,duration+time.time()-start_time)
+        sleep(4)
+
+    # Stop Twitter
+    d.app_stop("com.twitter.android")
+    sleep(2)
+    
+    # Interact with accounts
+    for _ in range(5):
+        duration = duration+time.time()-start_time
+        logging.info(f"{threading.current_thread().name}:{d.serial} duration in main:"+str(duration))
+        if duration > MAX_DURATION:  # Check duration
+            logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
+            d.app_stop("com.twitter.android")
+            return
+
+        account = random.choice(twitter_handles)
+        while account.strip().lower() == "israel":
+            logging.error(f"{threading.current_thread().name}:{d.serial} 'israel' was chosen somehow!")
+            account = random.choice(twitter_handles)
+
+        logging.info(f"{threading.current_thread().name}:{d.serial} The account is: {account}!")
+        search_and_go_to_page(d, account,duration)
+        duration = duration+time.time()-start_time
+        if duration > MAX_DURATION:  # Check duration
+            logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
+            d.app_stop("com.twitter.android")
+            return
+        sleep(2)
+        follow_page(d)
+        duration = duration+time.time()-start_time
+        if duration > MAX_DURATION:  # Check duration
+            logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
+            d.app_stop("com.twitter.android")
+            return
+        sleep(2)
+        scroll_like_and_comment(d, 15,duration=duration+time.time()-start_time)
+        duration = duration+time.time()-start_time
+        if duration > MAX_DURATION:  # Check duration
+            logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
+            d.app_stop("com.twitter.android")
+            return
+        d.click(75, 1500)  # Go to home
+        update_results_file("Actions")
+        sleep(4)
+
+        for _ in range(random.randint(5, 15)):
+            scroll_random_number(d,duration+time.time()-start_time)
+            sleep(2)
+
+def main(d):
     """
     The main function connects to the Android device and performs various Twitter actions.
     
     Parameters:
     d (uiautomator2.Device): The connected Android device object.
-    MAX_DURATION (int): Maximum duration (in seconds) to allow the function to run.
     """
     try:
-        logging.info(f"{threading.current_thread().name}:{d.serial} duration in main: "+str(duration))
-        start_time = time.time()
-        duration = duration+time.time()-start_time
-        if duration > MAX_DURATION:  # Check duration
-            logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
-            return  
-        # Check if Twitter is running and stop it
-        if "com.twitter.android" in d.app_list_running():
-            d.app_stop("com.twitter.android")
-            sleep(2)
-
-        # Start Twitter
-        d.app_start("com.twitter.android")
-        logging.info(f"{threading.current_thread().name}:{d.serial} Opened Twitter!")
-        sleep(12)  # Wait for Twitter to fully load
-        d.click(75, 1500)  # Go to home
-        update_results_file("Actions")
-        sleep(2)
-        duration = duration+time.time()-start_time
-        logging.info(f"{threading.current_thread().name}:{d.serial} duration in main:" +str(duration))
-        # Perform random scrolling actions
-        for _ in range(random.randint(1,5)):
-            duration = duration+time.time()-start_time
-            if duration > MAX_DURATION:  # Check duration
-                logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
-                return
-            scroll_random_number(d,duration+time.time()-start_time)
-            sleep(4)
-
-        # Stop Twitter
-        d.app_stop("com.twitter.android")
-        sleep(2)
-        
-        # Interact with accounts
-        for _ in range(5):
-            duration = duration+time.time()-start_time
-            logging.info(f"{threading.current_thread().name}:{d.serial} duration in main:"+str(duration))
-            if duration > MAX_DURATION:  # Check duration
-                logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
-                d.app_stop("com.twitter.android")
-                return
-
-            account = random.choice(twitter_handles)
-            while account.strip().lower() == "israel":
-                logging.error(f"{threading.current_thread().name}:{d.serial} 'israel' was chosen somehow!")
-                account = random.choice(twitter_handles)
-
-            logging.info(f"{threading.current_thread().name}:{d.serial} The account is: {account}!")
-            search_and_go_to_page(d, account,duration)
-            duration = duration+time.time()-start_time
-            if duration > MAX_DURATION:  # Check duration
-                logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
-                d.app_stop("com.twitter.android")
-                return
-            sleep(2)
-            follow_page(d)
-            duration = duration+time.time()-start_time
-            if duration > MAX_DURATION:  # Check duration
-                logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
-                d.app_stop("com.twitter.android")
-                return
-            sleep(2)
-            scroll_like_and_comment(d, 15,duration=duration+time.time()-start_time)
-            duration = duration+time.time()-start_time
-            if duration > MAX_DURATION:  # Check duration
-                logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
-                d.app_stop("com.twitter.android")
-                return
-            d.click(75, 1500)  # Go to home
-            update_results_file("Actions")
-            sleep(4)
-
-            for _ in range(random.randint(5, 15)):
-                scroll_random_number(d,duration+time.time()-start_time)
-                sleep(2)
-            support_accounts(d, twitter_handles_specials)
+        functions = [scroll_like_comment, support_accounts, report_post, report_account]
+        random.shuffle(functions)
+        for action in functions:
+            action(d)
             sleep(3)
-            report_post(d)
-            sleep(3)
-            report_account(d)
-            d.app_stop("com.twitter.android")
-
     except Exception:
         logging.error("An error occurred", exc_info=True)
         d.app_stop("com.twitter.android")
