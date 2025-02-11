@@ -25,7 +25,9 @@ def like_comment_follow(d):
                 open_vpn(d)
             logging.info(f"Running script on device with thread: {threading.current_thread().name}:{d.serial}")
             start_random_function([twi.main,twi.extraFunctions],d)
-            close_apps(d)
+            if TYPE == 'v':
+                logging.info(f"Restarting: {threading.current_thread().name}:{d.serial}")
+                restart_device(d)
             sleep(3)
         logging.info(f"Device with thread {threading.current_thread().name}:{d.serial} completed its tasks.")
     except Exception as e:
