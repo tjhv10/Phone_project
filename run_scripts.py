@@ -20,23 +20,18 @@ def like_comment_follow(d):
         logging.info(f"Running tasks on device with thread: {threading.current_thread().name}:{d.serial}")
         close_apps(d)
         sleep(3)
-        for _ in range(1):
-            if TYPE == 'p':
-                open_vpn(d)
-            logging.info(f"Running script on device with thread: {threading.current_thread().name}:{d.serial}")
-            start_random_function([twi.main,twi.extraFunctions],d)
-            if TYPE == 'v':
-                logging.info(f"Restarting: {threading.current_thread().name}:{d.serial}")
-                restart_device(d)
-            sleep(3)
+        if TYPE == 'p':
+            open_vpn(d)
+        logging.info(f"Running script on device with thread: {threading.current_thread().name}:{d.serial}")
+        start_random_function([twi.main,twi.extraFunctions],d)
         logging.info(f"Device with thread {threading.current_thread().name}:{d.serial} completed its tasks.")
     except Exception as e:
         logging.error(f"Error while processing device with thread {threading.current_thread().name}:{d.serial}: {e}")
         sleep(60)
-
     logging.info(f"Device with thread {threading.current_thread().name} is sleeping for 1 hours before restarting tasks...")
-    # if TYPE=='v':
-        # restart_device(d)
+    logging.info(f"Restarting: {threading.current_thread().name}:{d.serial}")
+    if TYPE=='v':
+        restart_device(d)
     sleep(0.5 * 3600)
     worker_queue.put(d)
 
