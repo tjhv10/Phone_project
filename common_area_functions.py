@@ -812,9 +812,9 @@ def get_device_name_by_ip(ip_address):
                 # Check if the IP matches
                 if device_ip == ip_address:
                     return device_name
-        
         # Return None if no matching device was found
         return None
+        
     except subprocess.CalledProcessError as e:
         print(f"Error listing devices: {e.stderr}")
         return None
@@ -867,5 +867,5 @@ def get_links_and_reasons_from_non_red_cells(file_path, sheet_name, link_column,
                 data.append((cell_link.value, reason_number))
 
     return data
-# d = u2.connect("127.0.0.1:6555")
-# restart_device(d)
+d = u2.connect("127.0.0.1:6555")
+restart_device(d)

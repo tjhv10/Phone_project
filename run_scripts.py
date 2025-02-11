@@ -23,7 +23,7 @@ def like_comment_follow(d):
         if TYPE == 'p':
             open_vpn(d)
         logging.info(f"Running script on device with thread: {threading.current_thread().name}:{d.serial}")
-        start_random_function([twi.main,twi.extraFunctions],d)
+        start_random_function([twi.main],d)
         logging.info(f"Device with thread {threading.current_thread().name}:{d.serial} completed its tasks.")
     except Exception as e:
         logging.error(f"Error while processing device with thread {threading.current_thread().name}:{d.serial}: {e}")

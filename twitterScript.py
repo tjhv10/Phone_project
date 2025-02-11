@@ -496,23 +496,16 @@ def main(d, duration=0):
                 sleep(2)
             support_accounts(d, twitter_handles_specials)
             sleep(3)
+            report_post(d)
+            sleep(3)
+            report_account(d)
             d.app_stop("com.twitter.android")
-            sleep(5)
 
     except Exception:
-        logging.error("An error occurred", exc_info=True)  # Log error with stack trace
+        logging.error("An error occurred", exc_info=True)
         d.app_stop("com.twitter.android")
 
 
-def extraFunctions(d):
-    try:
-        report_post(d)
-        sleep(3)
-        report_account(d)
-        
-    except Exception:
-        logging.error("An error occurred", exc_info=True)  # Log error with stack trace
-        d.app_stop("com.twitter.android")
 
 # d = u2.connect("127.0.0.1:6555")
 # main(d)
