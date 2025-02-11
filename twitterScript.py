@@ -107,7 +107,7 @@ def scroll_like_and_comment(d,posts,duration):
             if TYPE == 'v':
                 restart_device(d)
                 sleep(5)
-            main(d,duration+time.time()-start_time)
+            scroll_like_comment_main(d,duration+time.time()-start_time)
 
             
         sleep(random.uniform(5, 30))
@@ -176,14 +176,14 @@ def scroll_random_number(d,duration):
                 if TYPE == 'v':
                     restart_device(d)
                     sleep(5)
-                main(d,duration+time.time()-start_time)
+                scroll_like_comment_main(d,duration+time.time()-start_time)
             sleep(random.randint(2, 30))
     else:
         logging.info(f"{threading.current_thread().name}:{d.serial} No scrollable view found!")
         if TYPE == 'v':
             restart_device(d)
             sleep(5)
-        main(d,duration+time.time()-start_time)
+        scroll_like_comment_main(d,duration+time.time()-start_time)
         
 
 
@@ -408,7 +408,7 @@ def support_accounts(d):
         d.app_stop("com.twitter.android")
         sleep(2)
 
-def scroll_like_comment(d,duration=0):    
+def scroll_like_comment_main(d,duration=0):    
     logging.info(f"{threading.current_thread().name}:{d.serial} duration in main: "+str(duration))
     start_time = time.time()
     duration = duration+time.time()-start_time
@@ -493,7 +493,7 @@ def main(d):
     d (uiautomator2.Device): The connected Android device object.
     """
     try:
-        functions = [scroll_like_comment, support_accounts, report_post, report_account]
+        functions = [scroll_like_comment_main, support_accounts, report_post, report_account]
         random.shuffle(functions)
         for action in functions:
             action(d)
