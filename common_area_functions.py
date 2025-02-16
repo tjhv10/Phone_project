@@ -843,7 +843,6 @@ def restart_device(d):
                     logging.error(f"Failed to start device {d.serial} after 5 attempts.")
                     raise
             time.sleep(10)
-        subprocess.run(["env", "-u", "QT_QPA_PLATFORM_PLUGIN_PATH", gmtoolPath, "admin", "start", device_name], check=True)
         logging.info(f"Waiting for device {d.serial} to boot...")
         time.sleep(30)
         logging.info(f"Device {d.serial} restarted successfully.")
