@@ -882,5 +882,3 @@ def get_links_and_reasons_from_non_red_cells(file_path, sheet_name, link_column,
                 data.append((cell_link.value, reason_number))
 
     return data
-d = u2.connect("127.0.0.1:6555")
-restart_device(d)
