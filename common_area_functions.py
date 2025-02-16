@@ -821,24 +821,24 @@ def get_device_name_by_ip(ip_address):
     
 
 def restart_device(d, stop_timeout=10, start_timeout=20):
-    """Restarts a specific Genymotion device with timeouts."""
+    """Restarts a specific Genymotion device with timeouts and logs the process."""
     try:
         device_name = get_device_name_by_ip(d.serial)
-        print(f"Stopping device: {device_name}")
+        logging.info(f"Stopping device: {device_name}")
         subprocess.run([gmtoolPath, "admin", "stop", device_name], check=True, timeout=stop_timeout)
         time.sleep(5)  # Wait a bit before restarting
 
-        print(f"Starting device: {device_name}")
+        logging.info(f"Starting device: {device_name}")
         subprocess.run([gmtoolPath, "admin", "start", device_name], check=True, timeout=start_timeout)
 
         # Wait for the device to boot up
-        print(f"Waiting for device {device_name} to boot...")
+        logging.info(f"Waiting for device {device_name} to boot...")
         time.sleep(30)  # Adjust the wait time as needed
-        print(f"Device {device_name} restarted successfully.")
+        logging.info(f"Device {device_name} restarted successfully.")
     except subprocess.CalledProcessError as e:
-        print(f"Error restarting device {device_name}: {e.stderr}")
+        logging.error(f"Error restarting device {device_name}: {e.stderr}")
     except subprocess.TimeoutExpired as e:
-        print(f"Timeout expired while restarting device {device_name}: {e}")
+        logging.error(f"Timeout expired while restarting device {device_name}: {e}")
 
 
 
