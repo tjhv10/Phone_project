@@ -832,6 +832,17 @@ def restart_device(d):
         subprocess.run(["env", "-u", "QT_QPA_PLATFORM_PLUGIN_PATH", gmtoolPath, "admin", "stop", device_name], check=True)
         time.sleep(5)
         logging.info(f"Starting device: {d.serial}")
+        for attempt in range(5):
+            try:
+                subprocess.run(["env", "-u", "QT_QPA_PLATFORM_PLUGIN_PATH", gmtoolPath, "admin", "start", device_name], check=True)
+                logging.info(f"Device {d.serial} started successfully on attempt {attempt + 1}.")
+                break
+            except subprocess.CalledProcessError as e:
+                logging.error(f"Attempt {attempt + 1} failed to start device {d.serial}: {e.stderr}")
+                if attempt == 4:
+                    logging.error(f"Failed to start device {d.serial} after 5 attempts.")
+                    raise
+            time.sleep(10)
         subprocess.run(["env", "-u", "QT_QPA_PLATFORM_PLUGIN_PATH", gmtoolPath, "admin", "start", device_name], check=True)
         logging.info(f"Waiting for device {d.serial} to boot...")
         time.sleep(30)
@@ -871,3 +882,5 @@ def get_links_and_reasons_from_non_red_cells(file_path, sheet_name, link_column,
                 data.append((cell_link.value, reason_number))
 
     return data
+d = u2.connect("127.0.0.1:6555")
+restart_device(d)
