@@ -1,4 +1,5 @@
 import logging
+import os
 import random
 import re
 import subprocess
@@ -820,28 +821,26 @@ def get_device_name_by_ip(ip_address):
         return None
     
 
-def restart_device(d, stop_timeout=10, start_timeout=20):
+def restart_device(d):
     """Restarts a specific Genymotion device with timeouts and logs the process."""
     try:
         device_name = get_device_name_by_ip(d.serial)
-        logging.info(f"Stopping device: {device_name}")
         if device_name is None:
             logging.error(f"Device with IP {d.serial} not found.")
             return
-        subprocess.run([gmtoolPath, "admin", "stop", device_name], check=True, timeout=stop_timeout)
-        time.sleep(5)  # Wait a bit before restarting
-
-        logging.info(f"Starting device: {device_name}")
-        subprocess.run([gmtoolPath, "admin", "start", device_name], check=True, timeout=start_timeout)
-
-        # Wait for the device to boot up
-        logging.info(f"Waiting for device {device_name} to boot...")
-        time.sleep(30)  # Adjust the wait time as needed
-        logging.info(f"Device {device_name} restarted successfully.")
+        logging.info(f"Stopping device: {d.serial}")
+        subprocess.run(["env", "-u", "QT_QPA_PLATFORM_PLUGIN_PATH", gmtoolPath, "admin", "stop", device_name], check=True)
+        time.sleep(5)
+        logging.info(f"Starting device: {d.serial}")
+        subprocess.run(["env", "-u", "QT_QPA_PLATFORM_PLUGIN_PATH", gmtoolPath, "admin", "start", device_name], check=True)
+        logging.info(f"Waiting for device {d.serial} to boot...")
+        time.sleep(30)
+        logging.info(f"Device {d.serial} restarted successfully.")
     except subprocess.CalledProcessError as e:
-        logging.error(f"Error restarting device {device_name}: {e.stderr}")
+        logging.error(f"Error restarting device {d.serial}: {e.stderr}")
     except subprocess.TimeoutExpired as e:
-        logging.error(f"Timeout expired while restarting device {device_name}: {e}")
+        logging.error(f"Timeout expired while restarting device {d.serial}: {e}")
+    
 
 
 
