@@ -5,6 +5,10 @@ for i in $(seq 40 70); do
     echo "Connecting to $ip..."
     adb connect $ip
 done
-##### to run:
-#chmod +x connect_devices_linux.sh
-# ./connect_devices_linux.sh
+
+# Usage:
+# 1. Connect all devices to the same network
+# 2. Run the following commands one after another:
+#    chmod +x connect_devices_linux.sh
+#    ./connect_devices_linux.sh
+# 3. Enjoy!

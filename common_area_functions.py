@@ -571,6 +571,7 @@ def image_to_string(image_path,number = True):
     Returns:
         str: Cleaned and processed extracted text from the image.
     """
+    print(f"Extracting text from image: {image_path}")
     try:
         # Preprocess the image in place for better OCR performance
         
@@ -579,13 +580,64 @@ def image_to_string(image_path,number = True):
             extracted_text = pytesseract.image_to_string(Image.open(image_path), config='--psm 6').strip()
         else:
             extracted_text = pytesseract.image_to_string(Image.open(image_path)).strip()
-        print(f"Extracted Text (Raw): {extracted_text}")
-        
+        print(f"Extracted text: {extracted_text}")
         # Handle specific edge cases
         if extracted_text.lower() in ['ia)', '11']:
             extracted_text = '11'
         elif extracted_text == '':
-            print("No text found or an error occurred. Returning default value.")
+            print("No text found. Returning default value.")
+            extracted_text = "Mar"  # Default fallback text
+        
+        return extracted_text
+
+    except Exception as e:
+        print(f"Error during OCR: {e}")
+        return "Error"
+
+def enhanced_image_to_string(image_path, number=True):
+    """
+    Converts text in an image to a string using OCR.
+
+    Args:
+        image_path (str): Path to the image file.
+        number (bool): Whether to optimize OCR for numbers.
+
+    Returns:
+        str: Cleaned and processed extracted text from the image.
+    """
+    print(f"Extracting text from image: {image_path}")
+
+    try:
+        # Read the image
+        img = cv2.imread(image_path)
+
+        # Convert to grayscale
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        # Resize to make the text more legible
+        scale_factor = 3
+        gray = cv2.resize(gray, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_CUBIC)
+
+        # Apply thresholding to improve contrast
+        _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+        # Optionally invert the image if the text is white on black
+        # thresh = cv2.bitwise_not(thresh)
+
+        # Save the processed image for debugging (optional)
+        # cv2.imwrite("processed_image.png", thresh)
+
+        # Perform OCR
+        config = '--psm 6 -c tessedit_char_whitelist=0123456789:'
+        extracted_text = pytesseract.image_to_string(thresh, config=config if number else '--psm 6').strip()
+
+        print(f"Extracted text: {extracted_text}")
+
+        # Handle specific edge cases
+        if extracted_text.lower() in ['ia)', '11']:
+            extracted_text = '11'
+        elif extracted_text == '':
+            print("No text found. Returning default value.")
             extracted_text = "Mar"  # Default fallback text
 
         return extracted_text
@@ -593,9 +645,7 @@ def image_to_string(image_path,number = True):
     except Exception as e:
         print(f"Error during OCR: {e}")
         return "Error"
-
     
-
 def rnd_value(x,range=10):
     """
     Generates a random value within ±5 of the given number x.
@@ -881,3 +931,5 @@ def get_links_and_reasons_from_non_red_cells(file_path, sheet_name, link_column,
                 data.append((cell_link.value, reason_number))
 
     return data
+def extract_number_pairs(s):
+        return re.findall(r'\d+:\d+', s)
