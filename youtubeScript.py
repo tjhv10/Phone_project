@@ -78,6 +78,44 @@ def subscribe(d):
     except:
         logging.error(d.serial + ": No subscribe button found")
     
+def support_page(d,page_name,duration =5):
+    try:
+        x,y = find_best_match(take_screenshot(d,app="youtube"), "icons/youtube_icons/search.png",d)
+    except:
+        x,y = find_best_match(take_screenshot(d,app="youtube"), "icons/youtube_icons/xButton.png",d)
+    d.click(int(x),int(y))
+    sleep(2)
+    type_keyboard(d, page_name)
+    sleep(2)
+    d.press("enter")
+    sleep(5)
+    d.click(rnd_value(350),rnd_value(280))
+    sleep(5)
+    try:
+        d.click(*search_sentence(d, "Subscribe", plat="youtube", tolerance=4))
+    except:
+        logging.info(d.serial + ": No subscribe button found")
+    sleep(2)
+    try:
+        x,y = find_best_match(take_screenshot(d,app="youtube"), "icons/youtube_icons/videos_unmarked.png",d)
+    except:
+        x,y = find_best_match(take_screenshot(d,app="youtube"), "icons/youtube_icons/videos_marked.png",d)
+        logging.info(d.serial + ": No videos button found")
+    d.click(int(x),int(y))
+    sleep(2)
+    for _ in range(13):
+        d.swipe(100, 1400, 100, 1160, duration = 0.3)
+        sleep(2)
+        try:
+            duration = extract_number_pairs(enhanced_image_to_string(take_screenshot(d,app="youtube",crop_area=(270,1037,350,1278))))
+            print(duration)
+        except:
+            duration = time_to_seconds(search_sentence(d,":","youtube",screen_shot = take_screenshot(d,app="youtube",crop_area=(270,1037,350,1278)),return_always=True))
+        d.click(rnd_value(350),1100)
+        sleep(duration) # Watch video
+        # video_actions(d)
+        d.press("back")
+
 
 def video_actions(d):
     like(d)
@@ -87,7 +125,10 @@ def video_actions(d):
 
 d = u2.connect("127.0.0.1:6555")
 # video_actions(d)
-# take_screenshot(d,app="youtube",crop_area=(540,639,696,703))
+# take_screenshot(d,app="youtube",crop_area=(174,824,275,860))
 # search_youtube(d, "")
 # subscribe(d)
 # d.click(100,200)
+# support_page(d,"idf")
+
+

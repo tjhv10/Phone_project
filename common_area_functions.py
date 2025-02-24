@@ -110,7 +110,7 @@ def type_keyboard(d, text:str, keyboard = keyboard_dic):
             sleep(random.uniform(0.1, 0.2))  # Add a small delay between taps
                 
 
-def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_max=1650, bestMatch=False, min_word_length=0):
+def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_max=1650, bestMatch=False, min_word_length=0,screen_shot=None,return_always=False):
     """
     Searches for a word or sentence in the screenshot using OCR.
 
@@ -127,7 +127,8 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_ma
     Returns:
         tuple: Coordinates of the match center (x, y) or None if no match found.
     """
-    screen_shot = take_screenshot(d, threading.current_thread().name, plat)
+    if screen_shot is None:
+        screen_shot = take_screenshot(d, threading.current_thread().name, plat)
     logging.info(f"{threading.current_thread().name}:{d.serial} Searching for text: {name}")
 
     while plat == "twi" and name.lower().strip() == "israel":
@@ -253,6 +254,8 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_ma
     # Log the best match even if it doesn't meet the tolerance
     if best_match_text:
         logging.info(f"{threading.current_thread().name}:{d.serial} Closest match: \"{best_match_text}\" with similarity: {best_similarity}%")
+    if return_always:
+        return best_match_text
 
     logging.info(f"{threading.current_thread().name}:{d.serial} No sufficiently similar text was found.")
     return None
@@ -622,7 +625,7 @@ def enhanced_image_to_string(image_path, number=True):
         _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
         # Optionally invert the image if the text is white on black
-        # thresh = cv2.bitwise_not(thresh)
+        thresh = cv2.bitwise_not(thresh)
 
         # Save the processed image for debugging (optional)
         # cv2.imwrite("processed_image.png", thresh)
@@ -931,5 +934,24 @@ def get_links_and_reasons_from_non_red_cells(file_path, sheet_name, link_column,
                 data.append((cell_link.value, reason_number))
 
     return data
+
+
 def extract_number_pairs(s):
-        return re.findall(r'\d+:\d+', s)
+        return time_to_seconds(re.findall(r'\d+:\d+', s)[0])
+
+def time_to_seconds(time_str):
+    print(time_str)
+    # Split the string by colon to separate minutes and seconds
+    parts = time_str.split(":")
+    if len(parts) != 2:
+        raise ValueError("Input must be in 'minutes:seconds' format")
+    
+    minutes, seconds = parts
+    
+    try:
+        minutes = int(minutes)
+        seconds = int(seconds)
+    except ValueError:
+        raise ValueError("Both minutes and seconds should be integers.")
+    
+    return minutes * 60 + seconds
