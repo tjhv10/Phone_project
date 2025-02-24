@@ -88,7 +88,7 @@ keyboard_dic_only_nums = {
 }
 
 
-def tap_keyboard(d, text:str, keyboard = keyboard_dic):
+def type_keyboard(d, text:str, keyboard = keyboard_dic):
     """
     Simulates tapping on the screen using the keyboard coordinates for each character in the text.
     """
@@ -646,7 +646,7 @@ def enhanced_image_to_string(image_path, number=True):
         print(f"Error during OCR: {e}")
         return "Error"
     
-def rnd_value(x,range=10):
+def rnd_value(x,range=6):
     """
     Generates a random value within ±5 of the given number x.
 

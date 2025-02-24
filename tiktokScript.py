@@ -26,7 +26,7 @@ def search(d, text):
     d.click(x, y)  # Click on the search bar
     update_results_file("Actions")
     sleep(10)
-    tap_keyboard(d, text)
+    type_keyboard(d, text)
     sleep(15)
     d.press(66)  # Press the search button
     update_results_file("Actions")
@@ -64,7 +64,7 @@ def comment_text(d, text, send_button_template_path="icons/tiktok_icons/send.png
     update_results_file("Actions")
     logging.info(f"{threading.current_thread().name}:{d.serial} Commenting: {text}")
     sleep(4)
-    tap_keyboard(d, text)
+    type_keyboard(d, text)
     sleep(2)
     screenshot_path = take_screenshot(d, threading.current_thread().name, "tik")
     sleep(2)
