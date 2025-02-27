@@ -1,5 +1,6 @@
-for ($i=64; $i -le 269; $i++) {
-    $ip = "10.0.0." + ("{0:D2}" -f $i)
+for ($i=40; $i -le 70; $i++
+) {
+    $ip = "10.0.0." + ("{0:D1}" -f $i)
     Write-Host "Connecting to $ip..."
     & adb connect $ip
 }
