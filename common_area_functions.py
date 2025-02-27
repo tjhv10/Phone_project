@@ -498,6 +498,24 @@ def reopen_app(d, package_name, wait_time=5):
     except Exception as e:
         logging.error(f"Error while reopening app {package_name}: {e}")
 
+def is_app_installed(d, package_name):
+    """
+    Checks if a specific app is installed on the device.
+
+    Parameters:
+    d (uiautomator2.Device): The connected device instance.
+    package_name (str): The package name of the app to check (e.g., "com.twitter.android").
+
+    Returns:
+    bool: True if the app is installed, False otherwise.
+    """
+    try:
+        installed_apps = d.app_list()
+        return package_name in installed_apps
+    except Exception as e:
+        logging.error(f"Error checking if app {package_name} is installed: {e}")
+        return False
+
 def open_vpn(d):
     logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!")
     d.app_start("com.nordvpn.android")
@@ -506,11 +524,18 @@ def open_vpn(d):
     sleep(5)
     count = 0
     while not search_sentence(d, "Pause", "twi"):
-        if count == 3:
+        if count == 1:
+            try:
+                d.click(*search_sentence(d, "Quick connect", "vpn", tolerance=30))
+            except:
+                logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Maybe offline or somthing.")
+                return
+        if count == 2:
             logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Couldn't find the pause button.")
-            d.app_stop("com.nordvpn.android")
+            # d.app_stop("com.nordvpn.android")
             # sleep(5)
             # open_vpn(d)
+            return
         count += 1
         logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Trying to reconnect...")
         sleep(100)
@@ -943,7 +968,6 @@ def extract_number_pairs(s):
 
 def time_to_seconds(time_str):
     print(time_str)
-    # Split the string by colon to separate minutes and seconds
     parts = time_str.split(":")
     if len(parts) != 2:
         raise ValueError("Input must be in 'minutes:seconds' format")
