@@ -509,8 +509,8 @@ def open_vpn(d):
         if count == 3:
             logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Couldn't find the pause button.")
             d.app_stop("com.nordvpn.android")
-            sleep(5)
-            open_vpn(d)
+            # sleep(5)
+            # open_vpn(d)
         count += 1
         logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Trying to reconnect...")
         sleep(100)
