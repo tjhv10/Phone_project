@@ -517,6 +517,8 @@ def is_app_installed(d, package_name):
         return False
 
 def open_vpn(d):
+    if not is_app_installed(d, "com.nordvpn.android"):
+        return
     logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!")
     d.app_start("com.nordvpn.android")
     sleep(15)
