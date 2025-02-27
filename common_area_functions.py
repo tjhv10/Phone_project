@@ -1008,6 +1008,3 @@ def time_to_seconds(time_str):
         raise ValueError("Both minutes and seconds should be integers.")
     
     return minutes * 60 + seconds
-
-
-restart_genymotion()
