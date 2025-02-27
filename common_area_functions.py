@@ -501,7 +501,7 @@ def reopen_app(d, package_name, wait_time=5):
 def open_vpn(d):
     logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!")
     d.app_start("com.nordvpn.android")
-    sleep(25)
+    sleep(15)
     d.click(400, 200)
     sleep(5)
     count = 0
