@@ -88,7 +88,7 @@ def worker_task():
             try:
                 # Perform the task
                 like_comment_follow(device)
-                close_apps(device)
+                # close_apps(device)
             finally:
                 # Mark device as no longer in use
                 with devices_in_use_lock:

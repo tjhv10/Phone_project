@@ -75,7 +75,7 @@ def search_and_go_to_account(d, name):
     sleep(3)
     d.click(661,109)
     sleep(1)
-    tap_keyboard(d,name)
+    type_keyboard(d,name)
     sleep(10)
     try:
         tap_search_icon(d)
@@ -191,7 +191,7 @@ def comment_text(d,text, comment_template_path="icons/instagram_icons/comment.pn
     num_coordinates = find_best_match(screenshot_path, "icons/instagram_icons/num.png",d)
     if num_coordinates != None:
         sleep(2)
-        tap_keyboard(d,text)
+        type_keyboard(d,text)
         sleep(1)
         d.press(66)
         sleep(1)
@@ -347,7 +347,7 @@ def comment_text(d,text, comment_template_path="icons/instagram_icons/comment.pn
     num_coordinates = find_best_match(screenshot_path, "icons/instagram_icons/num.png",d)
     if num_coordinates != None:
         sleep(2)
-        tap_keyboard(d,text)
+        type_keyboard(d,text)
         sleep(1)
         d.press(66)
         sleep(1)

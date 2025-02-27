@@ -51,13 +51,13 @@ def setup_google(d,gmail:str,password):
     sleep(7)
     d.click(300,630) #insert email press 
     sleep(3)
-    tap_keyboard(d,gmail.split("@")[0])
+    type_keyboard(d,gmail.split("@")[0])
     sleep(1)
     x,y = search_sentence(d,"NEXT","goo")
     d.click(x,y)
     sleep(7)
     d.click(300,570) #insert password press 
-    tap_keyboard(d,password)
+    type_keyboard(d,password)
     sleep(1)
     d.click(592,1030) #press next
     sleep(5)
@@ -237,7 +237,7 @@ def setup_twitter(d,date,username):
     for _ in range(16):
         d.click(674,1389) # delete
         sleep(0.05)
-    tap_keyboard(d,username[1:]+"17")
+    type_keyboard(d,username[1:]+"17")
     sleep(3)
     d.click(639,956) # Tap next
     sleep(5)
@@ -275,7 +275,7 @@ def setup_instagram(d):
     sleep(3)
     d.click(360,380)
     sleep(2)
-    tap_keyboard(d,gmail)
+    type_keyboard(d,gmail)
     sleep(2)
     d.click(360,500) # next
     sleep(5)
@@ -311,15 +311,15 @@ def setup_instagram(d):
     sleep(5)
     d.app_start("com.instagram.lite")
     sleep(8)
-    tap_keyboard(d,code,keyboard_dic_only_nums)
+    type_keyboard(d,code,keyboard_dic_only_nums)
     sleep(2)
     d.click(360,460)
     sleep(5)
-    tap_keyboard(d,full_name)
+    type_keyboard(d,full_name)
     sleep(1)
     d.click(360,400)
     sleep(2)
-    tap_keyboard(d,password)
+    type_keyboard(d,password)
     sleep(5)
     d.click(360,640)
     sleep(5)
@@ -333,7 +333,7 @@ def setup_instagram(d):
     sleep(1)
     d.click(360,360)
     sleep(1)
-    tap_keyboard(d,username)
+    type_keyboard(d,username)
     sleep(2)
     d.click(360,600)
     sleep(20)

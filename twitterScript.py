@@ -44,7 +44,7 @@ def comment_text(d, text, comment_template_path="icons/twitter_icons/comment.png
         if not result:
             d.click(int(350),int(350))
             sleep(5)
-        tap_keyboard(d,text) 
+        type_keyboard(d,text) 
         sleep(1)
         logging.info(f"{threading.current_thread().name}:{d.serial} Searching for: {text}")
         if search_sentence(d,text[:29],"twi"):
@@ -92,7 +92,7 @@ def scroll_like_and_comment(d,posts,duration):
     logging.info(f"{threading.current_thread().name}:{d.serial} Starting scroll_like_and_comment function")
     logging.info(f"{threading.current_thread().name}:{d.serial} duration in main :"+str(duration))
     start_time = time.time()
-    actions = ['like', 'comment', 'both', 'none','none','none','none','none']
+    actions = ['like', 'both', 'none','none','none','none']
     for _ in range(posts):
         if d(scrollable=True).exists:
             start_x = random.randint(400, 600)
@@ -228,7 +228,7 @@ def search_and_go_to_page(d, page_name,duration=0):
     update_results_file("Actions")
     sleep(5)
      # Type each character of the search term with a random delay to simulate human typing
-    tap_keyboard(d,page_name)
+    type_keyboard(d,page_name)
     sleep(15)
     logging.info(f"{threading.current_thread().name}:{d.serial} Typed '{page_name}' in the search bar naturally.")
     try:

@@ -88,7 +88,7 @@ keyboard_dic_only_nums = {
 }
 
 
-def tap_keyboard(d, text:str, keyboard = keyboard_dic):
+def type_keyboard(d, text:str, keyboard = keyboard_dic):
     """
     Simulates tapping on the screen using the keyboard coordinates for each character in the text.
     """
@@ -110,7 +110,7 @@ def tap_keyboard(d, text:str, keyboard = keyboard_dic):
             sleep(random.uniform(0.1, 0.2))  # Add a small delay between taps
                 
 
-def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_max=1650, bestMatch=False, min_word_length=0):
+def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_max=1650, bestMatch=False, min_word_length=0,screen_shot=None,return_always=False):
     """
     Searches for a word or sentence in the screenshot using OCR.
 
@@ -127,7 +127,8 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_ma
     Returns:
         tuple: Coordinates of the match center (x, y) or None if no match found.
     """
-    screen_shot = take_screenshot(d, threading.current_thread().name, plat)
+    if screen_shot is None:
+        screen_shot = take_screenshot(d, threading.current_thread().name, plat)
     logging.info(f"{threading.current_thread().name}:{d.serial} Searching for text: {name}")
 
     while plat == "twi" and name.lower().strip() == "israel":
@@ -253,6 +254,8 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_ma
     # Log the best match even if it doesn't meet the tolerance
     if best_match_text:
         logging.info(f"{threading.current_thread().name}:{d.serial} Closest match: \"{best_match_text}\" with similarity: {best_similarity}%")
+    if return_always:
+        return best_match_text
 
     logging.info(f"{threading.current_thread().name}:{d.serial} No sufficiently similar text was found.")
     return None
@@ -495,17 +498,46 @@ def reopen_app(d, package_name, wait_time=5):
     except Exception as e:
         logging.error(f"Error while reopening app {package_name}: {e}")
 
+def is_app_installed(d, package_name):
+    """
+    Checks if a specific app is installed on the device.
+
+    Parameters:
+    d (uiautomator2.Device): The connected device instance.
+    package_name (str): The package name of the app to check (e.g., "com.twitter.android").
+
+    Returns:
+    bool: True if the app is installed, False otherwise.
+    """
+    try:
+        installed_apps = d.app_list()
+        return package_name in installed_apps
+    except Exception as e:
+        logging.error(f"Error checking if app {package_name} is installed: {e}")
+        return False
+
 def open_vpn(d):
+    if not is_app_installed(d, "com.nordvpn.android"):
+        return
     logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!")
     d.app_start("com.nordvpn.android")
-    sleep(30)
+    sleep(15)
+    d.click(400, 200)
+    sleep(5)
     count = 0
     while not search_sentence(d, "Pause", "twi"):
-        if count == 3:
+        if count == 1:
+            try:
+                d.click(*search_sentence(d, "Quick connect", "vpn", tolerance=30))
+            except:
+                logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Maybe offline or somthing.")
+                return
+        if count == 2:
             logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Couldn't find the pause button.")
-            d.app_stop("com.nordvpn.android")
-            sleep(5)
-            open_vpn(d)
+            # d.app_stop("com.nordvpn.android")
+            # sleep(5)
+            # open_vpn(d)
+            return
         count += 1
         logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Trying to reconnect...")
         sleep(100)
@@ -622,7 +654,7 @@ def enhanced_image_to_string(image_path, number=True):
         _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
         # Optionally invert the image if the text is white on black
-        # thresh = cv2.bitwise_not(thresh)
+        thresh = cv2.bitwise_not(thresh)
 
         # Save the processed image for debugging (optional)
         # cv2.imwrite("processed_image.png", thresh)
@@ -646,7 +678,7 @@ def enhanced_image_to_string(image_path, number=True):
         print(f"Error during OCR: {e}")
         return "Error"
     
-def rnd_value(x,range=10):
+def rnd_value(x,range=6):
     """
     Generates a random value within ±5 of the given number x.
 
@@ -887,6 +919,22 @@ def restart_genymotion():
         print(f"Error restarting Genymotion: {e}")
 
 
+def restart_genymotion():
+    """Restarts Genymotion on a Linux system."""
+    try:
+        print("Restarting Genymotion...")
+        # Kill any running Genymotion processes except the players
+        subprocess.run(["pkill", "-f", "genymotion"], check=False)
+        print("Genymotion processes terminated.")
+        time.sleep(3)  # Wait a few seconds to ensure processes are fully terminated
+        
+        # Start Genymotion
+        subprocess.Popen(["sudo", gmPath], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        print("Genymotion restarted successfully.")
+    except Exception as e:
+        print(f"Error restarting Genymotion: {e}")
+
+
 def restart_device(d):
     """Restarts a specific Genymotion device with timeouts and logs the process."""
     try:
@@ -947,8 +995,26 @@ def get_links_and_reasons_from_non_red_cells(file_path, sheet_name, link_column,
                 data.append((cell_link.value, reason_number))
 
     return data
+
+
 def extract_number_pairs(s):
-        return re.findall(r'\d+:\d+', s)
+        return time_to_seconds(re.findall(r'\d+:\d+', s)[0])
+
+def time_to_seconds(time_str):
+    print(time_str)
+    parts = time_str.split(":")
+    if len(parts) != 2:
+        raise ValueError("Input must be in 'minutes:seconds' format")
+    
+    minutes, seconds = parts
+    
+    try:
+        minutes = int(minutes)
+        seconds = int(seconds)
+    except ValueError:
+        raise ValueError("Both minutes and seconds should be integers.")
+    
+    return minutes * 60 + seconds
 
 
 restart_genymotion()
