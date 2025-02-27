@@ -871,6 +871,22 @@ def get_device_name_by_ip(ip_address):
         return None
     
 
+def restart_genymotion():
+    """Restarts Genymotion on a Linux system."""
+    try:
+        print("Restarting Genymotion...")
+        # Kill any running Genymotion processes except the players
+        subprocess.run(["pkill", "-f", "genymotion"], check=False)
+        print("Genymotion processes terminated.")
+        time.sleep(3)  # Wait a few seconds to ensure processes are fully terminated
+        
+        # Start Genymotion
+        subprocess.Popen(["sudo", gmPath], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        print("Genymotion restarted successfully.")
+    except Exception as e:
+        print(f"Error restarting Genymotion: {e}")
+
+
 def restart_device(d):
     """Restarts a specific Genymotion device with timeouts and logs the process."""
     try:
@@ -933,3 +949,6 @@ def get_links_and_reasons_from_non_red_cells(file_path, sheet_name, link_column,
     return data
 def extract_number_pairs(s):
         return re.findall(r'\d+:\d+', s)
+
+
+restart_genymotion()
