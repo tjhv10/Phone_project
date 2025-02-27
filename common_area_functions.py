@@ -912,24 +912,14 @@ def restart_genymotion():
         print("Genymotion processes terminated.")
         time.sleep(3)  # Wait a few seconds to ensure processes are fully terminated
         
-        # Start Genymotion
-        subprocess.Popen(["sudo", gmPath], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        print("Genymotion restarted successfully.")
-    except Exception as e:
-        print(f"Error restarting Genymotion: {e}")
+        # Start Genymotion in a background process using nohup
+        subprocess.Popen(
+            ["nohup", "bash", "-c", "cd /home/goldfish/Desktop/genymotion && env -u QT_QPA_PLATFORM_PLUGIN_PATH ./genymotion &"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            preexec_fn=os.setpgrp  # Prevents the process from being killed when the script exits
+        )
 
-
-def restart_genymotion():
-    """Restarts Genymotion on a Linux system."""
-    try:
-        print("Restarting Genymotion...")
-        # Kill any running Genymotion processes except the players
-        subprocess.run(["pkill", "-f", "genymotion"], check=False)
-        print("Genymotion processes terminated.")
-        time.sleep(3)  # Wait a few seconds to ensure processes are fully terminated
-        
-        # Start Genymotion
-        subprocess.Popen(["sudo", gmPath], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         print("Genymotion restarted successfully.")
     except Exception as e:
         print(f"Error restarting Genymotion: {e}")
@@ -953,6 +943,9 @@ def restart_device(d):
                 break
             except subprocess.CalledProcessError as e:
                 logging.error(f"Attempt {attempt + 1} failed to start device {d.serial}: {e.stderr}")
+                if attempt == 2:
+                    logging.info(f"Attempting to restart Genymotion...")
+                    restart_genymotion()
                 if attempt == 4:
                     logging.error(f"Failed to start device {d.serial} after 5 attempts.")
                     raise
