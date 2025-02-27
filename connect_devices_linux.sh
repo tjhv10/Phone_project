@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in $(seq 40 70); do
+for i in $(seq 70 270); do
     ip="10.0.0.$i"
     echo "Connecting to $ip..."
     adb connect $ip
