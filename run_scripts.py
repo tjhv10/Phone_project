@@ -40,7 +40,7 @@ def main():
     global worker_queue
     start_and_connect_all_servers()
 
-    max_threads = 15
+    max_threads = 8
     worker_queue = Queue()
 
     random.shuffle(device_ips)  # Shuffle the devices list
