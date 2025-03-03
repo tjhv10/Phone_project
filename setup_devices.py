@@ -5,9 +5,19 @@ from common_area_items import *
 from common_area_functions import *
 import pandas as pd
 from start_adb import *
+from fuzzywuzzy import process
 
 
-def extract_data_from_range(file_path="Profiles _ BFJ.xlsx"):
+def find_closest_file(target_name, directory="."):
+    files = [f for f in os.listdir(directory) if f.endswith(".xlsx")]
+    if not files:
+        raise FileNotFoundError("No Excel files found in the directory.")
+    
+    best_match, score = process.extractOne(target_name, files)
+    return best_match if score > 60 else None  # Adjust the threshold as needed
+
+def extract_data_from_range(file_path="Profiles_Extended_CleanedPasswords.xlsx"):
+    file_path = find_closest_file(file_path)
     start_id, end_id = map(int, phoneRange.split('-'))
     sheet_data = pd.read_excel(file_path, sheet_name='Sheet1')
     sheet_data['Phone ID #'] = pd.to_numeric(sheet_data['Phone ID #'], errors='coerce')
@@ -63,7 +73,7 @@ def setup_google(d,gmail:str,password):
     sleep(5)
     x,y = search_sentence(d,"Tagree","goo")
     d.click(x,y)
-    
+    sleep(10)
 
 
 
@@ -209,12 +219,20 @@ def insert_date(d, date: str):
 #     insert_date(d,date)print(image_to_string(take_screenshot(d, crop_area=DAY_CROP_TWI)))
 
 
-def setup_twitter(d,date,username):
+def setup_twitter(d,email,date,username):
     d.app_start("com.twitter.android")
-    sleep(8)
+    sleep(10)
     d.click(300,200)
-    sleep(5)
+    sleep(10)
     d.click(360,1057) # Tap Profiles _ BFJ.xlsx
+    sleep(8)
+    print(email)
+    try:
+        x,y = search_sentence(d,email,"twi")
+        d.click(x,y)
+    except:
+        print("Didnt find sign up")
+    sleep(10)    
     try:
         x,y = search_sentence(d,"Agree and share","twi",60)
         d.click(x,y)
@@ -288,7 +306,7 @@ def setup_instagram(d):
     except:
         d.click(700,300)
     sleep(5)
-    d.click(360,500) # nextprint(image_to_string(take_screenshot(d, crop_area=DAY_CROP_TWI)))
+    d.click(360,500)
     d.app_start("com.google.android.gm")
     d.click(90,120)
     d.sleep(2)
@@ -348,38 +366,9 @@ def setup_instagram(d):
     sleep(3)
     d.app_stop("com.instagram.lite")
 
-
-d = u2.connect("127.0.0.1:6583")
-name="Hunter Flores"
-gmail='hunterflores232@gmail.com'
-password='G3k#9Dzj'
-date='08/01/1998'
-user='@HunterDrone'
-
-setup_instagram(d,gmail,name,password,date,user)
-# code=None
-# while code is None:
-#        its = image_to_string(take_screenshot(d,app="inst"))
-#        print(its)
-#        code = return_code_inst(its,"Instagram")
-#        d.swipe(500, 1000, 500, 1000 + 500, duration = 0.1)
-#        print("searching code again...")
-#        sleep(20)
-# d.app_start("com.google.android.gm")
-# result = search_sentence(d, "Instagram", "inst")
-# print(result)
-# setup_google(d,gmail,password)
-# print_running_apps(d)
-# sleep(5)
-# setup_twitter(d,gmail,"17/9/1998","alexanderson_fit")
-# setup_instagram(d,gmail,"Riley Jackson",password,date,"rileyj_foodiesss")
-# print(d.app_current()["package"])
-# setup_twitter(d,gmail,date,"riley_foodyyyy")
-# setup_tiktok(d,gmail,date,"riley_foodyyyy")
-# insert_date(d,date)
-# result.columns = ['Email', 'Password', 'Date', 'Username']
 def main():
     accounts = extract_data_from_range()
+    print(accounts)
     i=0
     for device in get_connected_devices():
         gmail = accounts[i]["Email"]
@@ -393,7 +382,7 @@ def main():
         except:
             print("Error setting up google")
         sleep(2)
-        setup_twitter(device,date,username)
+        setup_twitter(device,gmail,date,username)
         sleep(2)
         close_apps(device)
         i+=1
