@@ -241,7 +241,7 @@ def search_and_go_to_page(d, page_name,duration=0):
             d.click(int(x),int(y))
             update_results_file("Actions")
         except:
-            if duration > MAX_DURATION:  # Check duration
+            if duration > MAX_DURATION_TWITTER:  # Check duration
                 return
             logging.warning(f"{threading.current_thread().name}:{d.serial} Didnt find '{page_name}' checking vpn and restarting.")
             close_apps(d)
@@ -421,7 +421,7 @@ def scroll_like_comment_main(d,duration=0):
     logging.info(f"{threading.current_thread().name}:{d.serial} duration in main: "+str(duration))
     start_time = time.time()
     duration = duration+time.time()-start_time
-    if duration > MAX_DURATION:  # Check duration
+    if duration > MAX_DURATION_TWITTER:  # Check duration
         logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
         return  
     # Check if Twitter is running and stop it
@@ -441,7 +441,7 @@ def scroll_like_comment_main(d,duration=0):
     # Perform random scrolling actions
     for _ in range(random.randint(1,5)):
         duration = duration+time.time()-start_time
-        if duration > MAX_DURATION:  # Check duration
+        if duration > MAX_DURATION_TWITTER:  # Check duration
             logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
             return
         scroll_random_number(d,duration+time.time()-start_time)
@@ -455,7 +455,7 @@ def scroll_like_comment_main(d,duration=0):
     for _ in range(5):
         duration = duration+time.time()-start_time
         logging.info(f"{threading.current_thread().name}:{d.serial} duration in main:"+str(duration))
-        if duration > MAX_DURATION:  # Check duration
+        if duration > MAX_DURATION_TWITTER:  # Check duration
             logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
             d.app_stop("com.twitter.android")
             return
@@ -468,21 +468,21 @@ def scroll_like_comment_main(d,duration=0):
         logging.info(f"{threading.current_thread().name}:{d.serial} The account is: {account}!")
         search_and_go_to_page(d, account,duration)
         duration = duration+time.time()-start_time
-        if duration > MAX_DURATION:  # Check duration
+        if duration > MAX_DURATION_TWITTER:  # Check duration
             logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
             d.app_stop("com.twitter.android")
             return
         sleep(2)
         follow_page(d)
         duration = duration+time.time()-start_time
-        if duration > MAX_DURATION:  # Check duration
+        if duration > MAX_DURATION_TWITTER:  # Check duration
             logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
             d.app_stop("com.twitter.android")
             return
         sleep(2)
         scroll_like_and_comment(d, 15,duration=duration+time.time()-start_time)
         duration = duration+time.time()-start_time
-        if duration > MAX_DURATION:  # Check duration
+        if duration > MAX_DURATION_TWITTER:  # Check duration
             logging.info(f"{threading.current_thread().name}:{d.serial} Exceeded max duration {duration}. Exiting...")
             d.app_stop("com.twitter.android")
             return

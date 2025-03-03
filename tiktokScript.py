@@ -85,9 +85,9 @@ def comment_text(d, text, send_button_template_path="icons/tiktok_icons/send.png
     d.press("back")
     update_results_file("Actions")
 
-def scroll_random_number(d):
+def scroll_random_number(d,duration):
+    start_time = time.time()
     logging.info(f"{threading.current_thread().name}:{d.serial} Starting scroll_random_number function")
-    
     if d(scrollable=True).exists:
         logging.info(f"{threading.current_thread().name}:{d.serial} Found a scrollable view! Swiping down...")
         num_swipes = random.randint(1, 2)
@@ -100,14 +100,14 @@ def scroll_random_number(d):
             logging.info(f"{threading.current_thread().name}:{d.serial} Swiped down {i + 1} time(s).")
     else:
         logging.info(f"{threading.current_thread().name}:{d.serial} No scrollable view found!")
-        main(d)
+        main(d,duration + time.time() - start_time)
 
 
-def scroll_like_and_comment(d,postsToLike):
+def scroll_like_and_comment(d, postsToLike, duration):
     """
     Scrolls the view and likes posts.
     """
-
+    start_time = time.time()
     tap_like_button(d)
 
     for i in range(postsToLike):
@@ -119,7 +119,8 @@ def scroll_like_and_comment(d,postsToLike):
             logging.info(f"{threading.current_thread().name}:{d.serial} Swiped down {i + 1} time(s).")
         else:
             logging.info(f"{threading.current_thread().name}:{d.serial} No scrollable view found!")
-            main(d)
+            close_apps(d)
+            main(d,duration + time.time() - start_time)
         num = random.choice([1, 2, 3, 4, 5])
         if  num <= 2:
             logging.info(f"{threading.current_thread().name}:{d.serial} like")
@@ -143,7 +144,7 @@ def scroll_like_and_comment(d,postsToLike):
     d.press("back")
 
 
-def like_a_page(d, page):
+def like_a_page(d, page, duration):
     # Open TikTok app
     if "com.zhiliaoapp.musically" in d.app_list_running():
         # Stop Tiktok app
@@ -164,7 +165,7 @@ def like_a_page(d, page):
     d.click(120, 1450) # Get in the first page
     update_results_file("Actions")
     sleep(5)
-    scroll_like_and_comment(d,10)
+    scroll_like_and_comment(d,10,duration)
 
 
 def report_tiktok_posts(d):
@@ -277,7 +278,7 @@ def report_account(d, link):
             logging.info(f"{threading.current_thread().name}:{d.serial} : Stopped TikTok.")
 
 
-def support_accounts(d,accounts):
+def support_accounts(d,accounts,duration):
     random.shuffle(accounts)
     for account in accounts:
         if "com.zhiliaoapp.musically" in d.app_list_running():
@@ -293,12 +294,12 @@ def support_accounts(d,accounts):
         sleep(2)
         d.click(100,1000)
         sleep(2)
-        scroll_like_and_comment(d,5)
+        scroll_like_and_comment(d,5,duration)
         d.app_stop("com.zhiliaoapp.musically")
         sleep(4)
 
 
-def main(d):
+def main(d, duration=0):
     """
     The main function connects to the Android device and performs various TikTok actions.
 
@@ -308,35 +309,29 @@ def main(d):
     Returns:
         None
     """
-    start_time = time.time()
+    
+    if duration > MAX_DURATION_TIKTOK:
+        logging.info("Exceeded max duration. Exiting main.")
+        return
     try:
         for _ in range(5):
             if "com.zhiliaoapp.musically" in d.app_list_running():
                 d.app_stop("com.zhiliaoapp.musically")
                 time.sleep(4)
-
-            d.app_start("com.zhiliaoapp.musically")  # Open TikTok app
+            d.app_start("com.zhiliaoapp.musically")
             logging.info("Opened TikTok!")
-            time.sleep(15)
-
-            if time.time() - start_time > MAX_DURATION:
-                logging.info("Exceeded max duration. Exiting main.")
-                break
-
-            scroll_random_number(d)
+            
+            scroll_random_number(d,duration)
             time.sleep(4)
-            like_a_page(d, random.choice(tiktok_accounts))
-            scroll_random_number(d)
+            like_a_page(d, random.choice(tiktok_accounts),duration)
+            scroll_random_number(d,duration)
             time.sleep(10)
-
-        support_accounts(d, tiktok_handles_specials)
+        support_accounts(d, tiktok_handles_specials,duration)
         report_tiktok_posts(d)
         time.sleep(3)
         d.app_stop("com.zhiliaoapp.musically")
         logging.info("Done with TikTok!")
-
-
-    except Exception as e:
+    except Exception:
         logging.error("An error occurred", exc_info=True)
         d.app_stop("com.zhiliaoapp.musically")
 

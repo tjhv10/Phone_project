@@ -509,12 +509,8 @@ def is_app_installed(d, package_name):
     Returns:
     bool: True if the app is installed, False otherwise.
     """
-    try:
-        installed_apps = d.app_list()
-        return package_name in installed_apps
-    except Exception as e:
-        logging.error(f"Error checking if app {package_name} is installed: {e}")
-        return False
+    return package_name in d.app_list()
+    
 
 def open_vpn(d):
     if not is_app_installed(d, "com.nordvpn.android"):

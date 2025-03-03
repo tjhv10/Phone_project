@@ -17,13 +17,14 @@ def like_comment_follow(d):
     Function to run Twitter and TikTok scripts on a specific phone.
     """
     try:
-        logging.info(f"Running tasks on device with thread: {threading.current_thread().name}:{d.serial}")
         close_apps(d)
-        sleep(3)
+        sleep(1)
+        logging.info(f"Running script on device with thread: {threading.current_thread().name}:{d.serial}")
         if TYPE == 'p':
             open_vpn(d)
-        logging.info(f"Running script on device with thread: {threading.current_thread().name}:{d.serial}")
-        start_random_function([twi.main],d)
+            start_random_function([tik.main, twi.main, inst.main], d)
+        else:
+            start_random_function([twi.main,inst.main],d)
         logging.info(f"Device with thread {threading.current_thread().name}:{d.serial} completed its tasks.")
     except Exception as e:
         logging.error(f"Error while processing device with thread {threading.current_thread().name}:{d.serial}: {e}")

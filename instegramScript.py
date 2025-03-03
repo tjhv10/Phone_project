@@ -395,15 +395,25 @@ def main(d):
     Returns:
         None
     """
+    if not is_app_installed(d, "com.instagram.lite"):
+        logging.warning(f"{d.serial} Instagram is not installed on the device.")
+        return
+    
     start_time = time.time()
-    logging.info(f"Starting main with duration limit: {MAX_DURATION}")
+    logging.info(f"Starting main with duration limit: {MAX_DURATION_TWITTER}")
 
     try:
         d.app_start("com.instagram.lite")
         logging.info("Opened Instagram!")
         time.sleep(10)
+        d.click(117,96)
+        logging.info("Clicked on the screen!")
+        sleep(2)
+        if search_sentence(d,"Create new account","inst"):
+            logging.info(d.serial + " :Account is not created yet!")
+            return
 
-        while (time.time() - start_time) < (MAX_DURATION-1000):
+        while (time.time() - start_time) < (MAX_DURATION_TWITTER-1000):
             scroll_random_number(d)
             time.sleep(2)
             tap_like_button(d)
