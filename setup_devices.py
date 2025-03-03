@@ -228,7 +228,7 @@ def setup_twitter(d,email,date,username):
     sleep(8)
     print(email)
     try:
-        x,y = search_sentence(d,email,"twi")
+        x,y = search_sentence(d,email,"twi",tolerance=35)
         d.click(x,y)
     except:
         print("Didnt find sign up")
