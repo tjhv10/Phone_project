@@ -1004,3 +1004,16 @@ def time_to_seconds(time_str):
         raise ValueError("Both minutes and seconds should be integers.")
     
     return minutes * 60 + seconds
+
+
+def start_and_close_app(d):
+
+    # Start the app
+    d.app_start("com.twitter.android")
+    # sleep(5)
+
+    # Close the app
+    # d.app_stop("com.twitter.android")
+    # sleep(2)
+
+    print(f"App started and closed successfully on device {d.serial}.")
