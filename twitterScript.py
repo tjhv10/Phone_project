@@ -226,7 +226,7 @@ def search_and_go_to_page(d, page_name,duration=0):
     # Click on the search input field
     d.click(360, 140)
     update_results_file("Actions")
-    sleep(5)
+    sleep(10)
      # Type each character of the search term with a random delay to simulate human typing
     type_keyboard(d,page_name)
     sleep(15)

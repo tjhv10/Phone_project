@@ -30,7 +30,6 @@ def like_comment_follow(d):
         logging.error(f"Error while processing device with thread {threading.current_thread().name}:{d.serial}: {e}")
         sleep(60)
     logging.info(f"Device with thread {threading.current_thread().name} is sleeping for 1 hours before restarting tasks...")
-    logging.info(f"Restarting: {threading.current_thread().name}:{d.serial}")
     if TYPE=='v':
         restart_device(d)
     sleep(0.5 * 3600)
