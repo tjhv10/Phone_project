@@ -100,6 +100,9 @@ def scroll_random_number(d,duration):
             logging.info(f"{threading.current_thread().name}:{d.serial} Swiped down {i + 1} time(s).")
     else:
         logging.info(f"{threading.current_thread().name}:{d.serial} No scrollable view found!")
+        if TYPE == 'p':
+            open_vpn(d)
+        sleep(5)
         main(d,duration + time.time() - start_time)
 
 
@@ -120,6 +123,9 @@ def scroll_like_and_comment(d, postsToLike, duration):
         else:
             logging.info(f"{threading.current_thread().name}:{d.serial} No scrollable view found!")
             close_apps(d)
+            if TYPE == 'p':
+                open_vpn(d)
+                sleep(5)
             main(d,duration + time.time() - start_time)
         num = random.choice([1, 2, 3, 4, 5])
         if  num <= 2:
