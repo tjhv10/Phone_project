@@ -263,7 +263,7 @@ def follow_page(d, follow_template_path="icons/twitter_icons/follow.png"):
     screenshot_path = take_screenshot(d,threading.current_thread().name,"twi")
     best_match = find_best_match(screenshot_path, follow_template_path,d)
     if best_match:
-        num = random.choice([1, 2]) #TODO change to 4,20
+        num = random.choice([2, 2]) #TODO change to 4,20
         if  num == 1:
             d.click(int(best_match[0]), int(best_match[1]))
             update_results_file("Actions")
@@ -280,6 +280,7 @@ def follow_page(d, follow_template_path="icons/twitter_icons/follow.png"):
         
         
 def report_post(d):
+    return #TODO remove this line
     # Open Twitter app
     link,action = random.choice(get_links_and_reasons_from_non_red_cells("Posts to report _ ARISE.xlsx", "Sheet1", "C", "D"))
     if "com.twitter.android" in d.app_list_running():
@@ -348,6 +349,7 @@ def report_post(d):
 
 
 def report_account(d):
+    return #TODO remove this line
     account = random.choice(anti_israel_twitter)
     action = 5
     # Open Twitter app
