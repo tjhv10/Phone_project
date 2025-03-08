@@ -1067,5 +1067,3 @@ def start_and_close_app(d):
 
     print(f"App started and closed successfully on device {d.serial}.")
     
-    
-update_results_file("Likes")
