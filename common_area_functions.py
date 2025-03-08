@@ -107,8 +107,8 @@ def type_keyboard(d, text:str, keyboard = keyboard_dic):
                 sleep(0.2)
             x, y = keyboard[char][i]
             d.click(x, y)  # Simulate a tap on the screen at the corresponding coordinates
-            update_results_file("Actions")
             sleep(random.uniform(0.1, 0.2))  # Add a small delay between taps
+    update_results_file("Actions", len(text))
                 
 
 def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_max=1650, bestMatch=False, min_word_length=0,screen_shot=None,return_always=False):

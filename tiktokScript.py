@@ -320,14 +320,15 @@ def main(d, duration=0):
         d.click(search_sentence(d,"Close app","tik", tolerance=30))
         sleep(5)
         
-    if duration > MAX_DURATION_TIKTOK:
-        logging.info("Exceeded max duration. Exiting main.")
-        return
+    
     try:
         for _ in range(5):
             if "com.zhiliaoapp.musically" in d.app_list_running():
                 d.app_stop("com.zhiliaoapp.musically")
                 time.sleep(4)
+            if duration > MAX_DURATION_TIKTOK:
+                logging.info("Exceeded max duration. Exiting main.")
+                return
             d.app_start("com.zhiliaoapp.musically")
             logging.info("Opened TikTok!")
             sleep(15)
@@ -338,6 +339,7 @@ def main(d, duration=0):
             time.sleep(10)
         support_accounts(d, tiktok_handles_specials,duration)
         report_tiktok_posts(d)
+        report_account(d, random.choice(anti_israel_tiktok))
         time.sleep(3)
         d.app_stop("com.zhiliaoapp.musically")
         logging.info("Done with TikTok!")
