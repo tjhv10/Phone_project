@@ -316,7 +316,10 @@ def main(d, duration=0):
         None
     """
     logging.info(d.serial + ": Duration in  main: " + str(duration))
-    
+    if search_sentence(d,"Tiktok isn't responding","tik", tolerance=30):
+        d.click(search_sentence(d,"Close app","tik", tolerance=30))
+        sleep(5)
+        
     if duration > MAX_DURATION_TIKTOK:
         logging.info("Exceeded max duration. Exiting main.")
         return
