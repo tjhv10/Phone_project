@@ -326,14 +326,12 @@ tiktok_accounts = [
     "Israelkicksass",
     "heatherduttonmart",
     "myholystyle",
-    "israel12344567789",
     "bring.evyatar.home",
     "imyerushalayimkaplam",
     "zahavaschwartz",
     "birthrightisrael",
     "adar.hatufim.7.10.2023",
     "therealmelindastrauss",
-    "miatalias",
     "danielle.myriam",
     "lfparodies",
     "clevergirl2023",
@@ -348,7 +346,6 @@ tiktok_accounts = [
     "idfofficial",
     "michalgspan",
     "idf",
-    "Perorationer",
     "End_Wahhabism",
     "NourNaim88"
     ]
@@ -800,3 +797,5 @@ DAY_CROP_TIK = (300,y_start,400,y_end)
 MAX_DURATION_TWITTER = 1800
 MAX_DURATION_TIKTOK = 3000
 swipe_function_param = ((400, 500), (1200, 1400), (-40, 40), (600, 700), 1, 0.05)
+swipe_function_param_tiktok = ((400, 500), (1200, 1400), (-40, 40), (700, 900), 1, 0.05)
+

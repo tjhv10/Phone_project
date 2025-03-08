@@ -19,23 +19,19 @@ def tap_users(d, users_template_path="icons/tiktok_icons/users.png"):
 
 def search(d, text):
     logging.info(f"{threading.current_thread().name}:{d.serial} Starting search function")
-    screen_width = d.info['displayWidth']
-    screen_height = d.info['displayHeight']
-    x = screen_width * (650 / 720)
-    y = screen_height * (100 / 1560)
-    d.click(x, y)  # Click on the search bar
+    d.click(650, 100)  # Click on the search bar
     update_results_file("Actions")
-    sleep(10)
-    type_keyboard(d, text)
     sleep(15)
+    type_keyboard(d, text)
+    sleep(20)
     d.press(66)  # Press the search button
     update_results_file("Actions")
-    sleep(20)
+    sleep(25)
     tap_users(d)  # Click to go to users
-    sleep(10)
+    sleep(15)
     d.click(350, 300)  # Click to go into the first result
     update_results_file("Actions")
-    sleep(10)
+    sleep(15)
 
 def tap_like_button(d, like_button_template_path="icons/tiktok_icons/like.png"):
     logging.info(f"{threading.current_thread().name}:{d.serial} Starting tap_like_button function")
@@ -54,33 +50,37 @@ def tap_like_button(d, like_button_template_path="icons/tiktok_icons/like.png"):
         logging.info(f"{threading.current_thread().name}:{d.serial} Like button not found on the screen.")
     logging.info(f"{threading.current_thread().name}:{d.serial} Finished tap_like_button function")
 
-def comment_text(d, text, send_button_template_path="icons/tiktok_icons/send.png"):
+def comment_text(d, text):
     logging.info(f"{threading.current_thread().name}:{d.serial} Starting comment_text function")
     d.click(670, 1000)  # Click on the comment button
     update_results_file("Actions")
     logging.info(f"{threading.current_thread().name}:{d.serial} Clicked on the comment button.")
     sleep(3)
     d.click(310, 1500)  # Click on the comment input field
+    sleep(2)
+    best_coordinates = find_best_match(take_screenshot(d, threading.current_thread().name, "tik"), "icons/tiktok_icons/send-empty.png", d)
+    if best_coordinates:
+        logging.info(f"{threading.current_thread().name}:{d.serial} Comment is possible.")
+    else:
+        logging.info(f"{threading.current_thread().name}:{d.serial} Send button not found on the screen.")
+        d.press("back")
+        logging.info(f"{threading.current_thread().name}:{d.serial} Finished comment_text function")
+        return
     update_results_file("Actions")
     logging.info(f"{threading.current_thread().name}:{d.serial} Commenting: {text}")
     sleep(4)
     type_keyboard(d, text)
     sleep(2)
-    screenshot_path = take_screenshot(d, threading.current_thread().name, "tik")
-    sleep(2)
-    best_coordinates = find_best_match(screenshot_path, send_button_template_path, d)
-    sleep(2)
+    best_coordinates = find_best_match(take_screenshot(d, threading.current_thread().name, "tik"), "icons/tiktok_icons/send.png", d)
     if best_coordinates:
         logging.info(f"{threading.current_thread().name}:{d.serial} Send button found at {best_coordinates}, tapping...")
         d.click(int(best_coordinates[0]), int(best_coordinates[1]))
         update_results_file("Actions")
         logging.info(f"{threading.current_thread().name}:{d.serial} Tapped best match at {best_coordinates}.")
-        sleep(1)
         update_results_file("Comments")
-        sleep(1)
+        logging.info(f"{threading.current_thread().name}:{d.serial} Comment submitted.")
     else:
         logging.info(f"{threading.current_thread().name}:{d.serial} Send button not found on the screen.")
-    logging.info(f"{threading.current_thread().name}:{d.serial} Comment submitted.")
     sleep(3)
     d.press("back")
     update_results_file("Actions")
@@ -90,12 +90,12 @@ def scroll_random_number(d,duration):
     logging.info(f"{threading.current_thread().name}:{d.serial} Starting scroll_random_number function")
     if d(scrollable=True).exists:
         logging.info(f"{threading.current_thread().name}:{d.serial} Found a scrollable view! Swiping down...")
-        num_swipes = random.randint(1, 2)
+        num_swipes = random.randint(1, 6)
         logging.info(f"{threading.current_thread().name}:{d.serial} Number of swipes: {num_swipes}")
         for i in range(num_swipes):
-            arch_swipe(d, *swipe_function_param)
+            arch_swipe(d, *swipe_function_param_tiktok)
             update_results_file("Actions")
-            random_time = random.randint(2, 15)
+            random_time = random.randint(2, 30)
             sleep(random_time)
             logging.info(f"{threading.current_thread().name}:{d.serial} Swiped down {i + 1} time(s).")
     else:
@@ -115,7 +115,7 @@ def scroll_like_and_comment(d, postsToLike, duration):
 
     for i in range(postsToLike):
         if d(scrollable=True).exists:
-            arch_swipe(d, *swipe_function_param)
+            arch_swipe(d, *swipe_function_param_tiktok)
             update_results_file("Actions")
             random_time = random.randint(2, 15)
             sleep(random_time)
@@ -168,7 +168,7 @@ def like_a_page(d, page, duration):
     except:
         logging.info(f"{threading.current_thread().name}:{d.serial} : Allready following!")
     sleep(10)
-    d.click(120, 1450) # Get in the first page
+    d.click(120, 1500) # Get in the first page
     update_results_file("Actions")
     sleep(5)
     scroll_like_and_comment(d,10,duration)
@@ -245,7 +245,7 @@ def report_account(d, link):
     logging.info(f"{threading.current_thread().name}:{d.serial} : Opened TikTok!")
 
     # Wait to make sure TikTok fully loads
-    sleep(15)
+    sleep(25)
 
     # Check if TikTok is running
     if "com.zhiliaoapp.musically" in d.app_list_running():
@@ -256,7 +256,7 @@ def report_account(d, link):
         logging.info(f"{threading.current_thread().name}:{d.serial} Opened link: {link}")
 
         # Give some time to load the page within TikTok
-        sleep(15)
+        sleep(25)
 
         # Continue with the reporting steps
         try:
@@ -315,6 +315,7 @@ def main(d, duration=0):
     Returns:
         None
     """
+    logging.info(d.serial + ": Duration in  main: " + str(duration))
     
     if duration > MAX_DURATION_TIKTOK:
         logging.info("Exceeded max duration. Exiting main.")
@@ -326,7 +327,7 @@ def main(d, duration=0):
                 time.sleep(4)
             d.app_start("com.zhiliaoapp.musically")
             logging.info("Opened TikTok!")
-            
+            sleep(15)
             scroll_random_number(d,duration)
             time.sleep(4)
             like_a_page(d, random.choice(tiktok_accounts),duration)
@@ -341,7 +342,6 @@ def main(d, duration=0):
         logging.error("An error occurred", exc_info=True)
         d.app_stop("com.zhiliaoapp.musically")
 
-# d = u2.connect("127.0.0.1:6555")
 # main(d)
 # x,y = search_sentence(d,"Follow","tik")
 # d.click(x,y)

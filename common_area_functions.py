@@ -22,6 +22,7 @@ from PIL import ImageFilter
 import uiautomator2 as u2
 import pandas as pd
 from openpyxl import load_workbook
+import shutil
 
 
 keyboard_dic = {
@@ -261,11 +262,6 @@ def search_sentence(d, name: str, plat, tolerance=20, usegpu=True, y_min=0, y_ma
     return None
 
 
-
-
-
-
-
 def take_screenshot(d, thread=threading.current_thread().name, app="twi", crop_area=None):
     """
     Takes a screenshot of the device and optionally crops it to a specific region.
@@ -380,39 +376,94 @@ def execute_action(d,reason,report_dict):
             sleep(5)  
     else:
         logging.info("No action found for this reason.")
-
+        
+        
 
 file_lock = threading.Lock()
+file_path = "result.txt"
+backup_path = "result_backup.txt"
+
+# Expected format (order and keys must match)
+EXPECTED_KEYS = [
+    "Likes", "Comments", "Follows", "Reposts", "Posts reported", "Accounts reported", "Actions"
+]
+
+def is_valid_format(file_path):
+    """Checks if the file follows the expected format."""
+    try:
+        with open(file_path, "r") as file:
+            lines = file.readlines()
+
+        if len(lines) != len(EXPECTED_KEYS):
+            return False
+
+        parsed_keys = []
+        for line in lines:
+            match = re.match(r"^(.+) - (\d+)$", line.strip())
+            if not match:
+                return False
+            key, value = match.groups()
+            if key not in EXPECTED_KEYS:
+                return False
+            parsed_keys.append(key)
+
+        return parsed_keys == EXPECTED_KEYS  # Ensure order is correct
+
+    except Exception:
+        return False  # If any error occurs, assume invalid format
+
+
 
 def update_results_file(action_type, counter=1):
     """
-    Updates the results file with the incremented count for the given action.
+    Safely updates the results file with the incremented count for the given action.
+    Creates a backup before modifying the file if the backup file follows the correct format.
     
     Parameters:
-    action_type (str): The action type to update ('Likes', 'Comments', 'Follows', 'Reports', 'Scrolls').
+    action_type (str): The action type to update ('Likes', 'Comments', 'Follows', 'Reposts',
+                       'Posts reported', 'Accounts reported', 'Actions').
+    counter (int): The amount to increment the count by (default is 1).
     """
-    file_path = "result.txt"
-    
+    print(f"Updating file for action: {action_type}")
     with file_lock:  # Ensure only one thread accesses the file at a time
-        # Load current values
-        with open(file_path, "r") as file:
-            data = file.readlines()
+        try:
+            # Create a backup only if the file follows the correct format
+            if os.path.exists(file_path) and is_valid_format(file_path):
+                shutil.copy(file_path, backup_path)
 
-        # Parse current counts from the file
-        stats = {}
-        for line in data:
-            key, value = line.strip().split(" - ")
-            stats[key] = int(value)
-        
-        # Increment the relevant action count
-        if action_type in stats:
-            stats[action_type] += counter
+            # Load current values
+            stats = {key: 0 for key in EXPECTED_KEYS}  # Ensure all keys exist
+            if os.path.exists(file_path):
+                with open(file_path, "r") as file:
+                    for line in file:
+                        key, value = line.strip().split(" - ")
+                        if key in stats:
+                            stats[key] = int(value)
 
-        # Write updated values back to the file
-        with open(file_path, "w") as file:
-            for key, value in stats.items():
-                file.write(f"{key} - {value}\n")
+            # Increment the relevant action count
+            if action_type in stats:
+                stats[action_type] += counter
+            else:
+                stats[action_type] = counter  # Initialize if not present
 
+            # Update the total "Actions" count
+            stats["Actions"] = sum(v for k, v in stats.items() if k != "Actions")
+
+            # Write updated values to a temp file and then rename it (atomic write)
+            temp_file = file_path + ".tmp"
+            with open(temp_file, "w") as file:
+                for key in EXPECTED_KEYS:  # Maintain order
+                    file.write(f"{key} - {stats[key]}\n")
+
+            # Replace original file with the updated file
+            os.replace(temp_file, file_path)
+
+        except Exception as e:
+            print(f"Error updating file: {e}")
+            # Restore from backup if something goes wrong
+            if os.path.exists(backup_path):
+                shutil.copy(backup_path, file_path)
+                print("Restored from backup.")
 
 
 
@@ -530,14 +581,12 @@ def open_vpn(d):
                 return
         if count == 2:
             logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Couldn't find the pause button.")
-            # d.app_stop("com.nordvpn.android")
-            # sleep(5)
-            # open_vpn(d)
             return
         count += 1
         logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Trying to reconnect...")
         sleep(100)
         if not d.info['screenOn']:
+            count = 0
             d.shell("input keyevent KEYCODE_POWER")
         sleep(10)
 
@@ -1017,3 +1066,6 @@ def start_and_close_app(d):
     # sleep(2)
 
     print(f"App started and closed successfully on device {d.serial}.")
+    
+    
+update_results_file("Likes")
