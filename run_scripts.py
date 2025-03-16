@@ -55,6 +55,7 @@ def main():
 
     random.shuffle(device_ips)  # Shuffle the devices list
     for device in device_ips:
+        close_apps(device)
         worker_queue.put(device)
 
     threads = []
