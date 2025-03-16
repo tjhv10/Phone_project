@@ -546,15 +546,8 @@ def open_vpn(d):
 
 
 def close_apps(device):
-    device.app_stop("com.twitter.android")
-    sleep(0.5)
-    device.app_stop("com.zhiliaoapp.musically")
-    sleep(0.5)
-    device.app_stop("com.nordvpn.android")
-    sleep(0.5)
-    device.app_stop("com.instagram.lite")
-    sleep(0.5)
-    device.app_stop("com.google.android.gm")
+    for app in device.app_list_running():
+        device.app_stop(app)
     logging.info(f"{device.wlan_ip} closed apps.")
 
 
@@ -1035,3 +1028,6 @@ def start_and_close_app(d):
 
     print(f"App started and closed successfully on device {d.serial}.")
     
+
+d = u2.connect("10.0.0.113")
+close_apps(d)
