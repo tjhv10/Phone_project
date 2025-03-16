@@ -27,15 +27,15 @@ def like_comment_follow(d):
             start_time = time.time()
             start_random_function([twi.main, inst.main], d)
             end_time = time.time()
-            time = end_time - start_time
-            logging.info(f"Random function execution time: {time} seconds")
+            execution_time = end_time - start_time
+            logging.info(f"Random function execution time: {execution_time} seconds")
         logging.info(f"Device with thread {threading.current_thread().name}:{d.serial} completed its tasks.")
     except Exception as e:
         logging.error(f"Error while processing device with thread {threading.current_thread().name}:{d.serial}: {e}")
         sleep(60)
     logging.info(f"Device with thread {threading.current_thread().name} is sleeping for 1 hours before restarting tasks...")
     sleep_duration = 1800
-    if time > 100:
+    if execution_time > 100:
         logging.info(f"Device with thread {threading.current_thread().name} is sleeping for {sleep_duration / 3600} hours due to long execution time.")
         sleep(sleep_duration)
         if TYPE == 'v':
