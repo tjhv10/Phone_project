@@ -24,7 +24,7 @@ def like_comment_follow(d):
             open_vpn(d)
             start_random_function([tik.main], d)
         else:
-            start_random_function([twi.main,inst.main], d)
+            start_random_function([twi.main], d)
         logging.info(f"Device with thread {threading.current_thread().name}:{d.serial} completed its tasks.")
     except Exception as e:
         logging.error(f"Error while processing device with thread {threading.current_thread().name}:{d.serial}: {e}")
@@ -45,8 +45,8 @@ def main():
 
     random.shuffle(device_ips)  # Shuffle the devices list
     for device in device_ips:
-        close_apps(device)
         worker_queue.put(device)
+
     threads = []
     for _ in range(max_threads):
         t = threading.Thread(target=worker_task)
