@@ -518,6 +518,9 @@ def open_vpn(d):
     logging.info(f"{threading.current_thread().name}: {d.wlan_ip} : Opened nordVPN!")
     d.app_start("com.nordvpn.android")
     sleep(15)
+    if search_sentence(d,"Tiktok isn't responding","tik", tolerance=30) or search_sentence(d,"X isn't responding","tik", tolerance=30):
+        d.click(search_sentence(d,"Close app","tik", tolerance=30))
+        sleep(5)
     d.click(400, 200)
     sleep(5)
     count = 0
