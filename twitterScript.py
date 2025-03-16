@@ -453,6 +453,9 @@ def scroll_like_comment_main(d,duration=0):
     
     # Interact with accounts
     for _ in range(5):
+        if search_sentence(d,"X isn't responding","twi", tolerance=30):
+            d.click(search_sentence(d,"Close app","twi", tolerance=30))
+            sleep(5)
         duration = duration+time.time()-start_time
         logging.info(f"{threading.current_thread().name}:{d.serial} duration in main:"+str(duration))
         if duration > MAX_DURATION_TWITTER:  # Check duration
