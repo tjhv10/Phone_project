@@ -22,7 +22,7 @@ def like_comment_follow(d):
         logging.info(f"Running script on device with thread: {threading.current_thread().name}:{d.serial}")
         if TYPE == 'p':
             open_vpn(d)
-            start_random_function([tik.main], d)
+            start_random_function([tik.main,inst.main,twi.main], d)
         else:
             start_time = time.time()
             start_random_function([twi.main, inst.main], d)
