@@ -24,15 +24,22 @@ def like_comment_follow(d):
             open_vpn(d)
             start_random_function([tik.main], d)
         else:
-            start_random_function([twi.main,inst.main], d)
+            start_time = time.time()
+            start_random_function([twi.main, inst.main], d)
+            end_time = time.time()
+            time = end_time - start_time
+            logging.info(f"Random function execution time: {time} seconds")
         logging.info(f"Device with thread {threading.current_thread().name}:{d.serial} completed its tasks.")
     except Exception as e:
         logging.error(f"Error while processing device with thread {threading.current_thread().name}:{d.serial}: {e}")
         sleep(60)
     logging.info(f"Device with thread {threading.current_thread().name} is sleeping for 1 hours before restarting tasks...")
-    if TYPE=='v':
-        restart_device(d)
-    sleep(0.5 * 3600)
+    if time > 100:
+        sleep_duration = 1800
+        logging.info(f"Device with thread {threading.current_thread().name} is sleeping for {sleep_duration / 3600} hours due to long execution time.")
+        sleep(sleep_duration)
+        if TYPE == 'v':
+            restart_device(d)
     worker_queue.put(d)
 
 
