@@ -99,11 +99,18 @@ def scroll_random_number(d,duration):
             sleep(random_time)
             logging.info(f"{threading.current_thread().name}:{d.serial} Swiped down {i + 1} time(s).")
     else:
+        allowIsPresent = search_sentence(d,"Allow","tik", tolerance=30,y_min=600)
+        if allowIsPresent:
+            d.click(*allowIsPresent)
+            sleep(5)
+            main(d,duration + time.time() - start_time)
+            return
         logging.info(f"{threading.current_thread().name}:{d.serial} No scrollable view found!")
         if TYPE == 'p':
             open_vpn(d)
         sleep(5)
         main(d,duration + time.time() - start_time)
+        return
 
 
 def scroll_like_and_comment(d, postsToLike, duration):
@@ -127,6 +134,7 @@ def scroll_like_and_comment(d, postsToLike, duration):
                 open_vpn(d)
                 sleep(5)
             main(d,duration + time.time() - start_time)
+            return
         num = random.choice([1, 2, 3, 4, 5])
         if  num <= 2:
             logging.info(f"{threading.current_thread().name}:{d.serial} like")
@@ -316,9 +324,6 @@ def main(d, duration=0):
         None
     """
     logging.info(d.serial + ": Duration in  main: " + str(duration))
-    
-        
-    
     try:
         for _ in range(5):
             if "com.zhiliaoapp.musically" in d.app_list_running():
@@ -334,15 +339,35 @@ def main(d, duration=0):
             logging.info("Opened TikTok!")
             sleep(15)
             scroll_random_number(d,duration)
+            d.app_stop("com.zhiliaoapp.musically")
             time.sleep(4)
+            d.app_start("com.zhiliaoapp.musically")
+            time.sleep(15)
             like_a_page(d, random.choice(tiktok_accounts),duration)
+            sleep(5)
+            d.app_stop("com.zhiliaoapp.musically")
+            time.sleep(4)
+            d.app_start("com.zhiliaoapp.musically")
+            time.sleep(15)
             scroll_random_number(d,duration)
             time.sleep(10)
-        support_accounts(d, tiktok_handles_specials,duration)
-        report_tiktok_posts(d)
-        report_account(d, random.choice(anti_israel_tiktok))
-        time.sleep(3)
         d.app_stop("com.zhiliaoapp.musically")
+        time.sleep(4)
+        d.app_start("com.zhiliaoapp.musically")
+        sleep(15)
+        support_accounts(d, tiktok_handles_specials,duration)
+        d.app_stop("com.zhiliaoapp.musically")
+        time.sleep(4)
+        d.app_start("com.zhiliaoapp.musically")
+        sleep(15)
+        report_tiktok_posts(d)
+        d.app_stop("com.zhiliaoapp.musically")
+        time.sleep(4)
+        d.app_start("com.zhiliaoapp.musically")
+        sleep(15)
+        report_account(d, random.choice(anti_israel_tiktok))
+        d.app_stop("com.zhiliaoapp.musically")
+        time.sleep(4)
         logging.info("Done with TikTok!")
     except Exception:
         logging.error("An error occurred", exc_info=True)
