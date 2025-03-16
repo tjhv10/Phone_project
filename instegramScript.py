@@ -216,10 +216,11 @@ def scroll_like_and_comment(d):
     for _ in range(rnd_value(10)):
         scroll_once(d)  # Scroll down once
         sleep(3)  # Wait 3 second between actions
-        num = random.choice([1,2,3,4,5]) 
+        # num = random.choice([1,2,3,4,5]) 
+        num = random.choice([5]) # remove line and remove # from upper row if you want to like and comment
         if num<=4:
             tap_like_button(d)
-            if num>2:
+            if num>2 and num<4:
                 sleep(3)
                 comment_text(d,random.choice(israel_support_comments))  # Try to tap the like button to like the post
         sleep(1)  # Wait 2 seconds after tapping
