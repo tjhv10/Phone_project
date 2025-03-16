@@ -92,7 +92,7 @@ def scroll_like_and_comment(d,posts,duration):
     logging.info(f"{threading.current_thread().name}:{d.serial} Starting scroll_like_and_comment function")
     logging.info(f"{threading.current_thread().name}:{d.serial} duration in main :"+str(duration))
     start_time = time.time()
-    actions = ['none', 'none', 'none','none','none','none']
+    actions = ['both', 'none', 'none','none','none','none']
     for _ in range(posts):
         if d(scrollable=True).exists:
             start_x = random.randint(400, 600)
@@ -111,8 +111,6 @@ def scroll_like_and_comment(d,posts,duration):
                     restart_device(d)
                     sleep(5)
                 scroll_like_comment_main(d,duration+time.time()-start_time)
-
-            
         sleep(random.uniform(5, 30))
         action = random.choice(actions)
         logging.info(f"{threading.current_thread().name}:{d.serial} Action chosen: {action}")
