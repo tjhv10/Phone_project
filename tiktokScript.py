@@ -164,10 +164,13 @@ def like_a_page(d, page, duration):
         # Stop Tiktok app
         d.app_stop("com.zhiliaoapp.musically")
         sleep(8)
-
     # Start the Twitter app 
     d.app_start("com.zhiliaoapp.musically")
-    sleep(12)
+    sleep(20)
+    isAllowPresent = search_sentence(d,"Allow","tik", tolerance=30,y_min=600)
+    if isAllowPresent:
+        d.click(*isAllowPresent)
+        sleep(5)
     search(d, page)
     sleep(5)
     try:
@@ -200,14 +203,16 @@ def report_post(d, link, action=0):
     # Start the Twitter app 
     d.app_start("com.zhiliaoapp.musically")
     logging.info(f"{threading.current_thread().name}:{d.serial} : Opened TikTok!")
-    sleep(15)
-
+    sleep(20)
+    isAllowPresent = search_sentence(d,"Allow","tik", tolerance=30,y_min=600)
+    if isAllowPresent:
+        d.click(*isAllowPresent)
+        sleep(5)
     if "com.zhiliaoapp.musically" in d.app_list_running():
         logging.info(f"{threading.current_thread().name}:{d.serial} TikTok is running!")
         d.shell(f"am start -a android.intent.action.VIEW -d {link}")
         logging.info(f"{threading.current_thread().name}:{d.serial} Opened link: {link}")
         sleep(10)
-            
         try:   
             # Find and click the "Watch only" button
             x, y = search_sentence(d, "Watch only","tik")
@@ -251,7 +256,10 @@ def report_account(d, link):
     # Start the Twitter app 
     d.app_start("com.zhiliaoapp.musically")
     logging.info(f"{threading.current_thread().name}:{d.serial} : Opened TikTok!")
-
+    isAllowPresent = search_sentence(d,"Allow","tik", tolerance=30,y_min=600)
+    if isAllowPresent:
+        d.click(*isAllowPresent)
+        sleep(5)
     # Wait to make sure TikTok fully loads
     sleep(25)
 
@@ -303,7 +311,11 @@ def support_accounts(d,accounts,duration):
         # Start the Twitter app 
         d.app_start("com.zhiliaoapp.musically")  # Open TikTok app
         logging.info(f"{threading.current_thread().name}:{d.serial} :Opened TikTok!")
-        sleep(15)
+        sleep(20)
+        isAllowPresent = search_sentence(d,"Allow","tik", tolerance=30,y_min=600)
+        if isAllowPresent:
+            d.click(*isAllowPresent)
+            sleep(5)
         search(d,account)
         sleep(2)
         d.click(100,1000)
@@ -338,34 +350,57 @@ def main(d, duration=0):
                 return
             d.app_start("com.zhiliaoapp.musically")
             logging.info("Opened TikTok!")
-            sleep(15)
+            sleep(20)
+            isAllowPresent = search_sentence(d,"Allow","tik", tolerance=30,y_min=600)
+            if isAllowPresent:
+                d.click(*isAllowPresent)
+                sleep(5)
             scroll_random_number(d,duration)
             d.app_stop("com.zhiliaoapp.musically")
             time.sleep(4)
             d.app_start("com.zhiliaoapp.musically")
-            time.sleep(15)
+            time.sleep(20)
+            isAllowPresent = search_sentence(d,"Allow","tik", tolerance=30,y_min=600)
+            if isAllowPresent:
+                d.click(*isAllowPresent)
+                sleep(5)
             like_a_page(d, random.choice(tiktok_accounts),duration)
             sleep(5)
             d.app_stop("com.zhiliaoapp.musically")
             time.sleep(4)
             d.app_start("com.zhiliaoapp.musically")
-            time.sleep(15)
+            time.sleep(20)
+            isAllowPresent = search_sentence(d,"Allow","tik", tolerance=30,y_min=600)
+            if isAllowPresent:
+                d.click(*isAllowPresent)
+                sleep(5)
             scroll_random_number(d,duration)
-            time.sleep(10)
         d.app_stop("com.zhiliaoapp.musically")
         time.sleep(4)
         d.app_start("com.zhiliaoapp.musically")
-        sleep(15)
+        sleep(20)
+        isAllowPresent = search_sentence(d,"Allow","tik", tolerance=30,y_min=600)
+        if isAllowPresent:
+            d.click(*isAllowPresent)
+            sleep(5)
         support_accounts(d, tiktok_handles_specials,duration)
         d.app_stop("com.zhiliaoapp.musically")
         time.sleep(4)
         d.app_start("com.zhiliaoapp.musically")
-        sleep(15)
+        sleep(20)
+        isAllowPresent = search_sentence(d,"Allow","tik", tolerance=30,y_min=600)
+        if isAllowPresent:
+            d.click(*isAllowPresent)
+            sleep(5)
         report_tiktok_posts(d)
         d.app_stop("com.zhiliaoapp.musically")
         time.sleep(4)
         d.app_start("com.zhiliaoapp.musically")
-        sleep(15)
+        sleep(20)
+        isAllowPresent = search_sentence(d,"Allow","tik", tolerance=30,y_min=600)
+        if isAllowPresent:
+            d.click(*isAllowPresent)
+            sleep(5)
         report_account(d, random.choice(anti_israel_tiktok))
         d.app_stop("com.zhiliaoapp.musically")
         time.sleep(4)
