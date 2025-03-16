@@ -1,9 +1,9 @@
 #!/bin/bash
 
-for i in $(seq 1 30); do
+for i in $(seq 91 160); do
     ip="10.0.0.$i"
     echo "Connecting to $ip..."
-    timeout 10s adb connect $ip || echo "Failed to connect to $ip, skipping..."
+    timeout 10s adb disconnect $ip || echo "Failed to connect to $ip, skipping..."
 done
 
 # Usage:
