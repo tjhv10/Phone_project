@@ -103,7 +103,7 @@ def scroll_random_number(d,duration):
         if allowIsPresent:
             d.click(*allowIsPresent)
             sleep(5)
-            main(d,duration + time.time() - start_time)
+            scroll_random_number(d,duration)
             return
         logging.info(f"{threading.current_thread().name}:{d.serial} No scrollable view found!")
         if TYPE == 'p':
@@ -329,6 +329,7 @@ def main(d, duration=0):
             if "com.zhiliaoapp.musically" in d.app_list_running():
                 d.app_stop("com.zhiliaoapp.musically")
                 time.sleep(4)
+            
             if search_sentence(d,"Tiktok isn't responding","tik", tolerance=30):
                 d.click(search_sentence(d,"Close app","tik", tolerance=30))
                 sleep(5)
