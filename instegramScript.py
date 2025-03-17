@@ -432,7 +432,7 @@ def main(d):
         logging.error("An error occurred", exc_info=True)
         d.app_stop("com.instagram.lite")
 
-# d = u2.connect("127.0.0.1:6555")
+# d = u2.connect("127.0.0.1:6583")
 # logging.info(f"Connected to device {d.serial}")
 # main(d)
 # report_account(d)
