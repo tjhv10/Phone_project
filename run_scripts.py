@@ -99,7 +99,7 @@ def worker_task():
             try:
                 # Perform the task
                 like_comment_follow(device)
-                # close_apps(device)
+                close_apps(device)
                 # reopen_app(device, "com.twitter.android", 15)
             finally:
                 # Mark device as no longer in use
