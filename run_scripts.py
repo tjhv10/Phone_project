@@ -22,10 +22,10 @@ def like_comment_follow(d):
         logging.info(f"Running script on device with thread: {threading.current_thread().name}:{d.serial}")
         if TYPE == 'p':
             open_vpn(d)
-            start_random_function([tik.main,inst.main,twi.main], d)
+            start_random_function([tik.main,twi.main], d)
         else:
             start_time = time.time()
-            start_random_function([twi.main, inst.main], d)
+            start_random_function([twi.main], d)
             end_time = time.time()
             execution_time = end_time - start_time
             logging.info(f"Random function execution time: {execution_time} seconds")
@@ -99,7 +99,8 @@ def worker_task():
             try:
                 # Perform the task
                 like_comment_follow(device)
-                # close_apps(device)
+                close_apps(device)
+                # reopen_app(device, "com.twitter.android", 15)
             finally:
                 # Mark device as no longer in use
                 with devices_in_use_lock:
