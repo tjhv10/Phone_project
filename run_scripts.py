@@ -37,12 +37,15 @@ def like_comment_follow(d):
     sleep_duration = 1800
     if execution_time > 100:
         logging.info(f"Device with thread {threading.current_thread().name} is sleeping for {sleep_duration / 3600} hours due to long execution time.")
-        sleep(sleep_duration)
         if TYPE == 'v':
+            sleep(sleep_duration)
             restart_device(d)
     else:
         twi.main(d)
-        sleep(sleep_duration)
+        if TYPE == 'v':
+            sleep(sleep_duration)
+            restart_device(d)
+    logging.info(f"Device with thread {threading.current_thread().name} finished sleeping and is restarting tasks...")
     worker_queue.put(d)
 
 
