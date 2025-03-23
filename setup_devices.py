@@ -239,8 +239,11 @@ def setup_twitter(d,email,date,username):
     except:
         print("Didnt find agree")
     sleep(5)
-    x,y = search_sentence(d,"next","twi")
-    d.click(x,y)
+    try:
+        x,y = search_sentence(d,"next","twi")
+        d.click(x,y)
+    except:
+        print("Didnt find agree")
     sleep(5)
     x,y = search_sentence(d,"Date of birth","twi")
     d.click(x,y)
