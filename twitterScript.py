@@ -281,6 +281,8 @@ def follow_page(d, follow_template_path="icons/twitter_icons/follow.png"):
         
         
 def report_post(d):
+    return #TODO: remove this line
+    logging.info(f"{threading.current_thread().name}:{d.serial} Starting report_post function")
     # Open Twitter app
     link,action = random.choice(get_links_and_reasons_from_non_red_cells("Posts to report _ ARISE.xlsx", "Sheet1", "C", "D"))
     if "com.twitter.android" in d.app_list_running():
@@ -349,6 +351,7 @@ def report_post(d):
 
 
 def report_account(d):
+    return #TODO: remove this line
     account = random.choice(anti_israel_twitter)
     action = 5
     # Open Twitter app
