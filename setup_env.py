@@ -29,7 +29,7 @@ def write_default_env_file():
         env_file.write('gmtoolPath = "/home/goldfish/Desktop/genymotion/gmtool"\n')
         env_file.write('phoneRange = ""\n')
         env_file.write("""
-
+WAIT_TIME = 0
 # Define the dictionary with 'buttom' and 'top'
 config = {
     'buttom': x,
