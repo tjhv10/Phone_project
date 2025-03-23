@@ -24,9 +24,29 @@ def create_files_and_directories():
 
 def write_default_env_file():
     with open("env.py", "w") as env_file:
+        env_file.write("import sys\n")
         env_file.write("TYPE = 'v'\n")
         env_file.write('gmtoolPath = "/home/goldfish/Desktop/genymotion/gmtool"\n')
         env_file.write('phoneRange = ""\n')
+        env_file.write("""
+WAIT_TIME = 0
+# Define the dictionary with 'buttom' and 'top'
+config = {
+    'buttom': x,
+    'top': y 
+}
+
+if len(sys.argv) == 2:
+    # Get the argument passed to the script
+    arg = sys.argv[1]
+
+    # Check if the argument is valid and print the corresponding value
+    if arg in config:
+        print(config[arg])
+    else:
+        print(f"Error: '{arg}' is not a valid argument.")
+        sys.exit(1)
+        """)
     print("Default content written to env.py")
 
 def write_initial_result_file():

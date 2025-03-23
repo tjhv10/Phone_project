@@ -34,15 +34,20 @@ def like_comment_follow(d):
         logging.error(f"Error while processing device with thread {threading.current_thread().name}:{d.serial}: {e}")
         sleep(60)
     logging.info(f"Device with thread {threading.current_thread().name} is sleeping for 1 hours before restarting tasks...")
-    sleep_duration = 1800
+    
     if execution_time > 100:
-        logging.info(f"Device with thread {threading.current_thread().name} is sleeping for {sleep_duration / 3600} hours due to long execution time.")
-        sleep(sleep_duration)
+        logging.info(f"Device with thread {threading.current_thread().name} is sleeping for {WAIT_TIME / 3600} hours due to long execution time.")
         if TYPE == 'v':
             restart_device(d)
+        sleep(WAIT_TIME)
+        
     else:
         twi.main(d)
-        sleep(sleep_duration)
+        if TYPE == 'v':
+            restart_device(d)
+        sleep(WAIT_TIME)
+        
+    logging.info(f"Device with thread {threading.current_thread().name} finished sleeping and is restarting tasks...")
     worker_queue.put(d)
 
 
