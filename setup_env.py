@@ -36,20 +36,16 @@ config = {
     'top': y 
 }
 
-# Ensure that there is exactly one argument
-if len(sys.argv) != 2:
-    print("Usage: python3 env.py <buttom|top>")
-    sys.exit(1)
+if len(sys.argv) == 2:
+    # Get the argument passed to the script
+    arg = sys.argv[1]
 
-# Get the argument passed to the script
-arg = sys.argv[1]
-
-# Check if the argument is valid and print the corresponding value
-if arg in config:
-    print(config[arg])
-else:
-    print(f"Error: '{arg}' is not a valid argument.")
-    sys.exit(1)
+    # Check if the argument is valid and print the corresponding value
+    if arg in config:
+        print(config[arg])
+    else:
+        print(f"Error: '{arg}' is not a valid argument.")
+        sys.exit(1)
         """)
     print("Default content written to env.py")
 
