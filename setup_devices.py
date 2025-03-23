@@ -385,8 +385,8 @@ def main():
         except:
             print("Error setting up google")
         sleep(2)
-        setup_twitter(device,gmail,date,username)
-        sleep(2)
+        # setup_twitter(device,gmail,date,username)
+        # sleep(2)
         close_apps(device)
         i+=1
 main()
